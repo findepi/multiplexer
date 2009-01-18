@@ -1,0 +1,7 @@
+# vim:ft=python
+#
+# this file is a list of simple python assignments in exactly following form:
+#	VARIABLE_NAME_IN_UPPERCASE = int_literal
+#
+PYTHON_PICKLE = 1
+MXSERVER_INCOMING_MULTIPLEXER_MESSAGE = 2

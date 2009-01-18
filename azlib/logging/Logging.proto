@@ -1,0 +1,43 @@
+package azlib.logging;
+
+message LogEntry {
+    // unique ID of this log entry
+    required uint64 id = 1;
+    
+    // timestamp when log entry created
+    optional uint64 timestamp = 2;
+
+    // context, e.g. "tarantula.multiplexer.connections.123"
+    optional string context = 3;
+
+    // DEBUG, INFO, OK, WARNING, ERROR, CRITICAL, UNKNOWN -- defined in azlib/loggin.h
+    optional uint32 level = 4;
+
+    // defined along with levels
+    optional uint32 verbosity = 5;
+
+    // textual information
+    optional string text = 6;
+
+    // data_type of the data trasnferred (numeric constant)
+    optional int32 data_type = 7;
+
+    // any data (preferrably serialized ProtoBuf message)
+    optional bytes data = 8;
+
+    // data class name
+    optional string data_class = 9;
+
+    // workflow
+    optional bytes workflow = 10;
+
+    // pid
+    optional uint32 pid = 11;
+
+    // when the LogEntry orginated from
+    // source_file can be in a form header.h:program.c
+    optional bytes source_file = 20;
+    optional int32 source_line = 21;
+    // compilation_datetime is human readable text (__DATE__ __TIME__ preprocessor macros)
+    optional string compilation_datetime = 22;
+}
