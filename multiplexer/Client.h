@@ -109,14 +109,21 @@ namespace multiplexer {
 	    std::size_t n;
 
 	    BasicClient::Connection::pointer conn;
-	    BasicClient::ConnectionById::const_iterator conni = basic_client_->begin(),
-		connend = basic_client_->end();
+            std::list<BasicClient::Connection::weak_pointer> current_connections;
+            for (BasicClient::ConnectionById::const_iterator conni =
+                    basic_client_->begin(); conni !=  basic_client_->end();
+                    ++conni) {
+                current_connections.push_back(conni->second);
+            }
+            std::list<BasicClient::Connection::weak_pointer>::iterator
+                conni = current_connections.begin(),
+                connend = current_connections.end();
 
 	    while (!timer->expired() && conni != connend) {
 
 		// find a Connection that has some outgoing messages
 		while (conni != connend && (
-			    !(conn = conni->second.lock()) || conn->outgoing_queue_empty()
+			    !(conn = conni->lock()) || conn->outgoing_queue_empty()
 			)) {
 		    ++ conni;
 		}
