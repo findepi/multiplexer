@@ -14,7 +14,7 @@ namespace mxcontrol {
 		("rules", po::value(&rules_file_)
 			->default_value("multiplexer.rules"),
 		    "file from which routing rules will be read")
-		("address", po::value(&host_port_)
+		("address,M", po::value(&host_port_)
 			->default_value("0.0.0.0:1980"),
 		    "local address to listen on")
 		("multiplexer-password,p", po::value(&multiplexer_password_),

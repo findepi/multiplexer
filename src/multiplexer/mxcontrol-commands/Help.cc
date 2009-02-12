@@ -10,7 +10,7 @@ namespace mxcontrol {
     int Help::run() {
 	if (subcommand_.empty()) {
 	    // general help
-	    unsigned int longest_name = 0;
+	    size_t longest_name = 0;
 	    BOOST_FOREACH(const TasksHolder::TasksMap::value_type& entry, tasks_holder().tasks()) 
 		longest_name = std::max(entry.first.size(), longest_name);
 

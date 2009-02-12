@@ -20,7 +20,7 @@
 #  *
 #  *	    DEFAULT				no-op
 #  *
-#  *	    FLOW(flow)				as workflow information
+#  *	    FLOW(flow)				add workflow information
 #  *
 #  *	    TEXT(text)				add human readable text information
 #  *
@@ -36,14 +36,18 @@
 #  *
 #  *	Examples (see azlib/util/str.h for information how to shorten lexical_cast):
 #  *
-#  *	    AZOUK_LOG(DEBUG, VERBOSE, "tarantula.multiplexer", DEFAULT);
+#  *	    AZOUK_LOG(DEBUG, VERBOSE, CONTEXT("tarantula.multiplexer"));
 #  *
-#  *	    AZOUK_LOG(DEBUG, VERBOSE, "tarantula.multiplexer", FLOW(mxmsg.workflow())
-#  *		    TEXT("received a message with id " + boost::lexical_cast<std::string>(mxmsg.id))
+#  *	    AZOUK_LOG(DEBUG, VERBOSE, CTX("multiplexer") FLOW(mxmsg.workflow())
+#  *		    TEXT("received a message with id " + 
+#  *                        boost::lexical_cast<std::string>(mxmsg.id))
 #  *		);
 #  *
-#  *	    AZOUK_LOG(DEBUG, VERBOSE, "tarantula.multiplexer", FLOW(mxmsg.workflow())
-#  *		    DATA(MALFORMED_MESSAGE_SO_SHUTDOWN, PeerCharacteristics, (set_peer_id(conn->peer_id())) (set_peer_type(conn->peer_type())))
+#  *	    AZOUK_LOG(DEBUG, VERBOSE, CONTEXT("tarantula.multiplexer")
+#  *                FLOW(mxmsg.workflow())
+#  *		    DATA(MALFORMED_MESSAGE_SO_SHUTDOWN, PeerCharacteristics,
+#  *                    (set_peer_id(conn->peer_id()))
+#  *                        (set_peer_type(conn->peer_type())))
 #  *		);
 #  *
 #  */

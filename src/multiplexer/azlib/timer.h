@@ -4,10 +4,11 @@
 #include <asio/io_service.hpp>
 #include <asio/deadline_timer.hpp>
 #include <asio/placeholders.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/bind.hpp>
 #include <boost/intrusive_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/numeric/conversion/cast.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include "azlib/util/Assert.h"
 #include "azlib/util/str.h"
 #include "azlib/util/IntrusiveValue.h"
@@ -24,7 +25,7 @@ namespace azlib {
 	 * expires immediatelly.
 	 */
 	SimpleTimer(asio::io_service& io_service, float time)
-	    : timer_(io_service, boost::posix_time::microseconds(time * 1000000))
+            : timer_(io_service, boost::posix_time::microseconds(boost::numeric_cast<long>(time * 1e6)))
 	    , expiry_holder_(new IntrusiveValue<bool>(time == 0))
 	{
 	    Assert(time >= 0);

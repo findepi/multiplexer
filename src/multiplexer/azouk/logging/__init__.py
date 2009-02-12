@@ -13,17 +13,20 @@ from azouk._allinone import *
 from type_id_constants import *
 import azouk._allinone as _logging
 
+
 __all__ = [
         'should_log', 'log',
         'log_call', 'log_exception',
         'PickleData',
     ] + list(k for k in dir(_logging) if isinstance(k, str) and k.isupper())
 
+
 @never_throw(default=False)
 def should_log(level, verbosity):
     assert isinstance(level, (int, long))
     assert isinstance(verbosity, (int, long))
     return _logging.should_log(level, verbosity)
+
 
 def log(level, verbosity, *args, **kwarg):
     assert isinstance(level, (int, long))
@@ -33,11 +36,23 @@ def log(level, verbosity, *args, **kwarg):
     return do_log(level, verbosity, *args, **kwarg)
 
 log_defaults = {}
+
+
 @never_throw
 def do_log(level, verbosity, **kwargs):
     if log_defaults:
         kwargs = dict(log_defaults, **kwargs)
     return _do_log(level, verbosity, **kwargs)
+
+
+def _make_string(s):
+    assert isinstance(s, basestring)
+    if isinstance(s, str):
+        return s
+    if isinstance(s, unicode):
+        return s.encode('utf-8', 'replace')
+    raise ValueError
+
 
 def _do_log(level, verbosity, ctx=None, context=None, text=None, data=None,
         data_type=None, flow=None, flags=0):
@@ -45,8 +60,8 @@ def _do_log(level, verbosity, ctx=None, context=None, text=None, data=None,
     assert isinstance(verbosity, (int, long))
     assert ctx is None or context is None
     assert isinstance(ctx, (NoneType, str))
-    assert isinstance(context, (str, NoneType))
-    assert isinstance(text, (NoneType, str)) or callable(text)
+    assert isinstance(context, (NoneType, str))
+    assert isinstance(text, (NoneType, basestring)) or callable(text)
     # data can be anything for now
     assert isinstance(data_type, (NoneType, int, long))
     assert isinstance(flow, (NoneType, str))
@@ -71,12 +86,13 @@ def _do_log(level, verbosity, ctx=None, context=None, text=None, data=None,
     # text
     if callable(text):
         text = text()
-    assert text is None or isinstance(text, str)
+    assert text is None or isinstance(text, basestring)
     if text is not None:
-        log_msg.text = text
+        log_msg.text = _make_string(text)
 
     # data, data_type
-    if callable(data): data = data()
+    if callable(data):
+        data = data()
     if data is not None and data_type is None:
         if isinstance(data, PickleData):
             data_type = PYTHON_PICKLE
@@ -90,8 +106,10 @@ def _do_log(level, verbosity, ctx=None, context=None, text=None, data=None,
             raise ValueError, "data must be string or some known type"
 
     assert data is None or isinstance(data, str)
-    if data is not None: log_msg.data = data
-    if data_type is not None: log_msg.data_type = data_type
+    if data is not None:
+        log_msg.data = data
+    if data_type is not None:
+        log_msg.data_type = data_type
 
     # data_class ?
 
@@ -110,6 +128,7 @@ def _do_log(level, verbosity, ctx=None, context=None, text=None, data=None,
 
     _logging.emit_log(log_msg, flags)
 
+
 @parametrizable_decorator
 def log_call(f, level=DEBUG, verbosity=CHATTERBOX):
     assert isinstance(level, (int, long))
@@ -117,31 +136,42 @@ def log_call(f, level=DEBUG, verbosity=CHATTERBOX):
     assert callable(f)
 
     callidmax = sys.maxint
+
     def wrapper(*args, **kwargs):
         if not should_log(level, verbosity):
             return f(*args, **kwargs)
 
-        logsig = {'fname' : f.__name__, 'callid': random.randint(1, callidmax)}
-        do_log(level, verbosity, text="entering %s(args= %r, kwargs= %r)" % (f.__name__, args, kwargs), data=PickleData(dict(logsig, args=args, kwargs=kwargs)))
+        logsig = {'fname': f.__name__, 'callid': random.randint(1, callidmax)}
+        do_log(level, verbosity, text="entering %s(args= %r, kwargs= %r)" % \
+                    (f.__name__, args, kwargs),
+                data=PickleData(dict(logsig, args=args, kwargs=kwargs)))
         try:
             ret = f(*args, **kwargs)
         except Exception, exc:
-            do_log(level, verbosity, text="leaving %s after exception %r" % (f.__name__, exc), data=PickleData(dict(logsig, exc=exc)))
+            do_log(level, verbosity, text="leaving %s after exception %r" % \
+                        (f.__name__, exc),
+                    data=PickleData(dict(logsig, exc=exc)))
             raise
         else:
-            do_log(level, verbosity, text="leaving %s with %r" % (f.__name__, ret), data=PickleData(dict(logsig, ret=ret)))
+            do_log(level, verbosity, text="leaving %s with %r" % \
+                        (f.__name__, ret),
+                    data=PickleData(dict(logsig, ret=ret)))
             return ret
 
     return wrapper
 
-def log_exception(level=ERROR, verbosity=LOWVERBOSITY, text="Unhandled exception occurred", **kwargs):
+
+def log_exception(level=ERROR, verbosity=LOWVERBOSITY,
+        text="Unhandled exception occurred", **kwargs):
     traceback.print_stack()
     traceback.print_exc()
     kwargs = dict({'data': lambda: PickleData(sys.exc_info()[:2])}, **kwargs)
     log(level, verbosity, text=text, **kwargs)
 
+
 class PickleData(object):
     __slots__ = ('_pkl', '_obj')
+
     def __init__(self, obj):
         self._obj = obj
         self._pkl = None
@@ -158,4 +188,3 @@ class PickleData(object):
 
             self._obj = None
         return self._pkl
-

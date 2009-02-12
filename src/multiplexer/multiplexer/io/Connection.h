@@ -9,8 +9,9 @@
 #include <boost/weak_ptr.hpp>
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
-#include <google/protobuf/message.h>
+#include <boost/numeric/conversion/cast.hpp>
 #include <boost/random/linear_congruential.hpp>
+#include <google/protobuf/message.h>
 #include <asio/ip/tcp.hpp>
 #include <asio/streambuf.hpp>
 #include <asio/read.hpp>
@@ -238,7 +239,8 @@ namespace multiplexer {
 	    template <typename WaitHandler>
 	    void _do_later(asio::deadline_timer& timer, const float seconds, WaitHandler handler) {
 		//timer.cancel();
-		timer.expires_from_now(boost::posix_time::microseconds(seconds * 1000000));
+                timer.expires_from_now(boost::posix_time::microseconds(
+					       boost::numeric_cast<long>(seconds * 1e6)));
 		timer.async_wait(handler);
 	    }
 
