@@ -133,12 +133,12 @@ DEPENDECY_FILES := $(shell for i in $(SOURCE_FILES); do echo $(BUILDDIR)/$$i.dep
 $(BUILDDIR)/%.dep: %
 	@ echo "Creating dependency file for '$<'"
 	$Q mkdir -p `dirname $@`
-	$Q $(CXX) $(CXXFLAGS) -MQ $(basename $@).o -MQ $@ -MM -MG -MP -o $@ $<
+	$Q $(CXX) $(CXXFLAGS) -MQ $(basename $(basename $@)).o -MQ $@ -MM -MG -MP -o $@ $<
 	$Q test -f $@
 
 $(BUILDDIR)/%.dep: $(BUILDDIR)/%
 	@ echo "Creating dependency file for '$<' (generated file)"
-	$Q $(CXX) $(CXXFLAGS) -MQ $(basename $@).o -MQ $@ -MM -MG -MP -o $@ $<
+	$Q $(CXX) $(CXXFLAGS) -MQ $(basename $(basename $@)).o -MQ $@ -MM -MG -MP -o $@ $<
 	$Q test -f $@
 
 $(BUILDDIR)/%.dep:
