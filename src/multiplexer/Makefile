@@ -7,6 +7,10 @@ _ := $(shell test -e build || { mkdir -p ../../build; ln -s ../../build .; })
 MAKEFLAGS	+= -r
 # Delete the default suffixes (Well, -r does this, but maybe not in all makes.)
 .SUFFIXES:
+# Keep everything that is generated.
+.SECONDARY:
+# Remove works-in-progress.
+.DELETE_ON_ERROR:
 
 PROGRAMS	:= server mxcontrol
 LIBRARIES	:= 
