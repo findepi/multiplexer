@@ -1,0 +1,23 @@
+#!/bin/bash -e
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <version-bash-file>" >&2
+    exit 1
+fi
+
+VERSION_BASH_FILE="$1"; shift
+
+git describe --always 2>/dev/null | grep -qE . || exit 1
+version=`git describe --always`
+git update-index -q --refresh
+test -z "$(git diff-index --name-only HEAD --)" || version="$version-dirty"
+version="$(echo "$version" | sed -e 's/-/./g' | sed -e 's/^v//')"
+version_hash="$(echo -n $version | sha1sum - | cut -d' ' -f1)"
+{
+    echo "version=\"$version\""
+    echo "version_hash=\"$version_hash\""
+    echo "version_short_hash=\"${version_hash:0:7}\""
+} > $VERSION_BASH_FILE.tmp
+
+{ test -f $VERSION_BASH_FILE && cmp $VERSION_BASH_FILE $VERSION_BASH_FILE.tmp >/dev/null; } || \
+    mv $VERSION_BASH_FILE.tmp $VERSION_BASH_FILE
