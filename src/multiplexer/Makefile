@@ -37,8 +37,8 @@ CXXFLAGS	+= $(GENERALFLAGS) \
 			-I $(BUILDDIR) \
 			-I /usr/include/python$(PYTHON_VERSION) \
 			-I $(BUILDDIR)/azlib \
+			-fPIC \
 			#
-CXXFLAGS += -fPIC
 
 LDFLAGS		+= $(GENERALFLAGS) \
     			-lprotobuf \
