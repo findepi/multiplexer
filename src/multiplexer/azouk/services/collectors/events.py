@@ -7,7 +7,7 @@ from azouk.logging import *
 from multiplexer import mxclient
 from multiplexer.Multiplexer_pb2 import ReplayCollectedEvents
 from multiplexer.multiplexer_constants import peers, types
-from website.data.multiplexer_helpers import BaseMultiplexerServer
+from multiplexer.clients import BaseMultiplexerServer
 
 class EventsCollectorServer(BaseMultiplexerServer):
 

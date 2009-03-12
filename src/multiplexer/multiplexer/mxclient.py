@@ -15,17 +15,35 @@ def set_if_missing(d, k, v):
     if k not in d:
         d[k] = v
 
-def make_message(*args, **kwargs):
+def initialize_message(_message, **kwargs):
+    message = _message
+    for key, value in kwargs.items():
+        if isinstance(value, (list, tuple)):
+            for element in value:
+                if isinstance(element, google.protobuf.message.Message):
+                    getattr(message, key).add().CopyFrom(element)
+
+                elif isinstance(element, dict):
+                    initialize_message(getattr(message, key).add(),
+                            **element)
+
+        elif isinstance(value, dict):
+            initialize_message(getattr(message, key), **value)
+
+        else:
+            setattr(message, key, value)
+
+    return message
+
+def make_message(_type, **kwargs):
     """
         make_message(MessageType, **kwargs) -> instance of MessageType with attributes set
         Create a message using factory function type and
         assign its attributes according do kwargs (attribute, value).
     """
-    if len(args) != 1: raise ValueError
-    m = args[0]()
-    for (k, v) in kwargs.items():
-        setattr(m, k, v)
-    return m
+    message = _type()
+    initialize_message(message, **kwargs)
+    return message
 
 def dict_message(m, all_fields = False, recursive = False):
     """

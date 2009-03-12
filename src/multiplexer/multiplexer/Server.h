@@ -28,7 +28,7 @@ namespace multiplexer {
     //class MultiplexerMessage;
     //class MultiplexerMessageDescription;
     //class MultiplexerMessageDescription_RoutingRule;
-    
+
     class Server; // forward
 
     template <>
@@ -42,10 +42,10 @@ namespace multiplexer {
 	    typedef azlib::ConstructingFunctor<bool, value_type> SchedulingResultFunctor;
 	};
 
-	typedef Connection<Server> Connection;
+	typedef multiplexer::Connection<Server> Connection;
     };
 
-    
+
     /**
      * @class Server
      *  manages the Multiplexer server
@@ -170,6 +170,8 @@ namespace multiplexer {
 		//return;
 	    //}
 
+            AZOUK_ENTER(VERBOSITY(HIGHVERBOSITY) DEFAULT);
+
 	    AZOUK_LOG(DEBUG, HIGHVERBOSITY, CTX("multiplexer.server") FLOW(msg.workflow())
 		    TEXT("handle_message(id=" + str(msg.id()) + ", type=" + str(msg.type()) + ")")
 		    DATA(type_id_constants::MXSERVER_INCOMING_MULTIPLEXER_MESSAGE, MultiplexerMessage,
@@ -208,6 +210,8 @@ namespace multiplexer {
 	    } while (0);
 
 	    _handle_delivery_errors(meta_handler);
+
+            AZOUK_LEAVE();
 
 	}
 
@@ -366,7 +370,7 @@ namespace multiplexer {
 	    }
 	    return schedules_counter;
 	}
-	
+
 	inline unsigned int _schedule(MessageMetaHandler& meta_handler, ConnectionsList& connections, const MultiplexerMessageDescription::RoutingRule& rule) {
 	    return _schedule(meta_handler, connections, rule, rule.peer_type());
 	}
@@ -386,7 +390,7 @@ namespace multiplexer {
 		    break;
 	    }
 	    AssertMsg(schedules_counter != (unsigned int)-1, "unhandled Whom type " + boost::lexical_cast<std::string>(rule.whom())); // never reached
-	    
+
 	    if (!schedules_counter && rule.report_delivery_error())
 		meta_handler.failed(rule, peer_type);
 	    return schedules_counter;

@@ -13,8 +13,8 @@
 
 # /*
 #  * AZOUK_LOG(level, verbosity, tokens)
-#  *	Emit log message with proper parameters runnin as little code as possible it the message
-#  *	finally wounldn't be emitted.
+#  *	Emit log message with proper parameters runnin as little code as
+#  *    possible it the message finally wounldn't be emitted.
 #  *
 #  *	`tokens' is a non empty list of:
 #  *
@@ -22,7 +22,8 @@
 #  *
 #  *	    FLOW(flow)				add workflow information
 #  *
-#  *	    TEXT(text)				add human readable text information
+#  *	    TEXT(text)				add human readable textual
+#  *                                            information
 #  *
 #  *	    DATA(type_id, type, setters)	add data_type(type_id) information and generate inner data msg using setters
 #  *						AZOUK_CREATE_MESSAGE(type, x, setters) must be valid
@@ -39,7 +40,7 @@
 #  *	    AZOUK_LOG(DEBUG, VERBOSE, CONTEXT("tarantula.multiplexer"));
 #  *
 #  *	    AZOUK_LOG(DEBUG, VERBOSE, CTX("multiplexer") FLOW(mxmsg.workflow())
-#  *		    TEXT("received a message with id " + 
+#  *		    TEXT("received a message with id " +
 #  *                        boost::lexical_cast<std::string>(mxmsg.id))
 #  *		);
 #  *
@@ -51,27 +52,58 @@
 #  *		);
 #  *
 #  */
-#define AZOUK_LOG(args...) __AZOUK_LOG(AZOUK_UNIQUE_NAME(_log_msg_), AZOUK_UNIQUE_NAME(_data_msg_), AZOUK_UNIQUE_NAME(_context_), args)
+#define AZOUK_LOG(tokens...) __AZOUK_LOG(AZOUK_UNIQUE_NAME(_log_msg_), \
+        AZOUK_UNIQUE_NAME(_data_msg_), AZOUK_UNIQUE_NAME(_context_), tokens)
 
 # /*
 #  * helper for extracting maximal LEVEL or VERBOSITY
 #  */
-#define __AZOUK_LOGGING_MAX_OF_2ND_OR_PAIR_OP(s, state, t) BOOST_PP_MAX(state, BOOST_PP_TUPLE_ELEM(2, 1, t))
-#define __AZOUK_LOGGING_MAX_LEVEL() BOOST_PP_SEQ_FOLD_LEFT(__AZOUK_LOGGING_MAX_OF_2ND_OR_PAIR_OP, 0, AZOUK_LOGGING_LEVELS_SEQ) 
-#define __AZOUK_LOGGING_MAX_VERBOSITY() BOOST_PP_SEQ_FOLD_LEFT(__AZOUK_LOGGING_MAX_OF_2ND_OR_PAIR_OP, 0, AZOUK_LOGGING_VERBOSITIES_SEQ) 
+#define __AZOUK_LOGGING_MAX_OF_2ND_OR_PAIR_OP(s, state, t) BOOST_PP_MAX(state, \
+        BOOST_PP_TUPLE_ELEM(2, 1, t))
+#define __AZOUK_LOGGING_MAX_LEVEL() BOOST_PP_SEQ_FOLD_LEFT( \
+        __AZOUK_LOGGING_MAX_OF_2ND_OR_PAIR_OP, 0, AZOUK_LOGGING_LEVELS_SEQ)
+#define __AZOUK_LOGGING_MAX_VERBOSITY() BOOST_PP_SEQ_FOLD_LEFT( \
+        __AZOUK_LOGGING_MAX_OF_2ND_OR_PAIR_OP, 0, AZOUK_LOGGING_VERBOSITIES_SEQ)
 
+
+# /*
+#  * AZOUK_ENTER(tokens...)
+#  *    Logging macro used when entering a function.
+#  *
+#  *	`tokens' is a non empty list of:
+#  *
+#  *	    DEFAULT				no-op
+#  *
+#  *        LEVEL(level)                        set logging level of the
+#  *                                            underlying AZOUK_LOG call
+#  *
+#  *        VERBOSITY(verbosity)                set logging verbosity of the
+#  *                                            underlying AZOUK_LOG call
+#  *
+#  *	    CTX(context)			add context to process_context
+#  *
+#  *	    CONTEXT(context)			override process_context with
+#  *                                            `context`
+#  *
+#  *	    FLOW(flow)				add workflow information
+#  *
+#  */
+#define AZOUK_ENTER(tokens...)  __AZOUK_ENTER(tokens)
+
+#define AZOUK_RETURN(value)     __AZOUK_RETURN(return, value)
+#define AZOUK_LEAVE()           __AZOUK_RETURN(__AZOUK_LOG_CALL_return_void, \
+                                    '<void>')
+
+#define __AZOUK_LOG_CALL_return_void(void)  return;
 
 namespace azlib {
     namespace logging {
-	
+
 	extern bool module_is_initialized;
 
 	namespace consts {
-	    /* 
+	    /*
 	     * logging levels
-	     *
-	     * TODO(kk) why this levels should be 2^x? The filters can compute 2^x by themselves and we can save on packet size.
-	     *		The same applies to verbosities.
 	     */
 #define AZOUK_LOGGING_LEVELS_SEQ \
 	    ((DEBUG, 1)) \
@@ -104,9 +136,11 @@ namespace azlib {
 	    /* messages that can flood you */ \
 	    ((CHATTERBOX, 4)) \
 	    /**/
-#define AZOUK_LOGGING_DEFAULT_VERBOSITY() (::azlib::logging::consts::HIGHVERBOSITY)
+#define AZOUK_LOGGING_DEFAULT_VERBOSITY() \
+            (::azlib::logging::consts::HIGHVERBOSITY)
 
-	    const static unsigned int MAX_VERBOSITY = __AZOUK_LOGGING_MAX_VERBOSITY();
+	    const static unsigned int MAX_VERBOSITY =
+                __AZOUK_LOGGING_MAX_VERBOSITY();
 
 	    /*
 	     * logging_level_name<L>::name()
@@ -119,7 +153,8 @@ namespace azlib {
 	     * logging_get_level_name(level)
 	     *	    Returns the level name not known at compile time.
 	     */
-	    static inline const char* logging_get_level_name(const unsigned int level) AZOUK_ATTRIBUTE_ALWAYS_INLINE;
+	    static inline const char* logging_get_level_name(
+                    const unsigned int level) AZOUK_ATTRIBUTE_ALWAYS_INLINE;
 
 	    /*
 	     * logging_verbosity_name<L>::name()
@@ -132,28 +167,33 @@ namespace azlib {
 	     * logging_get_verbosity_name(verbosity)
 	     *	    Returns the verbosity name not known at compile time.
 	     */
-	    static inline const char* logging_get_verbosity_name(const unsigned int verbosity) AZOUK_ATTRIBUTE_ALWAYS_INLINE;
+	    static inline const char* logging_get_verbosity_name(
+                    const unsigned int verbosity) AZOUK_ATTRIBUTE_ALWAYS_INLINE;
 
 	}; // namespace consts
 
 	/*
 	 * process_context()
-	 *	    Get context of the whole process as required for AZOUK_LOG(., ., context).
+	 *	    Get context of the whole process as required for
+         *	    AZOUK_LOG(., ., context).
 	 */
-	static inline const std::string& process_context() AZOUK_ATTRIBUTE_ALWAYS_INLINE;
+	static inline const std::string& process_context()
+            AZOUK_ATTRIBUTE_ALWAYS_INLINE;
 
 	/*
 	 * set_maximal_logging_verbosity(for_level, minimal_verbosity)
-	 *	Define what is the minimal verbosity of LogEntries with level for_level, which
-	 *	are emitted.
+         *	Define what is the minimal verbosity of LogEntries with level
+         *	for_level, which are emitted.
 	 */
-	void set_maximal_logging_verbosity(const unsigned int for_level, const unsigned int minimal_verbosity);
+	void set_maximal_logging_verbosity(const unsigned int for_level,
+                const unsigned int minimal_verbosity);
 
 	/*
 	 * set_logging_fd
 	 *	Set to which FD logging stream is sent.
 	 */
-	void set_logging_fd(unsigned int logging_fd, bool close_on_delete = false, bool log_the_fact = true);
+	void set_logging_fd(unsigned int logging_fd,
+                bool close_on_delete = false, bool log_the_fact = true);
 
 	void set_logging_file(const std::string& file);
 

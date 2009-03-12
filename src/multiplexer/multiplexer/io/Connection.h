@@ -39,7 +39,7 @@ namespace multiplexer {
     class Connection : public boost::enable_shared_from_this<Connection<ConnectionsManagerImplementation> > {
 
 	public:
-	    typedef ConnectionsManagerTraits<ConnectionsManagerImplementation> ConnectionsManagerTraits;
+	    typedef multiplexer::ConnectionsManagerTraits<ConnectionsManagerImplementation> ConnectionsManagerTraits;
 	    typedef typename ConnectionsManagerTraits::MessagesBufferTraits MessagesBufferTraits;
 	    typedef std::deque<typename MessagesBufferTraits::value_type> MessagesBuffer;
 

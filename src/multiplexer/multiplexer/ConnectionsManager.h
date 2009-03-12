@@ -57,7 +57,7 @@ namespace multiplexer {
     public:
 	const static unsigned int DEFAULT_OUT_QUEUE_SIZE = 1024;
 
-	typedef ConnectionsManagerTraits<ConnectionsManagerImplementation> ConnectionsManagerTraits;
+	typedef multiplexer::ConnectionsManagerTraits<ConnectionsManagerImplementation> ConnectionsManagerTraits;
 	typedef typename ConnectionsManagerTraits::MessagesBufferTraits MessagesBufferTraits;
 	typedef typename ConnectionsManagerTraits::Connection Connection;
 

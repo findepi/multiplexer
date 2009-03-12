@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <ext/hash_set>
+#include <azlib/hash_set.h>
 #include <set>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -45,7 +45,7 @@ template <typename SetType, typename ValueType> void __set_checked_add(SetType& 
 
 template <typename Map>
 void check_map_values_name_type_uniqueness(const Map& m) {
-    using __gnu_cxx::hash_set;
+    using azlib::hash_set;
     std::set<std::string> names;
     hash_set<boost::uint32_t> ids;
 

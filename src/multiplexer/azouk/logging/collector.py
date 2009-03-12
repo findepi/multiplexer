@@ -5,14 +5,17 @@ import collections
 import time
 from functools import partial
 
-from django.utils.functional import memoize
-from django.core.management.color import color_style
+try:
+    from django.utils import termcolors
+except ImportError:
+    import django_termcolors as termcolors
 
 from azouk.logging import *
 from azlib.logging.Logging_pb2 import LogEntry
 from multiplexer.Multiplexer_pb2 import LogEntriesMessage, SearchCollectedLogs
 from multiplexer.multiplexer_constants import peers, types
-from website.data.multiplexer_helpers import BaseMultiplexerServer
+from multiplexer.clients import BaseMultiplexerServer, \
+        get_connection
 from multiplexer.mxclient import make_message, parse_message, OperationFailed
 
 class MemoryLogCollector(BaseMultiplexerServer):
@@ -122,22 +125,27 @@ class Console(object):
 
     def Style():
         """constructs a helper object with coloring methods"""
-        if not os.isatty(1):
-            from django.core.management.color import no_style
-            return no_style()
+        class Style(object):
+            def __getattr__(self, attr):
+                # By default every coloring method returns its argument
+                # unmodified.
+                return lambda x: x
+            pass
 
-        from django.utils import termcolors
-        class Style(object): pass
         style = Style()
-        color_names = ('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')
-        for col in color_names:
-            setattr(style, col, termcolors.make_style(fg=col))
-            setattr(style, "bold_" + col, termcolors.make_style(fg=col, opts=('bold',)))
+
+        if os.isatty(1):
+            color_names = ('black', 'red', 'green', 'yellow', 'blue',
+                    'magenta', 'cyan', 'white')
+            for col in color_names:
+                setattr(style, col, termcolors.make_style(fg=col))
+                setattr(style, "bold_" + col,
+                        termcolors.make_style(fg=col, opts=('bold',)))
+
         return style
     Style = Style()
 
     def __init__(self):
-        from website.data.multiplexer_client import get_connection
         self.__connection = get_connection()
         self.style = Console.Style
 

@@ -11,6 +11,14 @@
 #define __AZOUK_PP_KWARGS_TOKEN_DEFAULT					__AZOUK_PP_KWARGS_TOKEN_DEFAULT_I (
 #define __AZOUK_PP_KWARGS_TOKEN_DEFAULT_I(tokens, namespace, data)	__AZOUK_PP_KWARGS_TOKEN_ ## tokens , namespace, data)
 
+# // LEVEL(level)
+#define __AZOUK_PP_KWARGS_TOKEN_LEVEL(level)				__AZOUK_PP_KWARGS_TOKEN_LEVEL_I ( level ,
+#define __AZOUK_PP_KWARGS_TOKEN_LEVEL_I(level, tokens, namespace, data)	namespace ## LEVEL(level, data) \
+									__AZOUK_PP_KWARGS_TOKEN_ ## tokens, namespace, data)
+# // VERBOSITY(verbosity)
+#define __AZOUK_PP_KWARGS_TOKEN_VERBOSITY(verbosity)				__AZOUK_PP_KWARGS_TOKEN_VERBOSITY_I ( verbosity ,
+#define __AZOUK_PP_KWARGS_TOKEN_VERBOSITY_I(verbosity, tokens, namespace, data)	namespace ## VERBOSITY(verbosity, data) \
+									__AZOUK_PP_KWARGS_TOKEN_ ## tokens, namespace, data)
 # // FLOW(flow)
 #define __AZOUK_PP_KWARGS_TOKEN_FLOW(flow)				__AZOUK_PP_KWARGS_TOKEN_FLOW_I ( flow ,
 #define __AZOUK_PP_KWARGS_TOKEN_FLOW_I(flow, tokens, namespace, data)	namespace ## FLOW(flow, data) \

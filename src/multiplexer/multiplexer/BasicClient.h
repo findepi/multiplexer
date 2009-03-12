@@ -69,7 +69,7 @@ namespace multiplexer {
 	    friend class BasicClient;
 	};
 
-	typedef Connection<BasicClient> Connection;
+	typedef multiplexer::Connection<BasicClient> Connection;
     };
 
     class ConnectionWrapper {

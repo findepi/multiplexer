@@ -98,7 +98,7 @@ message MultiplexerMessage {
     optional bytes message = 5;
     optional Compression.Values compression = 24 [default = NO_COMPRESSION];
 
-    // when the packet was send
+    // when the packet was sent
     optional uint32 timestamp = 6;
 
     // packet ID to which we reply

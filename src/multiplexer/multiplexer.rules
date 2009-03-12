@@ -26,6 +26,13 @@ peer {
 # peers 100-105 reserved
 
 peer {
+    type: 102
+    name: "WEBSITE"
+    is_passive: true
+    comment: "example peer type showing how to describe a peer which doesn't run MX library main loop for the most of the time"
+}
+
+peer {
     type: 106
     name: "PYTHON_TEST_SERVER"
 }
