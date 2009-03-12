@@ -2,6 +2,8 @@
 all::
 
 MAKEFLAGS	+= -r
+# Delete the default suffixes (Well, -r does this, but maybe not in all makes.)
+.SUFFIXES:
 
 PROGRAMS	:= server mxcontrol
 LIBRARIES	:= 
@@ -60,8 +62,8 @@ LIBRARIES			:= $(addprefix $(BUILDDIR)/,$(LIBRARIES))
 PROTOBUFS_COMPILATIONS_CC	:= $(addprefix $(BUILDDIR)/,$(PROTOBUFS_COMPILATIONS_CC))
 PROTOBUFS_COMPILATIONS_PY	:= $(addprefix $(BUILDDIR)/,$(PROTOBUFS_COMPILATIONS_PY))
 PROTOBUFS_COMPILATIONS_H	:= $(addprefix $(BUILDDIR)/,$(PROTOBUFS_COMPILATIONS_H))
-LINKLIBRARIES 			:= $(shell for i in $(LIBRARIES); do echo $$i; done | grep -vE 'module.o$$')
-PYTHON_COMPILED_MODULES		:= $(shell for i in $(LIBRARIES); do echo $$i; done | grep -E 'module.o$$' | sed -e 's@module\.o$$@.so@')
+LINKLIBRARIES 			:= $(filter-out %module.o, $(LIBRARIES))
+PYTHON_COMPILED_MODULES		:= $(patsubst %module.o, %.so, $(filter %module.o, $(LIBRARIES)))
 TARGETS += $(PYTHON_COMPILED_MODULES) $(PROGRAMS)
 
 $(VERSION_BASH_FILE):
@@ -80,7 +82,7 @@ $(PROTOBUFS_COMPILATIONS_CC) : $(BUILDDIR)/%.pb.cc : %.proto
 	$Q rm -f $@
 	$Q $(PROTOC) $(PROTOCFLAGS) -I . --cpp_out $(BUILDDIR) $<
 	$Q test -f $@
-	$Q chmod -x $@ $(shell echo `dirname $@`/`basename $@ .cc`.h)
+	$Q chmod -x $@ $(patsubst %.cc, %.h, $@)
 # alias-like rule
 $(PROTOBUFS_COMPILATIONS_H) : %.pb.h : %.pb.cc
 
@@ -103,14 +105,12 @@ DEPENDECY_FILES := $(shell for i in $(SOURCE_FILES); do echo $(BUILDDIR)/$$i.dep
 $(BUILDDIR)/%.dep: %
 	@ echo "Creating dependency file for '$<'"
 	$Q mkdir -p `dirname $@`
-	$Q OBJECTFILE="$$(dirname $@)/$$(basename $@ .dep | sed -e 's@\.[a-z]\+$$@.o@')"; \
-		$(CXX) $(CXXFLAGS) -MQ $$OBJECTFILE -MQ $@ -MM -MG -MP -o $@ $<
+	$Q $(CXX) $(CXXFLAGS) -MQ $(basename $@).o -MQ $@ -MM -MG -MP -o $@ $<
 	$Q test -f $@
 
 $(BUILDDIR)/%.dep: $(BUILDDIR)/%
 	@ echo "Creating dependency file for '$<' (generated file)"
-	$Q OBJECTFILE="$$(dirname $@)/$$(basename $@ .dep | sed -e 's@\.[a-z]\+$$@.o@')"; \
-		$(CXX) $(CXXFLAGS) -MQ $$OBJECTFILE -MQ $@ -MM -MG -MP -o $@ $<
+	$Q $(CXX) $(CXXFLAGS) -MQ $(basename $@).o -MQ $@ -MM -MG -MP -o $@ $<
 	$Q test -f $@
 
 $(BUILDDIR)/%.dep:
