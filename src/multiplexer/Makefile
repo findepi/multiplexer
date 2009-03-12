@@ -128,7 +128,7 @@ $(BUILDDIR)/%.dep:
 ifneq "$(MAKECMDGOALS)" "clean"
 ifneq "$(MAKECMDGOALS)" "sourcechanged"
 -include $(DEPENDECY_FILES)
-_ := $(shell echo "Updating version file '$(VERSION_BASH_FILE)'" >&2 ; ./update-version-bash-file "$(VERSION_BASH_FILE)" >&2 )
+_ := $(shell echo "Updating version file '$(VERSION_BASH_FILE)'" >&2 ; bash ./update-version-bash-file "$(VERSION_BASH_FILE)" >&2 )
 endif
 endif
 
