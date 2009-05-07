@@ -19,5 +19,5 @@
 #
 
 all clean::
-	make -C azouk $@
+	+$(MAKE) -C azouk $@
 .PHONY: all clean
