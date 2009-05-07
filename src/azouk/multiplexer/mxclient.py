@@ -32,11 +32,6 @@ from multiplexer.protocolbuffers import *
 from multiplexer.multiplexer_constants import peers, types
 from azouk.logging import log, WARNING, HIGHVERBOSITY
 
-def set_if_missing(d, k, v):
-    """assign key `k' in the dictionary `d' if it's not assigned"""
-    if k not in d:
-        d[k] = v
-
 def initialize_message(_message, **kwargs):
     message = _message
     for key, value in kwargs.items():
@@ -390,8 +385,8 @@ class Client(_mxclient.Client):
             kwargs = dict(self.message_defaults, **kwargs)
 
         # defaults
-        set_if_missing(kwargs, 'id', self.random())
-        set_if_missing(kwargs, 'from', self.instance_id)
+        kwargs.setdefault('id', self.random())
+        kwargs.setdefault('from', self.instance_id)
 
         # special handling of some values
         if 'message' in kwargs and not isinstance(kwargs['message'], str):

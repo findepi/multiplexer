@@ -38,6 +38,7 @@
 #include "azlib/preproc/common.h"
 #include "azlib/logging/log_tokens.h"
 #include "build/azlib/logging/Logging.pb.h" /* generated */
+#include "azouk/xrelease.h"
 #include "azlib/util/Assert.h"
 
 # /*
@@ -114,6 +115,7 @@
             (set_level(level)) (set_verbosity(verbosity)) \
             (set_context(contexttmp)) \
             (set_timestamp(::azlib::logging::impl::current_timestamp())) \
+            (set_version(::azouk::release::version)) \
             (set_source_file(AZOUK_LOGGING_CURRENT__FILE__())) \
             (set_source_line(__LINE__)) \
             (set_compilation_datetime(__DATE__ " " __TIME__)) \

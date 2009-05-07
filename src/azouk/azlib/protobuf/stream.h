@@ -30,7 +30,7 @@
 #include <google/protobuf/wire_format_inl.h>
 #include <boost/noncopyable.hpp>
 #include "azlib/util/fd.h"
-#include "azlib/util/str.h"
+#include "azlib/repr.h"
 #include "azlib/logging.h"
 
 namespace azlib {
@@ -66,9 +66,9 @@ namespace azlib {
                                 google::protobuf::internal::WireFormat
                                 ::WIRETYPE_LENGTH_DELIMITED)) {
 			AZOUK_LOG(WARNING, MEDIUMVERBOSITY,
-                                TEXT("unexpected tag " + str(tag) +
+                                TEXT("unexpected tag " + repr(tag) +
                                     "; expecting " +
-				    str(GOOGLE_PROTOBUF_WIRE_FORMAT_MAKE_TAG(1,
+				    repr(GOOGLE_PROTOBUF_WIRE_FORMAT_MAKE_TAG(1,
                                         google::protobuf::internal::WireFormat
                                             ::WIRETYPE_LENGTH_DELIMITED))));
 			return false;

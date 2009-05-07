@@ -42,7 +42,7 @@
 
 #include "azlib/util/type_functors.h"
 #include "azlib/util/functors.h"
-#include "azlib/util/str.h"
+#include "azlib/repr.h"
 #include "azlib/logging.h"
 #include "multiplexer/multiplexer.constants.h" /* generated */
 #include "multiplexer/io/RawMessage.h"
@@ -87,8 +87,6 @@ namespace multiplexer {
 		//, send_heartbit_timer_(io_service, boost::posix_time::microseconds(HEARTBIT_INTERVAL * 1000000))
 		//, require_hearbit_timer_(io_service, boost::posix_time::microseconds(NO_HEARTBIT_SO_DROP_INTERVAL * 1000000))
 	    {
-		AZDEBUG_MSG("Connection() called...");
-
 		// create heartbit message
 		MultiplexerMessage mxmsg;
 		mxmsg.set_id(0);
@@ -109,13 +107,14 @@ namespace multiplexer {
 	     */
 	    static pointer Create(asio::io_service& io_service, boost::shared_ptr<ConnectionsManagerImplementation> manager) {
 		pointer p(new Connection(io_service, manager));
-		AZDEBUG_MSG("created new connection " << (void*) p.get());
+                AZOUK_LOG(DEBUG, HIGHVERBOSITY, TEXT("created new Connection " +
+                            repr((void*)p.get())));
 		return p;
 	    }
 	    
 	    ~Connection() {
-		AZDEBUG_MSG("destroying Connection " << this);
-		//AZDEBUG_MSG("~Connection() called...");
+                AZOUK_LOG(DEBUG, HIGHVERBOSITY, TEXT("destroying Connection " +
+                            repr((void*)this)));
 		if (!shuts_down_)
 		    shutdown();
 	    }
@@ -131,7 +130,8 @@ namespace multiplexer {
 	    }
 
 	    void start_only_read() {
-		AZDEBUG_MSG("starting Connection " << this);
+                AZOUK_LOG(DEBUG, HIGHVERBOSITY, TEXT("starting Connection " +
+                            repr((void*)this)));
 		Assert(!is_living_);
 		Assert(!shuts_down_);
 		is_living_ = true;
@@ -158,9 +158,12 @@ namespace multiplexer {
 
 	    // stops the processing ASAP
 	    void shutdown() {
-		AZDEBUG_MSG("shutdown called....");
+                AZOUK_LOG(DEBUG, HIGHVERBOSITY, TEXT("shutdown called on " +
+                            repr((void*)this)));
 		if (shuts_down_) {
-		    AZDEBUG_MSG("don't call shutdown twice, I begg....");
+                    AZOUK_LOG(ERROR, HIGHVERBOSITY,
+                            TEXT("shutdown called twice on " + repr((void*)this))
+                        );
 		    return;
 		}
 
@@ -195,9 +198,7 @@ namespace multiplexer {
 	    typename MessagesBufferTraits::SchedulingResultFunctor::result_type schedule(
 		    boost::shared_ptr<const RawMessage> msg, bool force = false, bool asap = false) {
 
-		using azlib::str;
-
-		AZDEBUG_MSG("schedule(" << msg.get() << ", " << force << ", " << asap << ")");
+		using azlib::repr;
 
 		if (!is_living_)
 		    scheduling_result_type_default_functor_(); // drop
@@ -206,7 +207,8 @@ namespace multiplexer {
 		Assert(!shuts_down_);
 
 		if (!force && outgoing_queue_full()) {
-		    AZDEBUG_MSG("dropping message, whooops");
+                    AZOUK_LOG(WARNING, HIGHVERBOSITY,
+                            TEXT("outgoing queue full, dropping message"));
 		    return scheduling_result_type_default_functor_(); // drop
 		}
 
@@ -231,8 +233,8 @@ namespace multiplexer {
 
 		_process_send_queue();
 		AssertMsg(outgoing_queue_.empty() == (outgoing_channel_state_ == ChannelState::FREE),
-			str(outgoing_queue_.empty()) + " == (" + str(outgoing_channel_state_)
-			+ " == " + str(ChannelState::FREE) + ") failed");
+			repr(outgoing_queue_.empty()) + " == (" + repr(outgoing_channel_state_)
+			+ " == " + repr(ChannelState::FREE) + ") failed");
 		return scheduling_result_type_functor_(value);
 	    }
 
@@ -312,7 +314,6 @@ namespace multiplexer {
 
 	    // receiving
 	    void _start_read() {
-		AZDEBUG_MSG("_start_read(" << this << ")");
 		if (incoming_channel_state_ == ChannelState::BROKEN)
 		    return;
 
@@ -325,18 +326,22 @@ namespace multiplexer {
 			);
 	    }
 	    void _handle_read_header(const asio::error_code& error, size_t bytes_transferred) {
-		AZDEBUG_MSG("_handle_read_header(" << this << ", " << error << ", " << bytes_transferred << ")");
 		if (incoming_channel_state_ == ChannelState::BROKEN)
 		    return;
 
 		if (bytes_transferred == 0) {
-		    AZDEBUG_MSG("peer shut down its end \"gracefully\"");
+                    AZOUK_LOG(DEBUG, HIGHVERBOSITY,
+                            TEXT("peer shut its end down \"gracefully\""));
 		    incoming_channel_state_ = ChannelState::BROKEN; // this shouldn't be needed
 		    shutdown();
 		    return;
 		}
 		if (error) {
-		    AZDEBUG_MSG("_handle_read_header(" << error << ", " << bytes_transferred << ")");
+                    AZOUK_LOG(ERROR, HIGHVERBOSITY,
+                            TEXT("read header error on " + repr((void*)this)
+                                + "error=" + repr(error)
+                                + "bytes_transferred=" + repr(bytes_transferred)
+                        ));
 		    shutdown();
 		    return;
 		}
@@ -352,13 +357,17 @@ namespace multiplexer {
 			);
 	    }
 	    void _handle_read_body(const asio::error_code& error, size_t bytes_transferred) {
-		AZDEBUG_MSG("_handle_read_body(" << this << ", " << error << ", " << bytes_transferred << ")");
 		if (incoming_channel_state_ == ChannelState::BROKEN)
 		    return;
 
 		if (error || bytes_transferred != incoming_message_->get_body_length()) {
-		    AZDEBUG_MSG("_handle_read_header(" << error << ", " << bytes_transferred << "): "
-			<< "expected trasnferred: " << incoming_message_->get_body_length());
+                    AZOUK_LOG(ERROR, HIGHVERBOSITY,
+                            TEXT("read body error on " + repr((void*)this)
+                                + "error=" + repr(error)
+                                + "bytes_transferred=" + repr(bytes_transferred)
+                                + "expected_transferred=" +
+                                    repr(incoming_message_->get_body_length())
+                        ));
 		    shutdown();
 		    return;
 		}
@@ -368,7 +377,8 @@ namespace multiplexer {
 		incoming_channel_state_ = ChannelState::FREE;
 
 		if (!incoming_message_->verify()) {
-		    AZDEBUG_MSG("ERROR: recv [" << incoming_message_->get_message() << "] verification failed!");
+                    AZOUK_LOG(ERROR, HIGHVERBOSITY,
+                            TEXT("incomming message verification failed"));
 		    shutdown();
 
 		} else {
@@ -379,20 +389,24 @@ namespace multiplexer {
 	    }
 
 	    void _receive_message() {
-		AZDEBUG_MSG("receiving message (" << incoming_message_->get_message().size() << " bytes)");
 		boost::shared_ptr<const RawMessage> message = incoming_message_;
 		incoming_message_.reset(new RawMessage());
 		
 		ManagerPointer manager = manager_.lock();
 		if (!manager) {
-		    // TODO logger.info << "Manager is gone; shutting down";
+                    AZOUK_LOG(DEBUG, HIGHVERBOSITY,
+                            TEXT("manager is gone for " + repr((void*)this)));
 		    shutdown();
 		    return;
 		}
 
 		boost::shared_ptr<MultiplexerMessage> mxmsg(new MultiplexerMessage());
 		if (!mxmsg->ParseFromString(message->get_message())) {
-		    // TODO logger.error << "received invalid MultiplexerMessage (id is maybe " << mxmsg->id() << "); shutting down";
+                    AZOUK_LOG(DEBUG, HIGHVERBOSITY,
+                            TEXT("received invalid message on " +
+                                repr((void*)this) + "(maybe id=" +
+                                repr(mxmsg->id()) + ")")
+                        );
 		    shutdown();
 		    return;
 		}
@@ -458,7 +472,6 @@ namespace multiplexer {
 
 		    // start writing
 		    outgoing_channel_state_ = ChannelState::BUSY;
-		    AZDEBUG_MSG("async_write with buffers " << raw->get_message_buffer().size() << "");
 		    Assert(raw->get_message_buffer().size());
 		    asio::async_write(socket_, raw->get_message_buffer(),
 			    boost::bind(&Connection::_handle_write,
@@ -468,12 +481,22 @@ namespace multiplexer {
 		}
 	    }
 	    void _handle_write(const asio::error_code& error, size_t bytes_transferred) {
-		AZDEBUG_MSG("_handle_write(" << this << ", " << error << ", " << bytes_transferred << ")");
+                if (error) {
+                    AZOUK_LOG(DEBUG, HIGHVERBOSITY,
+                            TEXT("write error on " + repr((void*)this)
+                                + " error=" + repr(error)
+                                + " bytes_transferred=" +
+                                repr(bytes_transferred)
+                        ));
+                }
+
 		if (outgoing_channel_state_ == ChannelState::BROKEN)
 		    return;
 		if (bytes_transferred == 0) {
 		    // is it exceptional?
-		    AZDEBUG_MSG("i have managed to write nothing. Shutting down...");
+                    AZOUK_LOG(DEBUG, HIGHVERBOSITY,
+                            TEXT("i have managed to write nothing. Shut down")
+                        );
 		    shutdown();
 		    return;
 		}
@@ -507,7 +530,11 @@ namespace multiplexer {
 			return;
 		}
 		// we haven't managed to transfer messages ownership to the manager for eventual resending
-		AZDEBUG_MSG("Connection::shutdown(): dropping about " << outgoing_queue_.size() << " outgoing messages.");
+                AZOUK_LOG(WARNING, HIGHVERBOSITY,
+                        TEXT("Connection shutdown on " + repr((void*)this)
+                            + ", dropping about " + repr(outgoing_queue_.size())
+                            + " outgoing messages"
+                    ));
 		BOOST_FOREACH (typename MessagesBuffer::value_type& qe, outgoing_queue_)
 		    message_sending_notifier_.notify_error(manager_, qe);
 		outgoing_queue_.clear();

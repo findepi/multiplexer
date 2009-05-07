@@ -38,7 +38,7 @@
 #include <azlib/util/Assert.h>
 #include "azlib/initialization.h"
 #include "azlib/random.h"
-#include "azlib/util/str.h"
+#include "azlib/repr.h"
 #include "azlib/protobuf/stream.h"
 
 #include "logging.h"
@@ -174,7 +174,7 @@ namespace azlib {
 	    _shutdown_logging_streams();
 	    message_output_stream_.reset(new azlib::protobuf::FileMessageOutputStream(logging_fd, close_on_delete));
 	    if (log_the_fact)
-		AZOUK_LOG(DEBUG, LOWVERBOSITY, CTX("logging") TEXT("set logging FD to " + str(logging_fd)));
+		AZOUK_LOG(DEBUG, LOWVERBOSITY, CTX("logging") TEXT("set logging FD to " + repr(logging_fd)));
 	}
 
 	void set_logging_file(const std::string& file) {

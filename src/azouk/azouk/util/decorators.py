@@ -22,22 +22,29 @@
 
 import sys
 import traceback
-from functools import wraps
+import functools
+
+def _update_wrapper(wrapper, wrapped, *args, **kwargs):
+    """Run functools.update_wrapper iff `wrapper` is not `wrapped`."""
+    if wrapper is not wrapped:
+        functools.update_wrapper(wrapper, wrapped, *args, **kwargs)
+    return wrapper
 
 def parametrizable_decorator(decorator):
-    @wraps(decorator)
-    def wrapper(f = None, *args, **kwargs):
-        if f is not None:
-            return wraps(f)(decorator(f, *args, **kwargs))
+    @functools.wraps(decorator)
+    def wrapper(fn=None, *args, **kwargs):
+        if fn is not None:
+            return _update_wrapper(decorator(fn, *args, **kwargs), fn)
         else:
-            return lambda f: wraps(f)(decorator(f, *args, **kwargs))
+            return lambda fn: \
+                    _update_wrapper(decorator(fn, *args, **kwargs), fn)
     return wrapper
 
 @parametrizable_decorator
-def never_throw(f, default = None):
+def never_throw(fn, default = None):
     def wrapper(*args, **kwargs):
         try:
-            return f(*args, **kwargs)
+            return fn(*args, **kwargs)
         except Exception:
             traceback.print_stack()
             traceback.print_exc()

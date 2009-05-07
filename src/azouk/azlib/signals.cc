@@ -44,8 +44,8 @@ namespace azlib {
          * check that the module was already initialized in Swatchz counter
          * manner That is: that SIG objects are created.
 	 */
-	AZOUK_TRIGGER_STATIC_INITILIZATION_CODE((Assert(module_is_initialized);
-                    Assert(TERM);), true);
+	AZOUK_TRIGGER_STATIC_INITILIZATION_CODE(
+                (Assert(module_is_initialized);), true);
 
 	/*
 	 * declare the signals extern-ed in header file

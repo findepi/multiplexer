@@ -170,6 +170,22 @@ $(BUILDDIR)/azouk/release.py: $(VERSION_BASH_FILE)
 	    echo "version_short_hash = \"$$version_short_hash\""; \
 	} > $@
 
+$(BUILDDIR)/azouk/release.h: $(VERSION_BASH_FILE)
+	@ echo "Updating version file '$@'"
+	$Q set -e; \
+	. $<; \
+	file_token=x`echo $@ | sha1sum | awk '{print $$1}'`; \
+	{ \
+	    echo "#ifndef $$file_token"; \
+	    echo "#define $$file_token"; \
+	    echo "namespace azouk { namespace release {"; \
+	    echo "	const char* const version = \"$$version\";"; \
+	    echo "	const char* const version_hash = \"$$version_hash\";"; \
+	    echo "	const char* const version_short_hash = \"$$version_short_hash\";"; \
+	    echo "} /* release */ } /* azouk */"; \
+	    echo "#endif"; \
+	} > $@
+
 $(BUILDDIR)/azouk/logging/type_id_constants.py: logging.type_id.constants.txt
 	$Q mkdir -p `dirname $@`
 	cat $< > $@
@@ -245,7 +261,11 @@ $(PROGRAMS) : % : %.o $(BUILDDIR)/lib__static_linklibraries.a
 	$Q $(CXX) -o $@ $< $(LDFLAGS) $(LINKLIBRARIES)
 #	$Q $(CXX) -o $@ $< $(LDFLAGS) $(BUILDDIR)/lib__static_linklibraries.a
 
-$(GENERATE_CONSTANTS) : % : $(BUILDDIR)/multiplexer/Multiplexer.pb.o $(filter $(BUILDDIR)/azlib/%, $(LINKLIBRARIES)) %.o
+$(GENERATE_CONSTANTS) : % : $(BUILDDIR)/multiplexer/Multiplexer.pb.o \
+    $(BUILDDIR)/azlib/logging/Logging.pb.o \
+    $(BUILDDIR)/azlib/util/Exception.o \
+    $(BUILDDIR)/azlib/util/Assert.o \
+    %.o
 	@ echo "Linking '$@'"
 	$Q $(CXX) -o $@ $^ $(LDFLAGS)
 

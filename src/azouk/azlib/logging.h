@@ -27,6 +27,10 @@
 #include <boost/preprocessor/selection/max.hpp>
 #include <boost/cstdint.hpp>
 
+#ifdef IS_GENERATE_CONSTANTS
+# error "generate_constants can't depend on signals.h"
+#endif
+
 #include "azlib/preproc/create_message.h"
 #include "azlib/signals.h" // this should be initialized before logging
 
@@ -56,7 +60,7 @@
 #  *	    SKIPFILEIF(b)			don't emit log to logging stream if `b'
 #  *
 #  *
-#  *	Examples (see azlib/util/str.h for information how to shorten lexical_cast):
+#  *	Examples (see azlib/repr.h for information how to shorten lexical_cast):
 #  *
 #  *	    AZOUK_LOG(DEBUG, VERBOSE, CONTEXT("tarantula.multiplexer"));
 #  *

@@ -66,7 +66,10 @@ void init_module__logging() {
 		make_function(&class::name, return_value_policy<copy_const_reference>()), \
 		make_function((void (class::*)(const std::string&)) &class::BOOST_PP_CAT(set_, name)))
 
-	BOOST_PP_SEQ_FOR_EACH(export_num_field, LogEntry, (id) (timestamp) (level) (verbosity) (data_type) (source_line) (pid))
-	BOOST_PP_SEQ_FOR_EACH(export_str_field, LogEntry, (context) (text) (workflow) (data_class) (data) (source_file) (compilation_datetime))
+        BOOST_PP_SEQ_FOR_EACH(export_num_field, LogEntry, (id) (timestamp)
+                (level) (verbosity) (data_type) (source_line) (pid))
+        BOOST_PP_SEQ_FOR_EACH(export_str_field, LogEntry, (context) (text)
+                (workflow) (data_class) (data) (source_file)
+                (compilation_datetime) (version))
 	;
 }

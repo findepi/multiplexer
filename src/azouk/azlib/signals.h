@@ -22,6 +22,10 @@
 #ifndef AZLIB_SIGNALS_H
 #define AZLIB_SIGNALS_H
 
+#ifdef IS_GENERATE_CONSTANTS
+# error "generate_constants can't depend on signals.h"
+#endif
+
 #include <boost/signals.hpp>
 #include <boost/preprocessor/seq/for_each.hpp>
 #include <iostream> // force std::cerr initialization before
@@ -37,12 +41,12 @@ namespace azlib {
          * list the boost::signals that are declared here, bound to POSIX
          * signals
 	 */
-#define AZOUK_SIGNALS_POSIX_SIGNALS_SEQ (TERM) (INT) (USR1) (USR2) //(HUP)
+#define AZOUK_SIGNALS_POSIX_SIGNALS_SEQ //(TERM) (INT) (USR1) (USR2) //(HUP)
 
 	/*
 	 * list those signals that cause exit
 	 */
-#define AZOUK_SIGNALS_QUIT_ON_SEQ (TERM)
+#define AZOUK_SIGNALS_QUIT_ON_SEQ
 
 	/*
 	 * list other process-level signals declared here

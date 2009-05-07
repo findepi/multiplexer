@@ -19,28 +19,22 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-#ifndef MX_LIB_TYPE_UTILS_H
-#define MX_LIB_TYPE_UTILS_H
+#ifndef AZLIB_VECTOR_H
+#define AZLIB_VECTOR_H
 
-#include <cxxabi.h>
+#include <vector>
 
 namespace azlib {
-    namespace type_utils {
 
-	template <typename T>
-	std::string type_name(const T& t) {
-	    int status;
-	    char* name = abi::__cxa_demangle(typeid(t).name(), 0, 0, &status);
+    template <typename T, typename Alloc, typename U>
+    static inline bool contains(const std::vector<T, Alloc>& vec,
+            const U& val) {
+        for (unsigned int i = 0; i < vec.size(); ++i)
+            if (vec[i] == val)
+                return true;
+        return false;
+    }
 
-	    if (status != 0)
-		return typeid(t).name();
-
-	    std::string sname = name;
-	    free(name);
-	    return sname;
-	}
-
-    }; // namespace type_utils
-}; // namespace azlib
+};
 
 #endif

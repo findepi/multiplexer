@@ -31,7 +31,7 @@
 #include <boost/numeric/conversion/cast.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "azlib/util/Assert.h"
-#include "azlib/util/str.h"
+#include "azlib/repr.h"
 #include "azlib/util/IntrusiveValue.h"
 #include "azlib/logging.h"
 

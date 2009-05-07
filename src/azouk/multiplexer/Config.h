@@ -31,11 +31,14 @@
 #include <boost/foreach.hpp>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
+
 #include "build/multiplexer/Multiplexer.pb.h" /* generated */
-#include "azlib/util/Assert.h"
 #include "azlib/util/Exception.h"
+#include "azlib/util/Assert.h"
+
+#ifndef IS_GENERATE_CONSTANTS
 #include "azlib/logging.h"
-#include "azlib/debug.h"
+#endif
 
 namespace multiplexer {
 
@@ -79,7 +82,7 @@ type {\
 	    {
 		read_configuration(file);
 	    }
-	    
+
 	    void clear() {
 		*this = Config();
 		Assert(!initialized());
@@ -88,11 +91,14 @@ type {\
 	    void read_configuration(const std::string& file) {
 		using std::cout;
 		using std::ifstream;
-		using namespace azlib::logging::consts;
 
 		MultiplexerRules rules;
 
-		AZOUK_LOG(DEBUG, MEDIUMVERBOSITY, CTX("config") TEXT("reading configuration file"));
+#ifndef IS_GENERATE_CONSTANTS
+		using namespace azlib::logging::consts;
+		AZOUK_LOG(DEBUG, MEDIUMVERBOSITY, CTX("config")
+                        TEXT("reading configuration file"));
+#endif
 
 		ifstream in(file.c_str(), ifstream::in | ifstream::binary);
 		if (!in) {

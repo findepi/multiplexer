@@ -34,7 +34,7 @@
 
 #include "azlib/logging.h"
 #include "azlib/util/functors.h"
-#include "azlib/util/str.h"
+#include "azlib/repr.h"
 #include "multiplexer/ConnectionsManager.h"
 #include "multiplexer/io/Connection.h"
 #include "multiplexer/Config.h"
@@ -44,7 +44,7 @@
 
 namespace multiplexer {
 
-    using azlib::str;
+    using azlib::repr;
 
     //class MultiplexerMessage;
     //class MultiplexerMessageDescription;
@@ -194,7 +194,7 @@ namespace multiplexer {
             AZOUK_ENTER(VERBOSITY(HIGHVERBOSITY) DEFAULT);
 
 	    AZOUK_LOG(DEBUG, HIGHVERBOSITY, CTX("multiplexer.server") FLOW(msg.workflow())
-		    TEXT("handle_message(id=" + str(msg.id()) + ", type=" + str(msg.type()) + ")")
+		    TEXT("handle_message(id=" + repr(msg.id()) + ", type=" + repr(msg.type()) + ")")
 		    DATA(type_id_constants::MXSERVER_INCOMING_MULTIPLEXER_MESSAGE, MultiplexerMessage,
 			(set_id(msg.id())) (set_from(msg.from())) (set_to(msg.to()))
 			(set_type(msg.type())) (set_timestamp(msg.timestamp()))
@@ -223,7 +223,7 @@ namespace multiplexer {
 		// it's known type
 		const MultiplexerMessageDescription& desc = defpos->second;
 		AZOUK_LOG(DEBUG, CHATTERBOX, CTX("multiplexer.server") FLOW(msg.workflow())
-			TEXT("received a message of type " + str(msg.type()) + " (" + desc.name() + "); scheduling...")
+			TEXT("received a message of type " + repr(msg.type()) + " (" + desc.name() + "); scheduling...")
 			SKIPFILEIF(!(msg.logging_method() & multiplexer::LoggingMethod::FILE))
 		    );
 		_schedule(meta_handler, desc);
@@ -241,7 +241,7 @@ namespace multiplexer {
 		return; // no errors
 
 	    AZOUK_LOG(ERROR, HIGHVERBOSITY, CTX("multiplexer.server") FLOW(meta_handler.msg.workflow())
-		    TEXT("errors when delivering " + str(meta_handler.msg.id()))
+		    TEXT("errors when delivering " + repr(meta_handler.msg.id()))
 		    SKIPFILEIF(!(meta_handler.msg.logging_method() & multiplexer::LoggingMethod::FILE))
 		);
 
@@ -325,7 +325,7 @@ namespace multiplexer {
 			    AZOUK_LOG(ERROR, HIGHVERBOSITY, CTX("multiplexer.server")
 				    FLOW(meta_handler.msg.workflow())
 				    TEXT("BACKEND_FOR_PACKET_SEARCH: unknown packet type " +
-					str(inner.packet_type()) + " or type with no routing rules")
+					repr(inner.packet_type()) + " or type with no routing rules")
 				);
 			    meta_handler.unknown();
 			    return true;
@@ -386,7 +386,7 @@ namespace multiplexer {
 	    if (!schedules_counter) {
 		const unsigned int level = rule.delivery_error_is_error() ? ERROR : WARNING;
 		AZOUK_LOG(level, HIGHVERBOSITY, CTX("multiplexer.server") FLOW(meta_handler.msg.workflow())
-			TEXT("routing while none present of type " + str(rule.peer_type()) + " (" + config_.peer_name_by_type(rule.peer_type()) + ")")
+			TEXT("routing while none present of type " + repr(rule.peer_type()) + " (" + config_.peer_name_by_type(rule.peer_type()) + ")")
 		    );
 	    }
 	    return schedules_counter;

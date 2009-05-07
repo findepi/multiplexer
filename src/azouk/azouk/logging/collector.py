@@ -24,6 +24,7 @@ import os
 import sys
 import collections
 import time
+import random
 from functools import partial
 
 try:
@@ -35,8 +36,7 @@ from azouk.logging import *
 from azlib.logging.Logging_pb2 import LogEntry
 from multiplexer.Multiplexer_pb2 import LogEntriesMessage, SearchCollectedLogs
 from multiplexer.multiplexer_constants import peers, types
-from multiplexer.clients import BaseMultiplexerServer, \
-        get_connection
+from multiplexer.clients import BaseMultiplexerServer
 from multiplexer.mxclient import make_message, parse_message, OperationFailed
 
 class MemoryLogCollector(BaseMultiplexerServer):
@@ -105,7 +105,6 @@ class MemoryLogCollector(BaseMultiplexerServer):
     @log_call
     def handle_message(self, mxmsg):
         if mxmsg.type == types.LOGS_STREAM:
-            self.notify_start()
             lem = self.parse_message(LogEntriesMessage)
             lem = lem.log
             for le in lem:
@@ -167,6 +166,7 @@ class Console(object):
     Style = Style()
 
     def __init__(self):
+        from multiplexer.clients import get_connection
         self.__connection = get_connection()
         self.style = Console.Style
 
@@ -204,7 +204,9 @@ class Console(object):
                 If prnt or print_ then the logs are pretty printed instead of returning.
         """
         q = make_message(SearchCollectedLogs, **kwargs)
-        mxmsg = self.__connection.query(q, type=types.SEARCH_COLLECTED_LOGS_REQUEST, timeout=3)
+        mxmsg = self.__connection.query(q,
+                type=types.SEARCH_COLLECTED_LOGS_REQUEST, timeout=3,
+                workflow='search-logs-%d' % random.randint(0, sys.maxint))
         if mxmsg.type != types.SEARCH_COLLECTED_LOGS_RESPONSE:
             # Beware: the following may or may not work; OperationFailed is a C-defined exception.
             raise OperationFailed, "invalid response of type %r received from backend" % mxmsg.type

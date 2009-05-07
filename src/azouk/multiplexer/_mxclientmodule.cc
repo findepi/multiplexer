@@ -46,9 +46,14 @@ namespace multiplexer {
 	}
 
 	py::object read_message(float timeout) {
-	    BOOST_STATIC_ASSERT((boost::is_same<BasicClient::IncomingMessagesBuffer::value_type::second_type, ConnectionWrapper>::value));
-	    BasicClient::IncomingMessagesBuffer::value_type next = Client::read_raw_message(timeout);
-	    py::tuple t = py::make_tuple((std::string) next.first->get_message(), next.second);
+	    BOOST_STATIC_ASSERT((boost::is_same<
+                            BasicClient::IncomingMessagesBuffer
+                                ::value_type::second_type,
+                            ConnectionWrapper>::value));
+	    BasicClient::IncomingMessagesBuffer::value_type next =
+                Client::read_raw_message(timeout);
+	    py::tuple t = py::make_tuple((std::string)next.first->get_message(),
+                    next.second);
 
 	    return t;
 	}
@@ -56,14 +61,15 @@ namespace multiplexer {
 	ScheduledMessageTracker schedule_one(std::string message) {
 	    return Client::schedule_one(&message);
 	}
-	ScheduledMessageTracker schedule_one(std::string message, ConnectionWrapper w, float timeout) {
+        ScheduledMessageTracker schedule_one(std::string message,
+                ConnectionWrapper w, float timeout) {
 	    return Client::schedule_one(&message, w, timeout);
 	}
 
 	unsigned int schedule_all(std::string message) {
 	    return Client::schedule_all(&message);
 	}
-	
+
     private:
     };
 }; // namespace multiplexer
@@ -84,11 +90,13 @@ namespace _MxClientExceptionDefinitions {
 #undef EXPORTED_EXCEPTION_TYPE
 }; // namespace _MxClientExceptionDefinitions
 
-// simple translator of multiplexer::Client::EXCEPTION to Python's _mxclient.EXCEPTION
+// simple translator of multiplexer::Client::EXCEPTION to Python's
+// _mxclient.EXCEPTION
 struct ExceptionTranslator {
 #define EXPORTED_EXCEPTION_HANDLER(exc) \
     void operator() (const multiplexer::Client::exc& /*e*/) const { \
-	AZDEBUG_MSG("converting an exception of type " #exc "..."); \
+        AZOUK_LOG(DEBUG, HIGHVERBOSITY, CTX("_mxclient") \
+                TEXT("converting an exception of type " #exc)); \
 	Assert(_MxClientExceptionDefinitions::exc.ptr()); \
 	Assert(_MxClientExceptionDefinitions::exc.ptr() != Py_None); \
 	PyErr_SetNone(_MxClientExceptionDefinitions::exc.ptr()); \
@@ -97,7 +105,7 @@ struct ExceptionTranslator {
 #undef EXPORTED_EXCEPTION_HANDLER
 };
 
-static void test_connection_wrapper(multiplexer::ConnectionWrapper /*wrapper*/) {
+static void test_connection_wrapper(multiplexer::ConnectionWrapper /*wrap*/) {
 }
 
 
@@ -115,22 +123,28 @@ void init_module__mxclient() {
 
     // export the Exceptions
     // TODO py::borrowed???
-    _MxClientExceptionDefinitions::MultiplexerClientError = py::object(py::borrowed(PyErr_NewException((char*) "_mxclient.MultiplexerClientError", NULL, NULL)));
+    _MxClientExceptionDefinitions::MultiplexerClientError =
+        py::object(py::borrowed(PyErr_NewException((char*)
+                        "_mxclient.MultiplexerClientError", NULL, NULL)));
     ExceptionTranslator translator;
 #define create_exported_exception(exc) \
     _MxClientExceptionDefinitions::exc = py::object(py::borrowed( \
-		PyErr_NewException((char*) "azouk._allinone." #exc, _MxClientExceptionDefinitions::MultiplexerClientError.ptr(), NULL) \
+		PyErr_NewException((char*) "azouk._allinone." #exc, \
+                    _MxClientExceptionDefinitions \
+                        ::MultiplexerClientError.ptr(), NULL) \
 		)); \
     scope().attr(#exc) = _MxClientExceptionDefinitions::exc; \
     register_exception_translator<Client::exc>(translator);\
     //
     EXPORTED_EXCEPTIONS(create_exported_exception);
 #undef create_exported_exception
-    
+
     class_<boost::shared_ptr<asio::io_service> >("Asio_IoService")
 	.def("__init__", make_constructor(create_new_asio_ioservice))
-	.def("run",	(std::size_t (asio::io_service::*)()) &asio::io_service::run)
-	.def("run_one", (std::size_t (asio::io_service::*)()) &asio::io_service::run_one)
+        .def("run",	(std::size_t (asio::io_service::*)())
+                            &asio::io_service::run)
+        .def("run_one", (std::size_t (asio::io_service::*)())
+                            &asio::io_service::run_one)
 	.def("stop",	(void (asio::io_service::*)()) &asio::io_service::stop)
 	.def("reset",	(void (asio::io_service::*)()) &asio::io_service::reset)
 	;
@@ -157,24 +171,43 @@ void init_module__mxclient() {
 	    "    of specified type\n",
 	    init<asio::io_service&, boost::uint32_t>()
 	    )
-	
+
 	.def("_get_instance_id",    &PythonClient::instance_id)
 
 	.add_property("multiplexer_password",
-		make_function(&PythonClient::multiplexer_password, return_value_policy<copy_const_reference>()),
-		make_function((void (PythonClient::*)(const std::string&)) &PythonClient::set_multiplexer_password))
+		make_function(&PythonClient::multiplexer_password,
+                    return_value_policy<copy_const_reference>()),
+		make_function((void (PythonClient::*)(const std::string&))
+                    &PythonClient::set_multiplexer_password))
 
-	.def("async_connect",	    (ConnectionWrapper (PythonClient::*) (const std::string&, boost::uint16_t)) &PythonClient::async_connect)
-	.def("connect",		    (ConnectionWrapper (PythonClient::*) (const std::string&, boost::uint16_t, float)) &PythonClient::connect)
+	.def("async_connect",	    (ConnectionWrapper (PythonClient::*)
+                                        (const std::string&, boost::uint16_t))
+                                            &PythonClient::async_connect)
+
+	.def("connect",		    (ConnectionWrapper (PythonClient::*)
+                                        (const std::string&, boost::uint16_t,
+                                         float)) &PythonClient::connect)
+
 	.def("wait_for_connection", &PythonClient::wait_for_connection)
 	.def("connections_count",   &PythonClient::connections_count)
 	.def("shutdown",	    &PythonClient::shutdown)
 
 	.def("read_message",	    &PythonClient::read_message)
-	.def("schedule_one",	    (ScheduledMessageTracker (PythonClient::*) (std::string)) &PythonClient::schedule_one)
-	.def("schedule_one",	    (ScheduledMessageTracker (PythonClient::*) (std::string, ConnectionWrapper, float)) &PythonClient::schedule_one)
+
+	.def("schedule_one",	    (ScheduledMessageTracker (PythonClient::*)
+                                        (std::string))
+                                            &PythonClient::schedule_one)
+
+	.def("schedule_one",	    (ScheduledMessageTracker (PythonClient::*)
+                                        (std::string, ConnectionWrapper, float))
+                                            &PythonClient::schedule_one)
+
 	.def("schedule_all",	    &PythonClient::schedule_all)
-	.def("flush",		    (void (PythonClient::*) (ScheduledMessageTracker, float)) &PythonClient::flush)
+
+	.def("flush",		    (void (PythonClient::*)
+                                        (ScheduledMessageTracker, float) const)
+                                            &PythonClient::flush)
+
 	.def("flush_all",	    &PythonClient::flush_all)
 
 	.def("random",		    &PythonClient::random64)

@@ -45,7 +45,7 @@ except ImportError:
     MULTIPLEXER_ADDRESSES = [('127.0.0.1', 1980)]
     MULTIPLEXER_PASSWORD = ''
 
-from multiplexer.mxclient import set_if_missing, make_message, dict_message, \
+from multiplexer.mxclient import make_message, dict_message, \
         parse_message
 
 class MultiplexerRelatedException(Exception):
@@ -65,6 +65,22 @@ class MultiplexerClientException(MultiplexerRelatedException):
 class BackendError(MultiplexerClientException):
     pass
 
+def format_exception(exc, trace=None):
+    """Create new BackendError containing information about `exc`.
+
+       :Parameters:
+            - `exc`: exception caught
+            - `trace`: traceback; if you don't specify traceback, traceback of
+              currently handled exception will be used
+    """
+    try:
+        if trace is None:
+            assert exc is sys.exc_info()[1], \
+                    "Traceback does not match exception passed."
+            trace = sys.exc_info()[2]
+        return ''.join(traceback.format_exception(type(exc), exc, trace))
+    finally:
+        del trace
 
 class BasicClient(mxclient.Client):
 
@@ -73,15 +89,23 @@ class BasicClient(mxclient.Client):
     @log_call
     def receive_message(self, *args, **kwargs):
         """wrapper around mxclient.Client.send_and_receive"""
-        mxmsg, connwrap = super(BasicClient, self).receive_message(
-                *args, **kwargs)
-        if mxmsg.type == types.BACKEND_ERROR:
-            raise BackendError, mxmsg.message
+        mxmsg, connwrap = super(BasicClient, self).receive_message(*args, **kwargs)
+        self.__check_backend_error(mxmsg)
         return mxmsg, connwrap
 
     @log_call
+    def query(self, *args, **kwargs):
+        mxmsg = super(BasicClient, self).query(*args, **kwargs)
+        self.__check_backend_error(mxmsg)
+        return mxmsg
+
+    def __check_backend_error(self, mxmsg):
+        if mxmsg.type == types.BACKEND_ERROR:
+            raise BackendError(mxmsg.message)
+
+    @log_call
     def send_and_receive(self, *args, **kwargs):
-        set_if_missing(kwargs, 'ignore_function',
+        kwargs.setdefault('ignore_function',
                 lambda mxmsg, connwrap: mxmsg.type == types.REQUEST_RECEIVED)
         return super(BasicClient, self).send_and_receive(*args, **kwargs)
 
@@ -94,6 +118,16 @@ class MultiplexerPeer(object):
     @log_call
     def __init__(self, addresses=MULTIPLEXER_ADDRESSES, type=None,
             password=MULTIPLEXER_PASSWORD):
+        """Constructor.
+
+        :Parameters:
+            host
+                Host of multiplexer.
+            addresses
+                list of (host, port) pairs
+            type : multiplexer.multiplexer_constants.peers.* constant
+                Type of client to create
+
         """
             Constructor.
 
@@ -171,6 +205,7 @@ class BaseMultiplexerServer(MultiplexerPeer):
         """
         super(BaseMultiplexerServer, self).__init__(addresses, type)
         self.working = True
+        self.last_mxmsg = None
         self._start_time = time.time()
         self._exceptions_policies = copy.copy(self._exceptions_policies)
 
@@ -248,27 +283,26 @@ class BaseMultiplexerServer(MultiplexerPeer):
         assert not self._has_sent_response, "If you use notify_start(), " \
                 "place it as a first function in your handle_message() code"
         self.send_message(
-                message = "",
-                type = types.REQUEST_RECEIVED,
-                # `references` would be set in send_message but make this
-                # explicit
-                references = self.last_mxmsg.id,
+                message="",
+                type=types.REQUEST_RECEIVED,
+                # references, workflow -- set by send_message
             )
         self._has_sent_response = False
 
     @log_call
     def send_message(self, **kwargs):
-        assert self.last_mxmsg is not None
-        self._has_sent_response = True
-        set_if_missing(kwargs, 'multiplexer', self.last_connwrap)
-        set_if_missing(kwargs, 'references', self.last_mxmsg.id)
-        set_if_missing(kwargs, 'workflow', self.last_mxmsg.workflow)
-        set_if_missing(kwargs, 'to', self.last_mxmsg.from_)
-        # XXX set_if_missing(kwargs, 'flush', True) ?
-        # performance penalty, but
-        # more messages delivered in case process crashes soon after calling
-        # send_message
+        if self.last_mxmsg is not None:
+            self._has_sent_response = True
+            kwargs.setdefault('multiplexer', self.last_connwrap)
+            kwargs.setdefault('references', self.last_mxmsg.id)
+            kwargs.setdefault('workflow', self.last_mxmsg.workflow)
+            kwargs.setdefault('to', self.last_mxmsg.from_)
         return self.conn.send_message(**kwargs)
+
+    @log_call
+    def send_backend_error(self, exc, trace=None):
+        assert self.last_mxmsg is not None
+        self.report_error(message=format_exception(exc, trace=trace))
 
     @log_call
     def no_response(self):
@@ -277,6 +311,7 @@ class BaseMultiplexerServer(MultiplexerPeer):
     @log_call
     def report_error(self, message="", type=types.BACKEND_ERROR, flush=True,
             **kwargs):
+        assert self.last_mxmsg is not None
         self.send_message(message=message, type=type, flush=flush, **kwargs)
 
     @log_call
@@ -297,8 +332,7 @@ class BaseMultiplexerServer(MultiplexerPeer):
 
     @log_call
     def set_exception_policy(self, type, policy):
-        if isinstance(policy, types.TypeType) and \
-                issubclass(policy, MultiplexerServer.ExceptionPolicy):
+        if isinstance(policy, __builtin__.type) and issubclass(policy, MultiplexerServer.ExceptionPolicy):
             policy = policy()
         assert isinstance(policy, MultiplexerServer.ExceptionPolicy), policy
         self._exceptions_policies.append((type, policy))
@@ -442,11 +476,11 @@ def MultiplexerGet(data, type, timeout=15, warning_stacklevel=4):
             timeout = timeout / 2.0
         )
 
-    data = pickle.loads(response.message)
-    if (isinstance(data, BackendError)):
-        raise data
-    log(DEBUG, HIGHVERBOSITY,
-            text=lambda:"got MX-response type %r" % request_type)
+    try:
+        data = pickle.loads(response.message)
+    except Exception:
+        raise ValueError("Message is not depicklable: %r" % response.message)
+    log(DEBUG, HIGHVERBOSITY, text=lambda:"got MX-response type %r" % request_type)
     return (request_type, data)
 
 def MultiplexerQuietGet(*args, **kwargs):

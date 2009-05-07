@@ -55,6 +55,9 @@ message LogEntry {
     // pid
     optional uint32 pid = 11;
 
+    // azouk.release.version
+    optional string version = 12;
+
     // when the LogEntry orginated from
     // source_file can be in a form header.h:program.c
     optional bytes source_file = 20;

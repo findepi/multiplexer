@@ -29,15 +29,16 @@
 #include <boost/foreach.hpp>
 #include <asio/io_service.hpp>
 
-#include "azlib/debug.h"
 #include "azlib/random.h"
 #include "multiplexer/io/RawMessage.h"
 #include "multiplexer/Config.h"
 #include "azlib/logging.h"
+#include "azlib/repr.h"
 
 namespace multiplexer {
 
     using namespace ::azlib::logging::consts;
+    using azlib::repr;
 
     class WelcomeMessage;
 
@@ -71,8 +72,11 @@ namespace multiplexer {
 	ConnectionsManager(asio::io_service& io_service)
 	    : io_service_(io_service)
 	    , instance_id_(random_())
-	{
-	    AZDEBUG_MSG("my instance_id = " << instance_id_);
+        {
+            AZOUK_LOG(INFO, LOWVERBOSITY, CTX("ConnectionsManager")
+                    TEXT("created new ConnectionsManager with id " +
+                        repr(instance_id_))
+                );
 	}
 
     public:
@@ -115,7 +119,11 @@ namespace multiplexer {
 	 */
 	void register_connection(typename Connection::pointer conn, const WelcomeMessage& welcome) {
 
-	    AZDEBUG_MSG("register_connection(" << (void*) conn.get() << "): id " << conn->peer_id() << ", type " << conn->peer_type());
+            AZOUK_LOG(DEBUG, HIGHVERBOSITY, CTX("ConnectionsManager")
+                    TEXT("registering connection " + repr((void*)conn.get()) +
+                        " id=" + repr(conn->peer_id()) +
+                        " type=" + repr(conn->peer_type()))
+                );
 	    if (!static_cast<const ConnectionsManagerImplementation&>(*this).accept_peer_type(conn->peer_type())) {
 		std::cerr << "invalid peer type " << conn->peer_type() << "\n";
 		conn->shutdown();
@@ -128,8 +136,13 @@ namespace multiplexer {
 		return;
 	    }
 
-	    // TODO log this:
-	    // std::cerr << "registering a peer #" << conn->peer_id() << " of type " << conn->peer_type() << " (" << config_.peer_name_by_type(conn->peer_type()) << ")\n";
+            AZOUK_LOG(INFO, HIGHVERBOSITY, CTX("ConnectionsManager")
+                    TEXT("registered connection"
+                          " id=" + repr(conn->peer_id())
+                        + " type=" + repr(conn->peer_type())
+                            + " (" + repr(config_.peer_name_by_type(
+                                        conn->peer_type())) + ")"
+                    ));
 
 	    Config::PeerDescriptionById::const_iterator pdi = config_.peer_by_type().find(conn->peer_type());
 	    if (pdi != config_.peer_by_type().end()) {
@@ -200,7 +213,6 @@ namespace multiplexer {
 	void inline connection_destroyed(Connection*) {}
 
 	unsigned int connections_count(bool exact) {
-	    //AZDEBUG_MSG("connections_count(" << exact << ") while size = " << connection_by_id_.size());
 	    if (exact) {
 		for (typename ConnectionById::iterator next = connection_by_id_.begin(), i; next != connection_by_id_.end() && (i = next++, true); ) {
 		    if (!i->second.lock())
@@ -217,7 +229,8 @@ namespace multiplexer {
 		    if (i.second.lock())
 			++ c;
 		    else
-			AZDEBUG_MSG("dangling weak_ref in connection_by_id_");
+                        AZOUK_LOG(ERROR, LOWVERBOSITY, CTX("ConnectionsManager")
+                                TEXT("dangling weak_ref in connection_by_id_"));
 		return c;
 	    }
 	    return connection_by_id_.size();

@@ -19,28 +19,38 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-#ifndef MX_LIB_TYPE_UTILS_H
-#define MX_LIB_TYPE_UTILS_H
+#ifndef AZLIB_REPR_H
+#define AZLIB_REPR_H
 
-#include <cxxabi.h>
+#include <string>
+#include <vector>
+#include <boost/lexical_cast.hpp>
 
 namespace azlib {
-    namespace type_utils {
 
-	template <typename T>
-	std::string type_name(const T& t) {
-	    int status;
-	    char* name = abi::__cxa_demangle(typeid(t).name(), 0, 0, &status);
+    /*
+     * repr(t) -> lexical_cast<std::string>(t)
+     * with string quoted
+     */
+    template <typename T> inline std::string repr(const T& t) {
+	return boost::lexical_cast<std::string>(t);
+    }
 
-	    if (status != 0)
-		return typeid(t).name();
+    static inline std::string repr(const std::string& t) {
+        return "'" + t + "'";
+    }
 
-	    std::string sname = name;
-	    free(name);
-	    return sname;
-	}
+    template <typename T, typename Alloc>
+    static inline std::string repr(const std::vector<T, Alloc>& vec) {
+        std::string r = "[";
+        for (unsigned int i = 0; i < vec.size(); ++i) {
+            if (i)
+                r += ", ";
+            r += repr(vec[1]);
+        }
+        return r;
+    }
 
-    }; // namespace type_utils
-}; // namespace azlib
+};
 
 #endif

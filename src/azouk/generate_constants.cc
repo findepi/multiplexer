@@ -19,18 +19,19 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
+#define IS_GENERATE_CONSTANTS 1
+
 #include <iostream>
 #include <fstream>
 #include <azlib/hash_set.h>
 #include <set>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
-#include "azlib/program.h" /* main() */
-#include "azlib/logging.h"
+
+#include "azlib/util/type_utils.h"
 #include "multiplexer/Config.h"
 
 using namespace std;
-using namespace azlib::logging::consts;
 
 typedef multiplexer::Config<std::multimap> Config;
 
@@ -231,12 +232,30 @@ int AzoukMain(int argc, char** argv) {
 
     switch (filetype) {
 	case PYTHON:
-	    AZOUK_LOG(DEBUG, LOWVERBOSITY, TEXT(std::string() + "generating Python constants in " + argv[2]));
 	    return write_python(config, out, argv[1]);
 	case CXX:
-	    AZOUK_LOG(DEBUG, LOWVERBOSITY, TEXT(std::string() + "generating C++ constants in " + argv[2]));
 	    return write_cxx(config, out, argv[1]);
     }
     assert(false);
+}
+
+int main(int argc, char** argv) {
+    using std::cerr;
+    using std::endl;
+
+    try {
+        return AzoukMain(argc, argv);
+
+    } catch (azlib::Exception& e) {
+	cerr
+	    << azlib::type_utils::type_name(e) << " in " << e.file() << ":" << e.line() << " (" << e.function() << ")\n"
+	    << "    " << e.what() << endl;
+        return 1;
+
+    } catch (std::exception& e) {
+	cerr
+	    << azlib::type_utils::type_name(e) << ": " << e.what() << "\n";
+        return 1;
+    }
 }
 

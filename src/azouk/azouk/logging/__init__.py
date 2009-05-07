@@ -32,6 +32,7 @@ from azouk.util.decorators import parametrizable_decorator, never_throw
 
 from azouk._allinone import *
 from type_id_constants import *
+from azouk.release import version
 import azouk._allinone as _logging
 
 
@@ -56,7 +57,7 @@ def log(level, verbosity, *args, **kwarg):
         return
     return do_log(level, verbosity, *args, **kwarg)
 
-log_defaults = {}
+log_defaults = {'version': version}
 
 
 @never_throw
@@ -76,7 +77,7 @@ def _make_string(s):
 
 
 def _do_log(level, verbosity, ctx=None, context=None, text=None, data=None,
-        data_type=None, flow=None, flags=0):
+        data_type=None, flow=None, flags=0, version=None):
     assert isinstance(level, (int, long))
     assert isinstance(verbosity, (int, long))
     assert ctx is None or context is None
@@ -92,6 +93,8 @@ def _do_log(level, verbosity, ctx=None, context=None, text=None, data=None,
     # id, timestamp
     log_msg.id = _logging.create_log_id()
     log_msg.timestamp = int(time())
+    if version is not None:
+        log_msg.version = version
 
     # context
     if context is None:

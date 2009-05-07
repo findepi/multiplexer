@@ -32,7 +32,7 @@ version=`git describe --always`
 git update-index -q --refresh
 test -z "$(git diff-index --name-only HEAD --)" || version="$version-dirty"
 version="$(echo "$version" | sed -e 's/-/./g' | sed -e 's/^v//')"
-version_hash="$(echo -n $version | sha1sum - | cut -d' ' -f1)"
+version_hash="$(echo $version | sha1sum - | cut -d' ' -f1)"
 {
     echo "version=\"$version\""
     echo "version_hash=\"$version_hash\""
