@@ -19,9 +19,9 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-#include <asio/placeholders.hpp>
+#include <boost/asio/placeholders.hpp>
 #include <boost/foreach.hpp>
-#include <asio/ip/tcp.hpp>
+#include <boost/asio/ip/tcp.hpp>
 //#include "multiplexer/io/MessageHandler.h"
 #include "build/multiplexer/Multiplexer.pb.h" /* generated */
 
@@ -33,10 +33,10 @@ using std::cerr;
 using std::endl;
 
 
-Server::Server(asio::io_service& io_service, const std::string& host, unsigned short port)
+Server::Server(boost::asio::io_service& io_service, const std::string& host, unsigned short port)
     : Base(io_service)
       // TODO support for name resolving
-    , acceptor_(io_service, asio::ip::tcp::endpoint(asio::ip::address::from_string(host), port))
+    , acceptor_(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::address::from_string(host), port))
     //, acceptor_(io_service, asio::ip::tcp::endpoint(
 		////asio::ip::address_v4(
 		    //*asio::ip::tcp::resolver(io_service).resolve(asio::ip::tcp::resolver_query(host))

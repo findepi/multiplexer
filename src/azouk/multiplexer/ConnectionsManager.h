@@ -27,7 +27,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/random.hpp>
 #include <boost/foreach.hpp>
-#include <asio/io_service.hpp>
+#include <boost/asio/io_service.hpp>
 
 #include "azlib/random.h"
 #include "multiplexer/io/RawMessage.h"
@@ -69,7 +69,7 @@ namespace multiplexer {
     template <typename ConnectionsManagerImplementation>
     class ConnectionsManager {
     protected:
-	ConnectionsManager(asio::io_service& io_service)
+	ConnectionsManager(boost::asio::io_service& io_service)
 	    : io_service_(io_service)
 	    , instance_id_(random_())
         {
@@ -277,7 +277,7 @@ namespace multiplexer {
 	}
 
     protected:
-	asio::io_service& io_service_;
+        boost::asio::io_service& io_service_;
 	azlib::Random64 random_;
 	boost::uint64_t instance_id_;
 	Config config_;

@@ -28,8 +28,8 @@
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
-#include <asio/io_service.hpp>
-#include <asio/placeholders.hpp>
+#include <boost/asio/io_service.hpp>
+#include <boost/asio/placeholders.hpp>
 #include <boost/random/linear_congruential.hpp>
 
 #include "azlib/logging.h"
@@ -74,14 +74,14 @@ namespace multiplexer {
     class Server : public ConnectionsManager<Server>, public boost::enable_shared_from_this<Server> {
 
     private:
-	Server(asio::io_service& io_service, const std::string& host, unsigned short port);
+	Server(boost::asio::io_service& io_service, const std::string& host, unsigned short port);
 
     public:
 	typedef ConnectionsManager<Server> Base;
 	// public constructor-like function
 	typedef boost::shared_ptr<Server> pointer;
 	typedef boost::weak_ptr<Server> weak_pointer;
-	static pointer Create(asio::io_service& io_service, const std::string& host, unsigned short port) {
+	static pointer Create(boost::asio::io_service& io_service, const std::string& host, unsigned short port) {
 	    return pointer(new Server(io_service, host, port));
 	}
 
@@ -118,11 +118,11 @@ namespace multiplexer {
 	    Connection::pointer new_connection = Connection::Create(acceptor_.io_service(), this->shared_from_this());
 
 	    acceptor_.async_accept(new_connection->socket(),
-		    boost::bind(&Server::_handle_accept, this, new_connection, asio::placeholders::error)
+		    boost::bind(&Server::_handle_accept, this, new_connection, boost::asio::placeholders::error)
 		    );
 	}
 
-	void _handle_accept(Connection::pointer new_connection, const asio::error_code& error) {
+	void _handle_accept(Connection::pointer new_connection, const boost::system::error_code& error) {
 	    _start_accept();
 	    if (!error) {
 		// we don't run new_connection->start() until the connection
@@ -444,7 +444,7 @@ namespace multiplexer {
 
     private:
 	/* instance properties */
-	asio::ip::tcp::acceptor acceptor_;
+	boost::asio::ip::tcp::acceptor acceptor_;
 	boost::shared_ptr<const RawMessage> welcome_message_;
 
     }; // class Server

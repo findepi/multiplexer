@@ -31,7 +31,7 @@ using namespace multiplexer;
 using azlib::SimpleTimer;
 using std::cerr;
 
-BasicClient::BasicClient(asio::io_service& io_service,
+BasicClient::BasicClient(boost::asio::io_service& io_service,
         boost::uint32_t client_type)
     : Base(io_service)
     , client_type_(client_type)
@@ -68,7 +68,7 @@ void BasicClient::handle_message(Connection::pointer conn,
 
 // BasicClient::async_connect() helper function
 static inline void handle_connect(BasicClient::Connection::pointer conn,
-        const asio::error_code& error) {
+        const boost::system::error_code& error) {
     if (!error) {
 	conn->start();
     } else {
@@ -111,13 +111,13 @@ void BasicClient::connection_destroyed(Connection* conn) {
 	tp->async_wait(boost::bind(&BasicClient::reconnect_after_timeout,
                     this->shared_from_this(),
 		    tp, conn->managers_private_data().expected_endpoint,
-		    asio::placeholders::error
+		    boost::asio::placeholders::error
 	    ));
     }
 }
 
 void BasicClient::reconnect_after_timeout(TimerPointer, Endpoint peer_endpoint,
-        const asio::error_code& error) {
+        const boost::system::error_code& error) {
     if (!error) {
         if (connection_by_endpoint_.find(peer_endpoint) ==
                 connection_by_endpoint_.end())
@@ -131,7 +131,7 @@ void BasicClient::reconnect_after_timeout(TimerPointer, Endpoint peer_endpoint,
 }
 
 ConnectionWrapper BasicClient::async_connect(
-        const asio::ip::tcp::endpoint& peer_endpoint) {
+        const boost::asio::ip::tcp::endpoint& peer_endpoint) {
 
     // close any previous connections with the same endpoint
     ConnectionByEndpoint::iterator conni = connection_by_endpoint_.find(
@@ -192,7 +192,7 @@ bool BasicClient::wait_for_connection(ConnectionWrapper connwrap, float timeout)
 }
 
 ConnectionWrapper BasicClient::connect(
-        const asio::ip::tcp::endpoint& peer_endpoint, float timeout) {
+        const boost::asio::ip::tcp::endpoint& peer_endpoint, float timeout) {
 
     ConnectionWrapper connwrap = async_connect(peer_endpoint);
     wait_for_connection(connwrap, timeout);

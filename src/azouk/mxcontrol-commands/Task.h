@@ -24,7 +24,7 @@
 
 #include <ostream>
 #include <vector>
-#include <asio/io_service.hpp>
+#include <boost/asio/io_service.hpp>
 #include <boost/program_options.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/bind.hpp>
@@ -98,9 +98,9 @@ namespace mxcontrol {
 	    return *multiplexer_client_;
 	}
 
-	inline asio::io_service& io_service() {
+	inline boost::asio::io_service& io_service() {
 	    if (!io_service_) {
-		io_service_.reset(new asio::io_service());
+		io_service_.reset(new boost::asio::io_service());
 	    }
 	    return *io_service_;
 	}
@@ -133,7 +133,7 @@ namespace mxcontrol {
 	boost::scoped_ptr<po::options_description> hidden_options_description_;
 	boost::scoped_ptr<po::positional_options_description> positional_options_description_;
 
-	boost::shared_ptr<asio::io_service> io_service_;
+	boost::shared_ptr<boost::asio::io_service> io_service_;
 	boost::scoped_ptr<multiplexer::Client> multiplexer_client_;
 
 	std::vector<std::string> multiplexers_;

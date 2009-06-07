@@ -24,7 +24,7 @@
 
 #include <string>
 #include <list>
-#include <asio/buffer.hpp>
+#include <boost/asio/buffer.hpp>
 #include <google/protobuf/message.h>
 
 #include "multiplexer/configuration.h"
@@ -92,16 +92,16 @@ namespace multiplexer {
 
 	    /* ASIO reading buffers (for reading RawMessage from channel) */
 	    // returns buffer for reading-in RawMessage header
-	    inline asio::mutable_buffer get_header_buffer() {
+	    inline boost::asio::mutable_buffer get_header_buffer() {
 		Assert(usability_ == READING);
-		return asio::buffer((void*)(header_.size() ? &header_[0] : NULL), header_.size());
+		return boost::asio::buffer((void*)(header_.size() ? &header_[0] : NULL), header_.size());
 	    }
 	    inline size_t get_header_length() const { return header_.size(); }
 
 	    // returns buffer for reading-in RawMessage body
-	    inline asio::mutable_buffer get_body_buffer() {
+	    inline boost::asio::mutable_buffer get_body_buffer() {
 		Assert(usability_ == READING);
-		return asio::buffer((void*)(contents_.size() ? &contents_[0] : NULL), contents_.size());
+		return boost::asio::buffer((void*)(contents_.size() ? &contents_[0] : NULL), contents_.size());
 	    }
 
 	    // returns RawMessage body length
@@ -112,7 +112,7 @@ namespace multiplexer {
 
 	    /* ASIO writing buffers (for writing RawMessage to channel) */
 	    // returns buffer for writing-out whole RawMessage (header + body)
-	    inline const std::list<asio::const_buffer>& get_message_buffer() const {
+	    inline const std::list<boost::asio::const_buffer>& get_message_buffer() const {
 		Assert(usability_ == WRITING);
 		Assert(writing_buffers_.size());
 		return writing_buffers_;
@@ -134,7 +134,7 @@ namespace multiplexer {
 	    boost::uint32_t length_, crc32_;
 	    std::string header_;
 	    std::string contents_;
-	    std::list<asio::const_buffer> writing_buffers_; // buffers that can be used in write operations
+	    std::list<boost::asio::const_buffer> writing_buffers_; // buffers that can be used in write operations
     };
 
 }; // namespace multiplexer

@@ -20,7 +20,7 @@
 //
 
 
-#include <asio.hpp>
+#include <boost/asio.hpp>
 #include "multiplexer/Server.h"
 #include "azlib/repr.h"
 #include "mxcontrol-commands/StartMultiplexerServer.h"
@@ -48,7 +48,7 @@ namespace mxcontrol {
 	}
 
 	// TODO support for name resolving (e.g. host = "localhost" by default)
-	asio::io_service io_service;
+        boost::asio::io_service io_service;
 	multiplexer::Server::pointer server = multiplexer::Server::Create(io_service, host, port);
 	server->clear_rules();
 	server->read_rules(rules_file_);

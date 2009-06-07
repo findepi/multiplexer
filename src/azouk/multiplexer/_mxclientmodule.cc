@@ -40,7 +40,7 @@ namespace multiplexer {
 
     public:
 
-	PythonClient(asio::io_service& io_service, boost::uint32_t client_type)
+	PythonClient(boost::asio::io_service& io_service, boost::uint32_t client_type)
 	    : Client(io_service, client_type)
 	{
 	}
@@ -79,8 +79,9 @@ namespace multiplexer {
     //cerr << __PRETTY_FUNCTION__ << "\n";
 //}
 // asio::io_service factory function
-boost::shared_ptr<asio::io_service> create_new_asio_ioservice() {
-    return boost::shared_ptr<asio::io_service>(new asio::io_service());
+boost::shared_ptr<boost::asio::io_service> create_new_asio_ioservice() {
+    return boost::shared_ptr<boost::asio::io_service>(
+            new boost::asio::io_service());
 }
 
 namespace _MxClientExceptionDefinitions {
@@ -139,14 +140,14 @@ void init_module__mxclient() {
     EXPORTED_EXCEPTIONS(create_exported_exception);
 #undef create_exported_exception
 
-    class_<boost::shared_ptr<asio::io_service> >("Asio_IoService")
+    class_<boost::shared_ptr<boost::asio::io_service> >("Asio_IoService")
 	.def("__init__", make_constructor(create_new_asio_ioservice))
-        .def("run",	(std::size_t (asio::io_service::*)())
-                            &asio::io_service::run)
-        .def("run_one", (std::size_t (asio::io_service::*)())
-                            &asio::io_service::run_one)
-	.def("stop",	(void (asio::io_service::*)()) &asio::io_service::stop)
-	.def("reset",	(void (asio::io_service::*)()) &asio::io_service::reset)
+        .def("run",	(std::size_t (boost::asio::io_service::*)())
+                            &boost::asio::io_service::run)
+        .def("run_one", (std::size_t (boost::asio::io_service::*)())
+                            &boost::asio::io_service::run_one)
+	.def("stop",	(void (boost::asio::io_service::*)()) &boost::asio::io_service::stop)
+	.def("reset",	(void (boost::asio::io_service::*)()) &boost::asio::io_service::reset)
 	;
 
     typedef PythonClient::ScheduledMessageTracker ScheduledMessageTracker;
@@ -169,7 +170,7 @@ void init_module__mxclient() {
 	    "Client.__init__(self, Asio_IoService, int) ->\n"
 	    "    construct a new object bound to the given Asio_IoService\n"
 	    "    of specified type\n",
-	    init<asio::io_service&, boost::uint32_t>()
+	    init<boost::asio::io_service&, boost::uint32_t>()
 	    )
 
 	.def("_get_instance_id",    &PythonClient::instance_id)

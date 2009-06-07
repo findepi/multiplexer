@@ -23,8 +23,8 @@
 #define MX_BASICCLIENT_H
 
 #include <deque>
-#include <asio/ip/tcp.hpp>
-#include <asio/deadline_timer.hpp>
+#include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/deadline_timer.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/logic/tribool.hpp>
@@ -41,9 +41,9 @@
 namespace multiplexer {
 
     struct BasicClientTraits {
-	typedef asio::deadline_timer Timer;
+	typedef boost::asio::deadline_timer Timer;
 	typedef boost::shared_ptr<Timer> TimerPointer;
-	typedef asio::ip::tcp::endpoint Endpoint;
+	typedef boost::asio::ip::tcp::endpoint Endpoint;
     };
 
     class BasicClient;
@@ -189,7 +189,7 @@ namespace multiplexer {
 	    public BasicClientTraits, public ExceptionDefinitions {
 
     private:
-	BasicClient(asio::io_service& io_service, boost::uint32_t client_type);
+	BasicClient(boost::asio::io_service& io_service, boost::uint32_t client_type);
 
     public:
 	// definitions
@@ -206,7 +206,7 @@ namespace multiplexer {
 	typedef boost::shared_ptr<BasicClient> pointer;
 	typedef boost::weak_ptr<BasicClient> weak_pointer;
 
-	static pointer Create(asio::io_service& io_service,
+	static pointer Create(boost::asio::io_service& io_service,
                 unsigned short port) {
 	    return pointer(new BasicClient(io_service, port));
 	}
@@ -237,7 +237,7 @@ namespace multiplexer {
 	ConnectionWrapper connect(const Endpoint& peer_endpoint, float timeout);
 	void connection_destroyed(Connection* conn);
 	void reconnect_after_timeout(TimerPointer, Endpoint peer_endpoint,
-                const asio::error_code&);
+                const boost::system::error_code&);
 
     public:
 	std::auto_ptr<azlib::SimpleTimer> create_timer(float timeout) const;

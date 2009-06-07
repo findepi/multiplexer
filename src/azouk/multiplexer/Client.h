@@ -25,7 +25,7 @@
 #include <utility>
 #include <boost/shared_ptr.hpp>
 #include <boost/cstdint.hpp>
-#include <asio/io_service.hpp>
+#include <boost/asio/io_service.hpp>
 #include "multiplexer/BasicClient.h"
 #include "multiplexer/configuration.h"
 #include "azlib/logging.h"
@@ -79,14 +79,14 @@ namespace multiplexer {
 
 
 	Client(boost::uint32_t client_type);
-        Client(shared_ptr<asio::io_service> io_service, boost::uint32_t
+        Client(shared_ptr<boost::asio::io_service> io_service, boost::uint32_t
                 client_type);
-	Client(asio::io_service& io_service, boost::uint32_t client_type);
+	Client(boost::asio::io_service& io_service, boost::uint32_t client_type);
 	~Client();
 
 	// connectivity
 	void shutdown() { return basic_client_->shutdown(); }
-        ConnectionWrapper async_connect(const asio::ip::tcp::endpoint&
+        ConnectionWrapper async_connect(const boost::asio::ip::tcp::endpoint&
                 peer_endpoint) {
             return basic_client_->async_connect(peer_endpoint);
         }
@@ -94,7 +94,7 @@ namespace multiplexer {
                 timeout=DEFAULT_TIMEOUT) {
             return basic_client_->wait_for_connection(connwrap, timeout);
         }
-        ConnectionWrapper connect(const asio::ip::tcp::endpoint& peer_endpoint,
+        ConnectionWrapper connect(const boost::asio::ip::tcp::endpoint& peer_endpoint,
                 float timeout=DEFAULT_TIMEOUT) {
             return basic_client_->connect(peer_endpoint, timeout);
         }
@@ -102,16 +102,17 @@ namespace multiplexer {
 	// IPv4 in nnn.nnn... form or IPv6 in hhh:hhh:... form
         ConnectionWrapper async_connect(const std::string& host, boost::uint16_t
                 port) {
-	    return async_connect(asio::ip::tcp::endpoint(
-                        asio::ip::address::from_string(host), port));
+	    return async_connect(boost::asio::ip::tcp::endpoint(
+                        boost::asio::ip::address::from_string(host), port));
 	}
 	// IPv4 in nnn.nnn... form or IPv6 in hhh:hhh:... form
         ConnectionWrapper connect(const std::string& host, boost::uint16_t port,
                 float timeout=DEFAULT_TIMEOUT) {
             AZOUK_LOG(INFO, MEDIUMVERBOSITY, CTX("multiplexer.client")
                     TEXT("connecting to " + host + ":" + repr(port)));
-	    return connect(asio::ip::tcp::endpoint(
-                        asio::ip::address::from_string(host), port), timeout);
+            return connect(boost::asio::ip::tcp::endpoint(
+                        boost::asio::ip::address::from_string(host), port),
+                    timeout);
 	}
 
 	unsigned int inline connections_count() {
@@ -417,9 +418,9 @@ namespace multiplexer {
         }
 
     private:
-	shared_ptr<asio::io_service> io_service_ptr_;
+	shared_ptr<boost::asio::io_service> io_service_ptr_;
     protected:
-	asio::io_service& io_service_;
+	boost::asio::io_service& io_service_;
 	shared_ptr<BasicClient> basic_client_;
     };
 
