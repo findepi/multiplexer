@@ -127,17 +127,6 @@ class MultiplexerPeer(object):
                 list of (host, port) pairs
             type : multiplexer.multiplexer_constants.peers.* constant
                 Type of client to create
-
-        """
-            Constructor.
-
-            :Parameters:
-                host
-                    Host of multiplexer.
-                addresses
-                    list of (host, port) pairs
-                type : multiplexer.multiplexer_constants.peers.* constant
-                    Type of client to create
         """
 
         if type is None:
