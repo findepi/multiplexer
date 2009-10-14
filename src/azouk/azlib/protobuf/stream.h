@@ -27,7 +27,6 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
-#include <google/protobuf/wire_format_inl.h>
 #include <boost/noncopyable.hpp>
 #include "azlib/util/fd.h"
 #include "azlib/repr.h"
@@ -45,9 +44,9 @@ namespace azlib {
 		static inline bool Write(const google::protobuf::Message& m,
                         google::protobuf::io::ZeroCopyOutputStream& zcos) {
 		    google::protobuf::io::CodedOutputStream coded(&zcos);
-		    m.ByteSize();
-		    return google::protobuf::internal::WireFormat::WriteMessage(
-                            1, m, &coded);
+                    coded.WriteVarint32(m.ByteSize());
+                    m.SerializeToCodedStream(&coded);
+                    return !coded.HadError();
 		}
 	    };
 
@@ -58,23 +57,17 @@ namespace azlib {
 		// helper
 		static inline bool Read(google::protobuf::Message& m,
                         google::protobuf::io::CodedInputStream& cis) {
-		    typedef boost::uint32_t uint32;
-		    boost::uint32_t tag = cis.ReadTag();
-		    if (tag == 0)
-			return false;
-		    if (tag != GOOGLE_PROTOBUF_WIRE_FORMAT_MAKE_TAG(1,
-                                google::protobuf::internal::WireFormat
-                                ::WIRETYPE_LENGTH_DELIMITED)) {
-			AZOUK_LOG(WARNING, MEDIUMVERBOSITY,
-                                TEXT("unexpected tag " + repr(tag) +
-                                    "; expecting " +
-				    repr(GOOGLE_PROTOBUF_WIRE_FORMAT_MAKE_TAG(1,
-                                        google::protobuf::internal::WireFormat
-                                            ::WIRETYPE_LENGTH_DELIMITED))));
-			return false;
-		    }
-		    return google::protobuf::internal::WireFormat
-                        ::ReadMessage(&cis, &m);
+                    boost::uint32_t length;
+                    if (!cis.ReadVarint32(&length))
+                        return false;
+                    if (length < 0)
+                        return false;
+                    google::protobuf::io::CodedInputStream::Limit limit =
+                        cis.PushLimit(length);
+                    bool ok = m.ParseFromCodedStream(&cis) &&
+                        cis.ConsumedEntireMessage();
+                    cis.PopLimit(limit);
+                    return ok;
 		}
 	    };
 
