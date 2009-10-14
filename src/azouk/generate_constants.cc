@@ -237,6 +237,8 @@ int AzoukMain(int argc, char** argv) {
 	    return write_cxx(config, out, argv[1]);
     }
     assert(false);
+    std::cerr << "unreachable code.\n";
+    abort();
 }
 
 int main(int argc, char** argv) {
