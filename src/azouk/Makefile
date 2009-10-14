@@ -77,13 +77,13 @@ PROTOC		:= protoc
 PROTOCFLAGS	:= 
 
 # protocol buffers (http://code.google.com/apis/protocolbuffers/)
-PROTOBUFS_FILES := $(shell find -name '*.proto' | grep -vE '/(\..*|build)' | sed -e 's@^\./@@g')
+PROTOBUFS_FILES := $(shell find $(SOURCEDIRS) -name '*.proto' | grep -vE '/(\..*|build)' | sed -e 's@^\./@@g')
 PROTOBUFS_COMPILATIONS_CC := $(PROTOBUFS_FILES:.proto=.pb.cc)
 PROTOBUFS_COMPILATIONS_H := $(PROTOBUFS_FILES:.proto=.pb.h)
 PROTOBUFS_COMPILATIONS_PY := $(PROTOBUFS_FILES:.proto=_pb2.py)
 TARGETS := $(TARGETS) $(PROTOBUFS_COMPILATIONS_PY)
 LIBRARIES := $(LIBRARIES) $(PROTOBUFS_COMPILATIONS_CC:.cc=.o)
-LIBRARIES := $(LIBRARIES) $(shell for dir in $(SOURCEDIRS); do find $$dir -name '*.cc' | grep -v '\.svn' | sed -e 's/\.cc$$/.o/g'; done)
+LIBRARIES := $(LIBRARIES) $(shell find $(SOURCEDIRS) -name '*.cc' | grep -v '\.svn' | sed -e 's/\.cc$$/.o/g')
 
 PROGRAMS			:= $(addprefix $(BUILDDIR)/,$(PROGRAMS))
 TARGETS				:= $(addprefix $(BUILDDIR)/,$(TARGETS))
@@ -123,7 +123,7 @@ $(PROTOBUFS_COMPILATIONS_PY) : $(BUILDDIR)/%_pb2.py : %.proto
 	$Q test -f $@
 	$Q chmod -x $@
 
-SOURCE_FILES := $(shell find -name '*.cc' -o -name '*.c' | grep -v '\.svn') $(PROTOBUFS_COMPILATIONS_CC)
+SOURCE_FILES := $(shell find $(SOURCEDIRS) -name '*.cc' -o -name '*.c' | grep -v '\.svn') $(PROTOBUFS_COMPILATIONS_CC)
 SOURCE_FILES := $(shell for i in $(SOURCE_FILES); do echo $$i; done | sed -e 's@^\./@@g')
 
 
@@ -281,6 +281,6 @@ clean:
 
 .PHONY: all clean default
 
-sourcechanged: Makefile $(shell find -regextype posix-egrep -iregex '.*\.(cc|c|cpp|h|proto|py|rules)' | grep -vE '\.svn|build')
+sourcechanged: Makefile $(shell find . -regextype posix-egrep -iregex '.*\.(cc|c|cpp|h|proto|py|rules)' | grep -vE '\.svn|build')
 	@ touch $@
 
