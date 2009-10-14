@@ -70,6 +70,7 @@ LDFLAGS		+= $(GENERALFLAGS) \
 			-lboost_program_options \
 			-lboost_signals \
 			-lboost_system \
+			-lpthread \
     			#
 PYTHONMODULELDFLAGS	:= $(LDFLAGS) -lpython$(PYTHON_VERSION) -ldl -lpthread -lutil -lboost_python \
 

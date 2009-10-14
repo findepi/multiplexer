@@ -27,6 +27,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
+#include <google/protobuf/stubs/common.h>
 #include <boost/noncopyable.hpp>
 #include "azlib/util/fd.h"
 #include "azlib/repr.h"
@@ -44,9 +45,15 @@ namespace azlib {
 		static inline bool Write(const google::protobuf::Message& m,
                         google::protobuf::io::ZeroCopyOutputStream& zcos) {
 		    google::protobuf::io::CodedOutputStream coded(&zcos);
+#if GOOGLE_PROTOBUF_VERSION >= 2001000
                     coded.WriteVarint32(m.ByteSize());
                     m.SerializeToCodedStream(&coded);
                     return !coded.HadError();
+#else
+                    // versions prior to 2.1.0 did not have HadError method
+                    return coded.WriteVarint32(m.ByteSize()) &&
+                        m.SerializeToCodedStream(&coded);
+#endif
 		}
 	    };
 
