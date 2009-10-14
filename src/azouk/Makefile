@@ -49,7 +49,7 @@ else
 Q=
 endif
 
-PYTHON_VERSION	:= 2.5
+PYTHON_VERSION	:= $(shell python --version 2>&1 | sed 's/^[^0-9]*\([0-9]\+\)\.\([0-9]\+\).*/\1.\2/')
 CXX		:= g++
 O		?= -O3
 GENERALFLAGS	+= $(O) -Wall -Wnon-virtual-dtor -Winit-self \
