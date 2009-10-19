@@ -23,7 +23,7 @@
 all::
 
 # Create build directory if it does not exist.
-_ := $(shell test -e build || { mkdir -p ../../build; ln -s ../../build .; })
+_ := $(shell test -e build || { mkdir -p ../build; ln -s ../build .; })
 
 MAKEFLAGS	+= -r
 # Delete the default suffixes (Well, -r does this, but maybe not in all makes.)
