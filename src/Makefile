@@ -115,6 +115,7 @@ $(PROTOBUFS_COMPILATIONS_CC) : $(BUILDDIR)/%.pb.cc : %.proto
 	$Q chmod -x $@ $(patsubst %.cc, %.h, $@)
 # alias-like rule
 $(PROTOBUFS_COMPILATIONS_H) : %.pb.h : %.pb.cc
+	test -e $@
 
 $(PROTOBUFS_COMPILATIONS_PY) : $(BUILDDIR)/%_pb2.py : %.proto
 	$Q mkdir -p `dirname $@`
@@ -151,7 +152,7 @@ $(BUILDDIR)/%.dep:
 ifneq "$(MAKECMDGOALS)" "clean"
 ifneq "$(MAKECMDGOALS)" "sourcechanged"
 -include $(DEPENDECY_FILES)
-_ := $(shell echo "Updating version file '$(VERSION_BASH_FILE)'" >&2 ; bash ./update-version-bash-file "$(VERSION_BASH_FILE)" >&2 )
+_ := $(shell echo "Updating version file '$(VERSION_BASH_FILE)'" >&2 ; ./update-version-bash-file "$(VERSION_BASH_FILE)" >&2 )
 endif
 endif
 

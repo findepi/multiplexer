@@ -208,6 +208,11 @@ class PickleData(object):
             except TypeError:
                 # C++-exported classes are (at least sometimes) not picklable
                 self._pkl = repr(self._obj)
+            except pickle.PicklingError:
+                # django exceptions (e.g, website.data.models.DoesNotExist)
+                # can't be found by the pickler
+                self._pkl = repr(self._obj)
+
             assert self._pkl is not None
 
             self._obj = None

@@ -59,6 +59,7 @@ namespace mxcontrol {
     private:
 	int chunksize_;
     };
+
     REGISTER_MXCONTROL_SUBCOMMAND(streamlogs, mxcontrol::StreamLogs);
 
     static inline void send_logs(Client& client, LogEntriesMessage& logs) {
@@ -79,7 +80,7 @@ namespace mxcontrol {
     int StreamLogs::run() {
 	using namespace azlib::protobuf;
 
-	FileMessageInputStream fmis(0);
+	IstreamMessageInputStream fmis(std::cin);
 	multiplexer::LogEntriesMessage logs;
 
 	multiplexer::Client& client = _multiplexer_client(peers::LOG_STREAMER);

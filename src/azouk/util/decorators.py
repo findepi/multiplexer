@@ -41,6 +41,18 @@ def parametrizable_decorator(decorator):
     return wrapper
 
 @parametrizable_decorator
+def post_eval_decorator(decorator):
+    """A decorator making easier writing decorators that modify returned
+       value."""
+    @parametrizable_decorator
+    def actual_decorator(fn):
+        def wrapper(*args, **kwargs):
+            value = fn(*args, **kwargs)
+            return decorator(args, kwargs, value)
+        return wrapper
+    return actual_decorator
+
+@parametrizable_decorator
 def never_throw(fn, default = None):
     def wrapper(*args, **kwargs):
         try:
@@ -51,3 +63,33 @@ def never_throw(fn, default = None):
             print >> sys.stderr, "Ignored."
             return default
     return wrapper
+
+class memoized_property(object):   # Copied from SqlAlchemy
+    """A read-only @property that is only evaluated once."""
+    def __init__(self, fget, doc=None):
+        self.fget = fget
+        self.__doc__ = doc or fget.__doc__
+        self.__name__ = fget.__name__
+
+    def __get__(self, obj, cls):
+        if obj is None:
+            return None
+        obj.__dict__[self.__name__] = result = self.fget(obj)
+        return result
+
+def reset_memoized(instance, name):   # Copied from SqlAlchemy
+    try:
+        del instance.__dict__[name]
+    except KeyError:
+        pass
+
+
+@parametrizable_decorator
+def memoized(fn):
+    cache = {}
+    def memoized_wrapper(*args):
+        if args not in cache:
+            cache[args] = fn(*args)
+        return cache[args]
+    return memoized_wrapper
+

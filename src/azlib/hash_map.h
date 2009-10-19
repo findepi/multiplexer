@@ -44,6 +44,7 @@
 
 namespace azlib {
     using ::__gnu_cxx::hash_map;
+    using ::__gnu_cxx::hash;
 };
 
 #endif // AZLIB_HASH_MAP_H

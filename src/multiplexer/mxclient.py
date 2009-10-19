@@ -24,8 +24,8 @@ from azouk._allinone import *
 import azouk._allinone as _mxclient
 import socket, sys, struct, random, time
 from functools import wraps
-import google.protobuf.message
-from google.protobuf import reflection
+from google.protobuf.message import Message
+from google.protobuf.reflection import containers
 from types import MethodType
 
 from multiplexer.protocolbuffers import *
@@ -33,32 +33,63 @@ from multiplexer.multiplexer_constants import peers, types
 from azouk.logging import log, WARNING, HIGHVERBOSITY
 
 def initialize_message(_message, **kwargs):
+    """Initializes message `_message` with `kwargs`. `kwargs` must be a
+       dictionary ``message field => initializer``. Valid initializers are:
+            - for a scalar field: scalar value
+            - for a list of scalars: ???
+            - for a message field: a message or a dict
+            - for a list of messages: a list of messages or dicts (can be
+              mixed)
+    """
     message = _message
     for key, value in kwargs.items():
-        if isinstance(value, (list, tuple)):
+
+        target = getattr(message, key)
+
+        if value is None:
+            pass
+
+        elif isinstance(target, containers.RepeatedScalarFieldContainer):
+            assert isinstance(value, (list, tuple)), \
+                        "Initializer for RepeatedScalarFieldContainer must " \
+                        "be a list or tuple."
+
             for element in value:
-                if isinstance(element, google.protobuf.message.Message):
-                    getattr(message, key).add().CopyFrom(element)
+                target.append(element)
 
-                elif isinstance(element, dict):
-                    initialize_message(getattr(message, key).add(),
-                            **element)
+        elif isinstance(target, containers.RepeatedCompositeFieldContainer):
+            assert isinstance(value, (list, tuple)), \
+                        "Initializer for RepeatedScalarFieldContainer must " \
+                        "be a list or tuple."
 
-        elif isinstance(value, dict):
-            initialize_message(getattr(message, key), **value)
+            for element in value:
+                assert isinstance(element, dict), \
+                        "Initializer for RepeatedCompositeFieldContainer's " \
+                        "item must be a dict."
+
+                initialize_message(target.add(), **element)
+
+        elif isinstance(target, Message):
+            if isinstance(value, dict):
+                initialize_message(target, **value)
+
+            elif isinstance(value, Message):
+                target.CopyFrom(value)
+
+            else:
+                assert isinstance(value, (dict, Message)), \
+                        "Initializer for a Message field must be a dict or " \
+                        "Message."
 
         else:
+            assert isinstance(target, (basestring, int, long, float, bool))
             setattr(message, key, value)
 
     return message
 
 def make_message(_type, **kwargs):
-    """
-        make_message(MessageType, **kwargs) -> instance of MessageType with
-        attributes set
-        Create a message using factory function type and
-        assign its attributes according do kwargs (attribute, value).
-    """
+    """Create a message of type `_type` with field defined by `kwargs`. See
+       `initialize_message` for a documentation on using `kwargs`. """
     message = _type()
     initialize_message(message, **kwargs)
     return message
@@ -78,10 +109,24 @@ def dict_message(m, all_fields=False, recursive=False):
 
     if recursive:
         for k, v in d.items():
-            if isinstance(v, google.protobuf.message.Message):
+            if isinstance(v, Message):
                 d[k] = dict_message(v, all_fields=all_fields, recursive=True)
 
     return d
+
+def message_getattr(message, field, default=None):
+    """Same as ``getattr(message, field, default)`` but works with Protobuf
+       Messages, for which `getattr` will return field value even if the field
+       has not been set by the sender. Uses ``message._has_field`` to detect,
+       if the field "exists".
+
+       If `message` is not a Protobuf Message, then standard `getattr` is used.
+    """
+    if not isinstance(message, Message):
+        return getattr(message, field, default)
+    if getattr(message, '_has_' + field):
+        return getattr(message, field)
+    return default
 
 def parse_message(type, buffer):
     t = type()

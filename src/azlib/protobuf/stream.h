@@ -147,6 +147,26 @@ namespace azlib {
                     coded_input_stream_;
 	    };
 
+            struct IstreamMessageInputStream : MessageInputStream {
+                explicit IstreamMessageInputStream(std::istream& in)
+                    : in_(in)
+                    , istream_input_stream_(new google::protobuf::io
+                            ::IstreamInputStream(&in_))
+		    , coded_input_stream_(new google::protobuf::io
+                            ::CodedInputStream(istream_input_stream_.get()))
+                {}
+
+		virtual bool read(google::protobuf::Message& m) {
+		    return Read(m, *coded_input_stream_);
+		}
+            private:
+                std::istream& in_;
+                boost::scoped_ptr<google::protobuf::io::IstreamInputStream>
+                    istream_input_stream_;
+                boost::scoped_ptr<google::protobuf::io::CodedInputStream>
+                    coded_input_stream_;
+            };
+
     }; // namespace protobuf
 }; // namespace azlib
 
