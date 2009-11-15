@@ -54,6 +54,7 @@
     __AZOUK_TRIGGER_STATIC_INITILIZATION_CODE(AZOUK_UNIQUE_NAME(BOOST_PP_CAT(name, _trigger_static_initialization)), code, condition)
 
 #define __AZOUK_TRIGGER_STATIC_INITILIZATION_CODE(name, code, condition)    \
+    namespace {                                                     \
 	static struct BOOST_PP_CAT(name, _struct) {		    \
 	    inline BOOST_PP_CAT(name, _struct)() {		    \
 		if (condition) {				    \
@@ -61,6 +62,7 @@
 		}						    \
 	    }							    \
 	} BOOST_PP_CAT(name, _instance)				    \
-	//
+    }                                                               \
+    //
 
 #endif
