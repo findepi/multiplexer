@@ -87,7 +87,7 @@ void BasicClient::shutdown() {
 }
 
 void BasicClient::connection_destroyed(Connection* conn) {
-    AZOUK_LOG(ERROR, LOWVERBOSITY, CTX("BasicClient")
+    AZOUK_LOG(LOG_ERROR, LOWVERBOSITY, CTX("BasicClient")
             MESSAGE("connection_destroyed(" + repr(conn) + ")")
         );
     Connection::pointer c;
@@ -123,7 +123,7 @@ void BasicClient::reconnect_after_timeout(TimerPointer, Endpoint peer_endpoint,
                 connection_by_endpoint_.end())
 	    async_connect(peer_endpoint);
     } else {
-        AZOUK_LOG(ERROR, HIGHVERBOSITY, CTX("BasicClient")
+        AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY, CTX("BasicClient")
                 MESSAGE("auto reconnect to " + repr(peer_endpoint) + "cancelled "
                     "by error" + repr(error))
             );
@@ -145,7 +145,7 @@ ConnectionWrapper BasicClient::async_connect(
     for (ConnectionByEndpoint::iterator next = connection_by_endpoint_.begin(),
             i; next != connection_by_endpoint_.end() && (i = next++, true); ) {
 	if (!i->second.lock()) {
-            AZOUK_LOG(ERROR, LOWVERBOSITY, CTX("BasicClient.connect")
+            AZOUK_LOG(LOG_ERROR, LOWVERBOSITY, CTX("BasicClient.connect")
                     MESSAGE("there should be no dangling weak references in "
                         "connection_by_endpoint_")
                 );

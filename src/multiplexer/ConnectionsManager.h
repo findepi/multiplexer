@@ -229,7 +229,7 @@ namespace multiplexer {
 		    if (i.second.lock())
 			++ c;
 		    else
-                        AZOUK_LOG(ERROR, LOWVERBOSITY, CTX("ConnectionsManager")
+                        AZOUK_LOG(LOG_ERROR, LOWVERBOSITY, CTX("ConnectionsManager")
                                 MESSAGE("dangling weak_ref in connection_by_id_"));
 		return c;
 	    }

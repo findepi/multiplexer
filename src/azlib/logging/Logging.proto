@@ -31,7 +31,7 @@ message LogEntry {
     // context, e.g. "tarantula.multiplexer.connections.123"
     optional string context = 3;
 
-    // DEBUG, INFO, OK, WARNING, ERROR, CRITICAL, UNKNOWN -- defined in azlib/loggin.h
+    // DEBUG, INFO, OK, WARNING, LOG_ERROR, CRITICAL, UNKNOWN -- defined in azlib/loggin.h
     optional uint32 level = 4;
 
     // defined along with levels

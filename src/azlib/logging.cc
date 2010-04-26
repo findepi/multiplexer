@@ -184,7 +184,7 @@ namespace azlib {
 	    // create new CodedOutputStream based on file
 	    int fd = open(file.c_str(), O_CREAT | O_WRONLY | O_APPEND, 0600);
 	    if (fd < 0) {
-		AZOUK_LOG(ERROR, LOWVERBOSITY, MESSAGE("Failed to open file '" + file + "' for writing logs.") CTX("logging"));
+		AZOUK_LOG(LOG_ERROR, LOWVERBOSITY, MESSAGE("Failed to open file '" + file + "' for writing logs.") CTX("logging"));
 
 	    } else {
 		try {
@@ -203,7 +203,7 @@ namespace azlib {
 	}
 
 	void die(const std::string& text) {
-	    AZOUK_LOG(ERROR, LOWVERBOSITY, MESSAGE(text) MUSTLOG);
+	    AZOUK_LOG(LOG_ERROR, LOWVERBOSITY, MESSAGE(text) MUSTLOG);
 	    signals::get_exit_signal()(1);
 	}
 

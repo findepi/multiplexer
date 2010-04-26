@@ -50,7 +50,7 @@ void Server::start() { _start_accept(); }
 
 void Server::handle_message(Connection::pointer conn, boost::shared_ptr<const RawMessage> raw, boost::shared_ptr<MultiplexerMessage> msg) {
     if (msg->from() == instance_id_) {
-	AZOUK_LOG(ERROR, MEDIUMVERBOSITY, CTX("multiplexer.server") MESSAGE("received message from self")
+	AZOUK_LOG(LOG_ERROR, MEDIUMVERBOSITY, CTX("multiplexer.server") MESSAGE("received message from self")
 		FLOW(msg->workflow())
 		SKIPFILEIF(!(msg->logging_method() & multiplexer::LoggingMethod::FILE))
 	    );

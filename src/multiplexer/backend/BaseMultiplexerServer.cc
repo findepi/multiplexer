@@ -200,7 +200,7 @@ namespace multiplexer {
 		    break;
 
 		default:
-		    AZOUK_LOG(ERROR, LOWVERBOSITY,
+		    AZOUK_LOG(LOG_ERROR, LOWVERBOSITY,
 			    MESSAGE("received unknown meta-packet type=" + repr(mxmsg.type()))
 			);
 	    } // switch

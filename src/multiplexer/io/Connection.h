@@ -161,7 +161,7 @@ namespace multiplexer {
                 AZOUK_LOG(DEBUG, HIGHVERBOSITY, MESSAGE("shutdown called on " +
                             repr((void*)this)));
 		if (shuts_down_) {
-                    AZOUK_LOG(ERROR, HIGHVERBOSITY,
+                    AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY,
                             MESSAGE("shutdown called twice on " + repr((void*)this))
                         );
 		    return;
@@ -277,7 +277,7 @@ namespace multiplexer {
 		if (error == boost::asio::error::operation_aborted || shuts_down_)
 		    return;
 		if (!schedule(heartbit_message_, true, true)) {
-		    AZOUK_LOG(ERROR, MEDIUMVERBOSITY, CTX("connection")
+		    AZOUK_LOG(LOG_ERROR, MEDIUMVERBOSITY, CTX("connection")
 			    MESSAGE("failed to schedule Heartbit message, we may lose the connection")
 			    // TODO add peer_type() with DATA()
 			);
@@ -337,7 +337,7 @@ namespace multiplexer {
 		    return;
 		}
 		if (error) {
-                    AZOUK_LOG(ERROR, HIGHVERBOSITY,
+                    AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY,
                             MESSAGE("read header error on " + repr((void*)this)
                                 + "error=" + repr(error)
                                 + "bytes_transferred=" + repr(bytes_transferred)
@@ -361,7 +361,7 @@ namespace multiplexer {
 		    return;
 
 		if (error || bytes_transferred != incoming_message_->get_body_length()) {
-                    AZOUK_LOG(ERROR, HIGHVERBOSITY,
+                    AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY,
                             MESSAGE("read body error on " + repr((void*)this)
                                 + "error=" + repr(error)
                                 + "bytes_transferred=" + repr(bytes_transferred)
@@ -377,7 +377,7 @@ namespace multiplexer {
 		incoming_channel_state_ = ChannelState::FREE;
 
 		if (!incoming_message_->verify()) {
-                    AZOUK_LOG(ERROR, HIGHVERBOSITY,
+                    AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY,
                             MESSAGE("incomming message verification failed"));
 		    shutdown();
 

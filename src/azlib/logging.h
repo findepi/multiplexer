@@ -135,7 +135,7 @@ namespace azlib {
 	    ((INFO, 2)) \
 	    ((OK, 3)) \
 	    ((WARNING, 4)) \
-	    ((ERROR, 5)) \
+	    ((LOG_ERROR, 5)) \
 	    ((CRITICAL, 6)) \
 	    /**/
 

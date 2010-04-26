@@ -226,7 +226,7 @@ class BaseMultiplexerServer(MultiplexerPeer):
                 self.no_response()
 
         else:
-            log(ERROR, LOWVERBOSITY, text="received unknown meta-packet",
+            log(LOG_ERROR, LOWVERBOSITY, text="received unknown meta-packet",
                     data=PickleData(mxmsg.type))
 
     @log_call
