@@ -97,7 +97,7 @@ type {\
 #ifndef IS_GENERATE_CONSTANTS
 		using namespace azlib::logging::consts;
 		AZOUK_LOG(DEBUG, MEDIUMVERBOSITY, CTX("config")
-                        TEXT("reading configuration file"));
+                        MESSAGE("reading configuration file"));
 #endif
 
 		ifstream in(file.c_str(), ifstream::in | ifstream::binary);

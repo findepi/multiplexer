@@ -74,7 +74,7 @@ namespace multiplexer {
 	    , instance_id_(random_())
         {
             AZOUK_LOG(INFO, LOWVERBOSITY, CTX("ConnectionsManager")
-                    TEXT("created new ConnectionsManager with id " +
+                    MESSAGE("created new ConnectionsManager with id " +
                         repr(instance_id_))
                 );
 	}
@@ -120,7 +120,7 @@ namespace multiplexer {
 	void register_connection(typename Connection::pointer conn, const WelcomeMessage& welcome) {
 
             AZOUK_LOG(DEBUG, HIGHVERBOSITY, CTX("ConnectionsManager")
-                    TEXT("registering connection " + repr((void*)conn.get()) +
+                    MESSAGE("registering connection " + repr((void*)conn.get()) +
                         " id=" + repr(conn->peer_id()) +
                         " type=" + repr(conn->peer_type()))
                 );
@@ -137,7 +137,7 @@ namespace multiplexer {
 	    }
 
             AZOUK_LOG(INFO, HIGHVERBOSITY, CTX("ConnectionsManager")
-                    TEXT("registered connection"
+                    MESSAGE("registered connection"
                           " id=" + repr(conn->peer_id())
                         + " type=" + repr(conn->peer_type())
                             + " (" + repr(config_.peer_name_by_type(
@@ -230,7 +230,7 @@ namespace multiplexer {
 			++ c;
 		    else
                         AZOUK_LOG(ERROR, LOWVERBOSITY, CTX("ConnectionsManager")
-                                TEXT("dangling weak_ref in connection_by_id_"));
+                                MESSAGE("dangling weak_ref in connection_by_id_"));
 		return c;
 	    }
 	    return connection_by_id_.size();

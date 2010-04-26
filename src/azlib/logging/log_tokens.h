@@ -42,7 +42,7 @@
 
 # // __AZOUK_LOG_KW_BEFORE_CHECK_ namespace
 #define __AZOUK_LOG_KW_BEFORE_CHECK_FLOW(flow, data)
-#define __AZOUK_LOG_KW_BEFORE_CHECK_TEXT(text, data)
+#define __AZOUK_LOG_KW_BEFORE_CHECK_MESSAGE(text, data)
 #define __AZOUK_LOG_KW_BEFORE_CHECK_DATA(type_id, type, setters, data)
 #define __AZOUK_LOG_KW_BEFORE_CHECK_CTX(context, data)
 #define __AZOUK_LOG_KW_BEFORE_CHECK_CONTEXT(context, data)
@@ -61,7 +61,7 @@
 
 # // __AZOUK_EMIT_KW_AFTER_CHECK_ namespace
 #define __AZOUK_EMIT_KW_AFTER_CHECK_FLOW(flow, data)
-#define __AZOUK_EMIT_KW_AFTER_CHECK_TEXT(text, data)
+#define __AZOUK_EMIT_KW_AFTER_CHECK_MESSAGE(text, data)
 #define __AZOUK_EMIT_KW_AFTER_CHECK_DATA(type_id, type, setters, data)
 #define __AZOUK_EMIT_KW_AFTER_CHECK_CTX(context, data)			BOOST_PP_ARRAY_ELEM(2, data).append(".").append(context);
 #define __AZOUK_EMIT_KW_AFTER_CHECK_CONTEXT(context, data)		BOOST_PP_ARRAY_ELEM(2, data) = (context);
@@ -73,7 +73,7 @@
 
 # // __AZOUK_EMIT_KW_BEFORE_EMIT_ namespace
 #define __AZOUK_EMIT_KW_BEFORE_EMIT_FLOW(flow, data)			BOOST_PP_ARRAY_ELEM(0, data).set_workflow(flow);
-#define __AZOUK_EMIT_KW_BEFORE_EMIT_TEXT(text, data)			BOOST_PP_ARRAY_ELEM(0, data).set_text(text);
+#define __AZOUK_EMIT_KW_BEFORE_EMIT_MESSAGE(text, data)			BOOST_PP_ARRAY_ELEM(0, data).set_text(text);
 #define __AZOUK_EMIT_KW_BEFORE_EMIT_DATA(type_id, type, setters, data)  AZOUK_CREATE_MESSAGE( type, BOOST_PP_ARRAY_ELEM(1, data), setters ); \
 									BOOST_PP_ARRAY_ELEM(0, data).set_data_type(type_id); \
 									BOOST_PP_ARRAY_ELEM(0, data).set_data_class(#type);

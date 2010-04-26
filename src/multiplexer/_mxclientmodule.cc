@@ -97,7 +97,7 @@ struct ExceptionTranslator {
 #define EXPORTED_EXCEPTION_HANDLER(exc) \
     void operator() (const multiplexer::Client::exc& /*e*/) const { \
         AZOUK_LOG(DEBUG, HIGHVERBOSITY, CTX("_mxclient") \
-                TEXT("converting an exception of type " #exc)); \
+                MESSAGE("converting an exception of type " #exc)); \
 	Assert(_MxClientExceptionDefinitions::exc.ptr()); \
 	Assert(_MxClientExceptionDefinitions::exc.ptr() != Py_None); \
 	PyErr_SetNone(_MxClientExceptionDefinitions::exc.ptr()); \

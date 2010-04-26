@@ -47,7 +47,7 @@
 #  *
 #  *	    FLOW(flow)				add workflow information
 #  *
-#  *	    TEXT(text)				add human readable textual
+#  *	    MESSAGE(text)				add human readable textual
 #  *                                            information
 #  *
 #  *	    DATA(type_id, type, setters)	add data_type(type_id) information and generate inner data msg using setters
@@ -65,7 +65,7 @@
 #  *	    AZOUK_LOG(DEBUG, VERBOSE, CONTEXT("tarantula.multiplexer"));
 #  *
 #  *	    AZOUK_LOG(DEBUG, VERBOSE, CTX("multiplexer") FLOW(mxmsg.workflow())
-#  *		    TEXT("received a message with id " +
+#  *		    MESSAGE("received a message with id " +
 #  *                        boost::lexical_cast<std::string>(mxmsg.id))
 #  *		);
 #  *

@@ -44,9 +44,9 @@
 #define __AZOUK_PP_KWARGS_TOKEN_FLOW(flow)				__AZOUK_PP_KWARGS_TOKEN_FLOW_I ( flow ,
 #define __AZOUK_PP_KWARGS_TOKEN_FLOW_I(flow, tokens, namespace, data)	namespace ## FLOW(flow, data) \
 									__AZOUK_PP_KWARGS_TOKEN_ ## tokens, namespace, data)
-# // TEXT(text)
-#define __AZOUK_PP_KWARGS_TOKEN_TEXT(text)				__AZOUK_PP_KWARGS_TOKEN_TEXT_I ( text ,
-#define __AZOUK_PP_KWARGS_TOKEN_TEXT_I(text, tokens, namespace, data)	namespace ## TEXT(text, data) \
+# // MESSAGE(text)
+#define __AZOUK_PP_KWARGS_TOKEN_MESSAGE(text)				__AZOUK_PP_KWARGS_TOKEN_MESSAGE_I ( text ,
+#define __AZOUK_PP_KWARGS_TOKEN_MESSAGE_I(text, tokens, namespace, data)	namespace ## MESSAGE(text, data) \
 									__AZOUK_PP_KWARGS_TOKEN_ ## tokens, namespace, data)
 // CTX(context)
 #define __AZOUK_PP_KWARGS_TOKEN_CTX(text)				__AZOUK_PP_KWARGS_TOKEN_CTX_I ( text ,

@@ -157,7 +157,7 @@
                     __azouk_log_call_context, \
                     __azouk_log_call_level, \
                     __azouk_log_call_verbosity, \
-                    TEXT(std::string("ENTER ") + __PRETTY_FUNCTION__) \
+                    MESSAGE(std::string("ENTER ") + __PRETTY_FUNCTION__) \
                     CONTEXT(__azouk_log_call_context) \
                     tokens \
                 ); \
@@ -178,7 +178,7 @@
                         __azouk_log_call_context, \
                         __azouk_log_call_level, \
                         __azouk_log_call_verbosity, \
-                        TEXT(std::string("LEAVE ") + __PRETTY_FUNCTION__) \
+                        MESSAGE(std::string("LEAVE ") + __PRETTY_FUNCTION__) \
                         CONTEXT(__azouk_log_call_context) \
                     ); \
             } \

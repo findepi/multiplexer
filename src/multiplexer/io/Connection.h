@@ -107,13 +107,13 @@ namespace multiplexer {
 	     */
 	    static pointer Create(boost::asio::io_service& io_service, boost::shared_ptr<ConnectionsManagerImplementation> manager) {
 		pointer p(new Connection(io_service, manager));
-                AZOUK_LOG(DEBUG, HIGHVERBOSITY, TEXT("created new Connection " +
+                AZOUK_LOG(DEBUG, HIGHVERBOSITY, MESSAGE("created new Connection " +
                             repr((void*)p.get())));
 		return p;
 	    }
 	    
 	    ~Connection() {
-                AZOUK_LOG(DEBUG, HIGHVERBOSITY, TEXT("destroying Connection " +
+                AZOUK_LOG(DEBUG, HIGHVERBOSITY, MESSAGE("destroying Connection " +
                             repr((void*)this)));
 		if (!shuts_down_)
 		    shutdown();
@@ -130,7 +130,7 @@ namespace multiplexer {
 	    }
 
 	    void start_only_read() {
-                AZOUK_LOG(DEBUG, HIGHVERBOSITY, TEXT("starting Connection " +
+                AZOUK_LOG(DEBUG, HIGHVERBOSITY, MESSAGE("starting Connection " +
                             repr((void*)this)));
 		Assert(!is_living_);
 		Assert(!shuts_down_);
@@ -158,11 +158,11 @@ namespace multiplexer {
 
 	    // stops the processing ASAP
 	    void shutdown() {
-                AZOUK_LOG(DEBUG, HIGHVERBOSITY, TEXT("shutdown called on " +
+                AZOUK_LOG(DEBUG, HIGHVERBOSITY, MESSAGE("shutdown called on " +
                             repr((void*)this)));
 		if (shuts_down_) {
                     AZOUK_LOG(ERROR, HIGHVERBOSITY,
-                            TEXT("shutdown called twice on " + repr((void*)this))
+                            MESSAGE("shutdown called twice on " + repr((void*)this))
                         );
 		    return;
 		}
@@ -208,7 +208,7 @@ namespace multiplexer {
 
 		if (!force && outgoing_queue_full()) {
                     AZOUK_LOG(WARNING, HIGHVERBOSITY,
-                            TEXT("outgoing queue full, dropping message"));
+                            MESSAGE("outgoing queue full, dropping message"));
 		    return scheduling_result_type_default_functor_(); // drop
 		}
 
@@ -278,7 +278,7 @@ namespace multiplexer {
 		    return;
 		if (!schedule(heartbit_message_, true, true)) {
 		    AZOUK_LOG(ERROR, MEDIUMVERBOSITY, CTX("connection")
-			    TEXT("failed to schedule Heartbit message, we may lose the connection")
+			    MESSAGE("failed to schedule Heartbit message, we may lose the connection")
 			    // TODO add peer_type() with DATA()
 			);
 		}
@@ -331,14 +331,14 @@ namespace multiplexer {
 
 		if (bytes_transferred == 0) {
                     AZOUK_LOG(DEBUG, HIGHVERBOSITY,
-                            TEXT("peer shut its end down \"gracefully\""));
+                            MESSAGE("peer shut its end down \"gracefully\""));
 		    incoming_channel_state_ = ChannelState::BROKEN; // this shouldn't be needed
 		    shutdown();
 		    return;
 		}
 		if (error) {
                     AZOUK_LOG(ERROR, HIGHVERBOSITY,
-                            TEXT("read header error on " + repr((void*)this)
+                            MESSAGE("read header error on " + repr((void*)this)
                                 + "error=" + repr(error)
                                 + "bytes_transferred=" + repr(bytes_transferred)
                         ));
@@ -362,7 +362,7 @@ namespace multiplexer {
 
 		if (error || bytes_transferred != incoming_message_->get_body_length()) {
                     AZOUK_LOG(ERROR, HIGHVERBOSITY,
-                            TEXT("read body error on " + repr((void*)this)
+                            MESSAGE("read body error on " + repr((void*)this)
                                 + "error=" + repr(error)
                                 + "bytes_transferred=" + repr(bytes_transferred)
                                 + "expected_transferred=" +
@@ -378,7 +378,7 @@ namespace multiplexer {
 
 		if (!incoming_message_->verify()) {
                     AZOUK_LOG(ERROR, HIGHVERBOSITY,
-                            TEXT("incomming message verification failed"));
+                            MESSAGE("incomming message verification failed"));
 		    shutdown();
 
 		} else {
@@ -395,7 +395,7 @@ namespace multiplexer {
 		ManagerPointer manager = manager_.lock();
 		if (!manager) {
                     AZOUK_LOG(DEBUG, HIGHVERBOSITY,
-                            TEXT("manager is gone for " + repr((void*)this)));
+                            MESSAGE("manager is gone for " + repr((void*)this)));
 		    shutdown();
 		    return;
 		}
@@ -403,7 +403,7 @@ namespace multiplexer {
 		boost::shared_ptr<MultiplexerMessage> mxmsg(new MultiplexerMessage());
 		if (!mxmsg->ParseFromString(message->get_message())) {
                     AZOUK_LOG(DEBUG, HIGHVERBOSITY,
-                            TEXT("received invalid message on " +
+                            MESSAGE("received invalid message on " +
                                 repr((void*)this) + "(maybe id=" +
                                 repr(mxmsg->id()) + ")")
                         );
@@ -428,7 +428,7 @@ namespace multiplexer {
 				if (!welcome.ParseFromString(mxmsg.message())) break;
 				if (!manager->check_multiplexer_password(welcome.multiplexer_password())) {
 				    AZOUK_LOG(WARNING, MEDIUMVERBOSITY, CTX("connection")
-					    TEXT("valid WelcomeMessage with invalid multiplexer_password rcvd")
+					    MESSAGE("valid WelcomeMessage with invalid multiplexer_password rcvd")
 					);
 				    break;
 				}
@@ -483,7 +483,7 @@ namespace multiplexer {
 	    void _handle_write(const boost::system::error_code& error, size_t bytes_transferred) {
                 if (error) {
                     AZOUK_LOG(DEBUG, HIGHVERBOSITY,
-                            TEXT("write error on " + repr((void*)this)
+                            MESSAGE("write error on " + repr((void*)this)
                                 + " error=" + repr(error)
                                 + " bytes_transferred=" +
                                 repr(bytes_transferred)
@@ -495,7 +495,7 @@ namespace multiplexer {
 		if (bytes_transferred == 0) {
 		    // is it exceptional?
                     AZOUK_LOG(DEBUG, HIGHVERBOSITY,
-                            TEXT("i have managed to write nothing. Shut down")
+                            MESSAGE("i have managed to write nothing. Shut down")
                         );
 		    shutdown();
 		    return;
@@ -531,7 +531,7 @@ namespace multiplexer {
 		}
 		// we haven't managed to transfer messages ownership to the manager for eventual resending
                 AZOUK_LOG(WARNING, HIGHVERBOSITY,
-                        TEXT("Connection shutdown on " + repr((void*)this)
+                        MESSAGE("Connection shutdown on " + repr((void*)this)
                             + ", dropping about " + repr(outgoing_queue_.size())
                             + " outgoing messages"
                     ));

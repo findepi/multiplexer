@@ -194,7 +194,7 @@ namespace multiplexer {
             AZOUK_ENTER(VERBOSITY(HIGHVERBOSITY) DEFAULT);
 
 	    AZOUK_LOG(DEBUG, HIGHVERBOSITY, CTX("multiplexer.server") FLOW(msg.workflow())
-		    TEXT("handle_message(id=" + repr(msg.id()) + ", type=" + repr(msg.type()) + ")")
+		    MESSAGE("handle_message(id=" + repr(msg.id()) + ", type=" + repr(msg.type()) + ")")
 		    DATA(type_id_constants::MXSERVER_INCOMING_MULTIPLEXER_MESSAGE, MultiplexerMessage,
 			(set_id(msg.id())) (set_from(msg.from())) (set_to(msg.to()))
 			(set_type(msg.type())) (set_timestamp(msg.timestamp()))
@@ -223,7 +223,7 @@ namespace multiplexer {
 		// it's known type
 		const MultiplexerMessageDescription& desc = defpos->second;
 		AZOUK_LOG(DEBUG, CHATTERBOX, CTX("multiplexer.server") FLOW(msg.workflow())
-			TEXT("received a message of type " + repr(msg.type()) + " (" + desc.name() + "); scheduling...")
+			MESSAGE("received a message of type " + repr(msg.type()) + " (" + desc.name() + "); scheduling...")
 			SKIPFILEIF(!(msg.logging_method() & multiplexer::LoggingMethod::FILE))
 		    );
 		_schedule(meta_handler, desc);
@@ -241,7 +241,7 @@ namespace multiplexer {
 		return; // no errors
 
 	    AZOUK_LOG(ERROR, HIGHVERBOSITY, CTX("multiplexer.server") FLOW(meta_handler.msg.workflow())
-		    TEXT("errors when delivering " + repr(meta_handler.msg.id()))
+		    MESSAGE("errors when delivering " + repr(meta_handler.msg.id()))
 		    SKIPFILEIF(!(meta_handler.msg.logging_method() & multiplexer::LoggingMethod::FILE))
 		);
 
@@ -315,7 +315,7 @@ namespace multiplexer {
 			    std::cerr << "garbled BACKEND_FOR_PACKET_SEARCH packet; droppping...\n";
 			    AZOUK_LOG(ERROR, HIGHVERBOSITY, CTX("multiplexer.server")
 				    FLOW(meta_handler.msg.workflow())
-				    TEXT("garbled BACKEND_FOR_PACKET_SEARCH packet")
+				    MESSAGE("garbled BACKEND_FOR_PACKET_SEARCH packet")
 				);
 			    meta_handler.unknown();
 			    return true;
@@ -324,7 +324,7 @@ namespace multiplexer {
 			if (!descp || !descp->to().size()) {
 			    AZOUK_LOG(ERROR, HIGHVERBOSITY, CTX("multiplexer.server")
 				    FLOW(meta_handler.msg.workflow())
-				    TEXT("BACKEND_FOR_PACKET_SEARCH: unknown packet type " +
+				    MESSAGE("BACKEND_FOR_PACKET_SEARCH: unknown packet type " +
 					repr(inner.packet_type()) + " or type with no routing rules")
 				);
 			    meta_handler.unknown();
@@ -386,7 +386,7 @@ namespace multiplexer {
 	    if (!schedules_counter) {
 		const unsigned int level = rule.delivery_error_is_error() ? ERROR : WARNING;
 		AZOUK_LOG(level, HIGHVERBOSITY, CTX("multiplexer.server") FLOW(meta_handler.msg.workflow())
-			TEXT("routing while none present of type " + repr(rule.peer_type()) + " (" + config_.peer_name_by_type(rule.peer_type()) + ")")
+			MESSAGE("routing while none present of type " + repr(rule.peer_type()) + " (" + config_.peer_name_by_type(rule.peer_type()) + ")")
 		    );
 	    }
 	    return schedules_counter;

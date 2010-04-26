@@ -45,7 +45,7 @@ namespace mxcontrol {
 	    BOOST_FOREACH(const std::string& address, multiplexers_) {
 		string::size_type colonpos = address.find(':');
 		if (colonpos == string::npos || colonpos != address.rfind(':')) {
-		    AZOUK_LOG(WARNING, LOWVERBOSITY, TEXT("invalid MX server address '" + address + "' ignored"));
+		    AZOUK_LOG(WARNING, LOWVERBOSITY, MESSAGE("invalid MX server address '" + address + "' ignored"));
 		} else {
 		    string host = address.substr(0, colonpos);
 		    boost::uint16_t port = boost::lexical_cast<boost::uint16_t>(address.substr(colonpos + 1, address.size()));

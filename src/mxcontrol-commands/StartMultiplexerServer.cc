@@ -54,7 +54,7 @@ namespace mxcontrol {
 	server->read_rules(rules_file_);
 	server->set_multiplexer_password(multiplexer_password_);
 	server->start();
-	AZOUK_LOG(INFO, LOWVERBOSITY, TEXT("starting MX server on " + host + ":" + repr(port)));
+	AZOUK_LOG(INFO, LOWVERBOSITY, MESSAGE("starting MX server on " + host + ":" + repr(port)));
 	io_service.run();
 
 	return 0;

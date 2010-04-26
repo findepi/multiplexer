@@ -174,7 +174,7 @@ namespace azlib {
 	    _shutdown_logging_streams();
 	    message_output_stream_.reset(new azlib::protobuf::FileMessageOutputStream(logging_fd, close_on_delete));
 	    if (log_the_fact)
-		AZOUK_LOG(DEBUG, LOWVERBOSITY, CTX("logging") TEXT("set logging FD to " + repr(logging_fd)));
+		AZOUK_LOG(DEBUG, LOWVERBOSITY, CTX("logging") MESSAGE("set logging FD to " + repr(logging_fd)));
 	}
 
 	void set_logging_file(const std::string& file) {
@@ -184,7 +184,7 @@ namespace azlib {
 	    // create new CodedOutputStream based on file
 	    int fd = open(file.c_str(), O_CREAT | O_WRONLY | O_APPEND, 0600);
 	    if (fd < 0) {
-		AZOUK_LOG(ERROR, LOWVERBOSITY, TEXT("Failed to open file '" + file + "' for writing logs.") CTX("logging"));
+		AZOUK_LOG(ERROR, LOWVERBOSITY, MESSAGE("Failed to open file '" + file + "' for writing logs.") CTX("logging"));
 
 	    } else {
 		try {
@@ -193,7 +193,7 @@ namespace azlib {
 		    close(fd);
 		    throw;
 		}
-		AZOUK_LOG(DEBUG, LOWVERBOSITY, CTX("logging") TEXT("set logging file to '" + file + "'"));
+		AZOUK_LOG(DEBUG, LOWVERBOSITY, CTX("logging") MESSAGE("set logging file to '" + file + "'"));
 	    }
 	}
 
@@ -203,7 +203,7 @@ namespace azlib {
 	}
 
 	void die(const std::string& text) {
-	    AZOUK_LOG(ERROR, LOWVERBOSITY, TEXT(text) MUSTLOG);
+	    AZOUK_LOG(ERROR, LOWVERBOSITY, MESSAGE(text) MUSTLOG);
 	    signals::get_exit_signal()(1);
 	}
 

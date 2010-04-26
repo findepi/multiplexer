@@ -70,7 +70,7 @@ namespace mxcontrol {
 	mxmsg.set_logging_method(LoggingMethod::CONSOLE);
 	logs.SerializeToString(mxmsg.mutable_message());
 	AZOUK_LOG(DEBUG, HIGHVERBOSITY,
-		TEXT("scheduling LOGS_STREAM with " + repr(logs.log_size()) +
+		MESSAGE("scheduling LOGS_STREAM with " + repr(logs.log_size()) +
 		    " LogEntries (encoded on " + repr(mxmsg.message().size()) + " b)")
 	    );
 	client.schedule_all(mxmsg);

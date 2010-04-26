@@ -81,7 +81,7 @@ namespace azlib {
 	\
 	/* create a logging function that prints a signal was called */ \
 	static void BOOST_PP_CAT(print_that_called_, SIG)() { \
-	    AZOUK_LOG(INFO, LOWVERBOSITY, CTX("signals") TEXT("got " \
+	    AZOUK_LOG(INFO, LOWVERBOSITY, CTX("signals") MESSAGE("got " \
                         BOOST_PP_STRINGIZE(SIG)  " signal")); \
 	}; \
 	/* bind the above logging function to SIG */ \
