@@ -19,6 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -42,6 +43,14 @@
 #include "azlib/protobuf/stream.h"
 
 #include "logging.h"
+
+
+#ifndef HAVE_GETHOSTNAME
+static int gethostname(char* name, size_t len)
+{
+	return gnulib::gethostname(name, len);
+}
+#endif
 
 namespace azlib {
     namespace logging {

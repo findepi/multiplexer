@@ -19,7 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-
+#include "config.h"
 #include <boost/asio.hpp>
 #include "multiplexer/Server.h"
 #include "azlib/repr.h"

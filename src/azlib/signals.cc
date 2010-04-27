@@ -19,6 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
+#include "config.h"
 #include <signal.h>
 #include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/cat.hpp>

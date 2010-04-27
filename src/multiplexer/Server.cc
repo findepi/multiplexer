@@ -19,6 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
+#include "config.h"
 #include <boost/asio/placeholders.hpp>
 #include <boost/foreach.hpp>
 #include <boost/asio/ip/tcp.hpp>

@@ -19,7 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-
+#include "config.h"
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include "mxcontrol-commands/Task.h"
 #include "mxcontrol-commands/TasksHolder.h"

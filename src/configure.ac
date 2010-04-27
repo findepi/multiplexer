@@ -11,6 +11,8 @@ AC_CONFIG_SRCDIR([azouk/mxcontrol.cc])
 AC_CONFIG_HEADERS([config/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
+AC_DEFINE([GNULIB_NAMESPACE], [gnulib], [Use gnulib with a namespace])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_AWK
@@ -46,7 +48,7 @@ BOOST_SYSTEM
 BOOST_DATE_TIME
 
 AC_CHECK_LIB([pthread], [sem_open])
-dnl AC_LANG_CPLUSPLUS
+
 AC_CHECK_LIB([protoc], [main])
 AC_CHECK_LIB([protobuf], [main])
 

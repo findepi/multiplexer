@@ -20,10 +20,8 @@ boost_libs = $(BOOST_PROGRAM_OPTIONS_LIBS) \
 
 AM_LDFLAGS = $(boost_ldflags)
 
-LDADD = $(top_builddir)/lib/libgnu.la $(boost_libs)
-
-# gethostname replacement from gnulib
-LIBS += $(GETHOSTNAME_LIB) $(LIBSOCKET)
+LDADD = $(top_builddir)/lib/libgnu.la $(boost_libs) \
+        $(GETHOSTNAME_LIB) $(LIBSOCKET) # gethostname replacement from gnulib
 
 common_sources =    azlib/logging/Logging.pb.cc \
                     azlib/logging/Logging.pb.h \

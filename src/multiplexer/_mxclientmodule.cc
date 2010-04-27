@@ -19,7 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-
+#include "config.h"
 #include <boost/python.hpp>
 #include "azlib/util/type_utils.h"
 #include "multiplexer/Client.h"

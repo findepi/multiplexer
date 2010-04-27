@@ -19,6 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
+#include "config.h"
 #include <boost/foreach.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "multiplexer/multiplexer.constants.h"
