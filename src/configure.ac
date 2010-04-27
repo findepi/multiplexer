@@ -12,20 +12,26 @@ AC_CONFIG_HEADERS([config/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
-AC_PROG_AWK
 AC_PROG_CXX
+AC_PROG_AWK
 AC_PROG_CC
+gl_EARLY
+AC_PROG_CPP
+AC_PROG_INSTALL
 AC_PROG_LN_S
+AC_PROG_MAKE_SET
 AC_PROG_LIBTOOL
 
-## look for protoc, the ProtoBuf compiler
+gl_INIT
+
+# look for protoc, the ProtoBuf compiler
 AC_CHECK_PROG([PROTOC], [protoc], [protoc])
 
-## used for the version file
+# used for the version file
 AC_CHECK_PROG([SHA1SUM], [sha1sum], [sha1sum])
 AC_CHECK_PROG([CUT], [cut], [cut])
 
-
+# boost libless headers
 BOOST_REQUIRE
 BOOST_ASIO
 BOOST_NUMERIC_CONVERSION
@@ -33,25 +39,16 @@ BOOST_PREPROCESSOR
 BOOST_UTILITY
 BOOST_FOREACH
 
-BOOST_PROGRAM_OPTIONS()
-BOOST_SIGNALS()
-BOOST_SYSTEM()
-BOOST_DATE_TIME()
+# boost libfull headers
+BOOST_PROGRAM_OPTIONS
+BOOST_SIGNALS
+BOOST_SYSTEM
+BOOST_DATE_TIME
 
 AC_CHECK_LIB([pthread], [sem_open])
 dnl AC_LANG_CPLUSPLUS
 AC_CHECK_LIB([protoc], [main])
 AC_CHECK_LIB([protobuf], [main])
-
-dnl AC_LANG_CPLUSPLUS
-dnl AC_CHECK_LIB([boost_program_options],
-dnl 	     [boost::program_options::option_description::match])
-dnl AC_CHECK_LIB([boost_python], [boost::python::eval])
-dnl AC_CHECK_LIB([boost_signals], [main])
-dnl AC_CHECK_LIB([boost_system], [main])
-dnl AC_CHECK_LIB([dl], [main])
-dnl AC_CHECK_LIB([protobuf], [main])
-dnl AC_CHECK_LIB([util], [main])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h stdlib.h unistd.h])
@@ -68,5 +65,6 @@ AC_TYPE_UINT64_T
 AC_CHECK_FUNCS([atexit gethostname memset setenv socket])
 
 AC_CONFIG_FILES([Makefile
-                 azouk/Makefile])
+                 azouk/Makefile
+                 lib/Makefile])
 AC_OUTPUT

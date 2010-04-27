@@ -1,11 +1,12 @@
 bin_PROGRAMS = mxcontrol server generate_constants
-AM_CPPFLAGS = $(BOOST_CPPFLAGS)
+AM_CPPFLAGS = $(BOOST_CPPFLAGS) -I$(top_builddir)
+AM_CPPFLAGS += -I$(top_builddir)/lib -I$(top_srcdir)/lib
 
 GENERALFLAGS = -Wall -Wnon-virtual-dtor -Winit-self \
                -Wswitch-enum -Wunused -Wunused-parameter \
                -DBOOST_DISABLE_THREADS
 
-AM_CXXFLAGS = -O3 $(GENERALFLAGS) -I$(top_builddir)
+AM_CXXFLAGS = -O3 $(GENERALFLAGS)
 
 boost_ldflags = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
                 $(BOOST_SIGNALS_LDFLAGS) \
@@ -19,7 +20,10 @@ boost_libs = $(BOOST_PROGRAM_OPTIONS_LIBS) \
 
 AM_LDFLAGS = $(boost_ldflags)
 
-LIBS += $(boost_libs)
+LDADD = $(top_builddir)/lib/libgnu.la $(boost_libs)
+
+# gethostname replacement from gnulib
+LIBS += $(GETHOSTNAME_LIB) $(LIBSOCKET)
 
 common_sources =    azlib/logging/Logging.pb.cc \
                     azlib/logging/Logging.pb.h \
