@@ -19,8 +19,9 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-
-#include <cstdlib>
+#include "config.h"
+#include <stdlib.h>
+#include <unistd.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 #include "azlib/program.h" /* main() */
@@ -28,6 +29,11 @@
 
 using namespace std;
 using namespace azlib::logging::consts;
+
+#ifndef HAVE_SETENV
+#define setenv gnulib::setenv
+#endif
+
 
 void usage(const char* progname) {
     std::cerr
