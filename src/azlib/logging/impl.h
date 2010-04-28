@@ -391,6 +391,8 @@ namespace azlib {
 		    ;
 	    }
 
+            void set_process_name(const std::string name);
+	    void init_process_context_all_defaults();
 
 	}; // namespace impl
 
@@ -402,6 +404,13 @@ namespace azlib {
 	    impl::process_context_ = s;
 	}
 
+	static inline void init_process_context_all_defaults(){
+		impl::init_process_context_all_defaults();
+	}
+
+	static inline void set_process_name(const std::string name){
+		impl::set_process_name(name);
+	}
 
     }; // namespace logging
 }; // namespace azlib

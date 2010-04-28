@@ -224,6 +224,19 @@ namespace azlib {
 
 	boost::uint64_t create_log_id();
 
+	/*
+	 * set_process_name(name)
+	 *	    Set the name of the process. Removes directory part.
+	 */
+	static inline void set_process_name(const std::string name);
+
+	/*
+	 * init_process_context_all_defaults()
+	 *	    Do something. Call from main().
+	 */
+	static inline void init_process_context_all_defaults();
+
+
 	static inline const std::string& process_context();
 	static inline void set_process_context(const std::string& s);
 	void set_process_context_program_name(const std::string& s);

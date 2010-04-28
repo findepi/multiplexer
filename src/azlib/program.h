@@ -29,6 +29,7 @@
 #include "azlib/util/Assert.h"
 #include "azlib/util/type_utils.h"
 #include "azlib/signals.h"
+#include "azlib/logging.h"
 
 int AzoukMain(int argc, char** argv);
 
@@ -36,6 +37,9 @@ int main(int argc, char** argv) {
     using std::cerr;
     using std::endl;
     using namespace azlib::signals;
+
+    azlib::logging::set_process_name(argv[0]);
+    azlib::logging::init_process_context_all_defaults();
 
     try {
 	get_exit_signal()(AzoukMain(argc, argv));

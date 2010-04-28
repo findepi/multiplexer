@@ -104,47 +104,41 @@ namespace azlib {
 	    }
 	    AZOUK_TRIGGER_STATIC_INITILIZATION(initialize_hostname(), hostname.empty());
 
-	    static inline void initialize_process_name() {
-		std::string proc = "/proc/" + boost::lexical_cast<std::string>(getpid()) + "/cmdline";
-		std::ifstream cmdline(proc.c_str(), std::ofstream::binary);
-		if (!cmdline) {
-		    std::cerr << "logging::impl::initialize_process_context_all_defaults: " << proc << ": No such file or directory\n";
-		    exit(EXIT_FAILURE);
+		void set_process_name(const std::string name) {
+			if (name.empty())
+				std::cerr << "logging::impl::initialize_process_context_all_defaults:"
+						  << " process name empty\n";
+
+			std::string::size_type spos = name.rfind('/'); // get the basename
+			if(spos != std::string::npos)
+				spos += 1;
+			else
+				spos = 0;
+			process_name.append(name, spos, name.size());
 		}
 
-		cmdline >> proc; // read the process name and parameters
-		std::string name = proc.c_str(); // extract the process name
-		if (name.empty()) {
-		    std::cerr << "logging::impl::initialize_process_context_all_defaults: coulnd't get the process name from /proc\n";
+		/*
+		 * initialize_process_context_all_defaults)
+		 *	    set process_context_ to <hostname>.<processname> or die
+		 */
+		void init_process_context_all_defaults() {
+			Assert(process_context_state_ != DURING_INITIALIZATION);
+			// set process_context_ temporarily
+			process_context_ = "<unknown>";
+			process_context_state_ = DURING_INITIALIZATION;
+
+			// trigger initialization if not yet triggered
+			if (hostname.empty())
+				initialize_hostname();
+			Assert(!hostname.empty());
+			Assert(!process_name.empty());
+
+			// build the process context
+			process_context_ = hostname + "." + process_name;
+			process_context_state_ = SET_WITH_ALL_DEFAULTS;
 		}
 
-		process_name.clear();
-		std::string::size_type spos = name.rfind('/'); // get the basename
-		process_name.append(name, (spos == std::string::npos && name.size() > spos) ? 0 : spos + 1, name.size());
-	    }
-	    AZOUK_TRIGGER_STATIC_INITILIZATION(initialize_process_name(), process_name.empty());
 
-	    /*
-	     * initialize_process_context_all_defaults)
-	     *	    set process_context_ to <hostname>.<processname> or die
-	     */
-	    static inline void initialize_process_context_all_defaults() {
-		Assert(process_context_state_ != DURING_INITIALIZATION);
-		// set process_context_ temporarily
-		process_context_ = "<unknown>";
-		process_context_state_ = DURING_INITIALIZATION;
-
-		// trigger initialization if not yet triggered
-		if (hostname.empty()) initialize_hostname();
-		if (process_name.empty()) initialize_process_name();
-		Assert(!hostname.empty());
-		Assert(!process_name.empty());
-		
-		// build the process context
-		process_context_ = hostname + "." + process_name;
-		process_context_state_ = SET_WITH_ALL_DEFAULTS;
-	    }
-	    AZOUK_TRIGGER_STATIC_INITILIZATION(initialize_process_context_all_defaults(), process_context_state_ == NOTHING);
 
 	    void _emit_log(const LogEntry& log_msg) {
 		if (!azlib::logging::module_is_initialized) {
@@ -216,8 +210,8 @@ namespace azlib {
 	    signals::get_exit_signal()(1);
 	}
 
-	void set_process_context_program_name(const std::string& s) {
-	    impl::process_context_ = hostname + "." + s;
+    void set_process_context_program_name(const std::string& s) {
+        impl::process_context_ = hostname + "." + s;
 	}
 
 	AZOUK_TRIGGER_STATIC_INITILIZATION(atexit(_shutdown_logging_streams), true);
