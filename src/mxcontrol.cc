@@ -19,7 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-
+#include "config.h"
 #include <deque>
 #include <vector>
 #include <map>
