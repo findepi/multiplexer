@@ -37,7 +37,7 @@
 
 #include "azlib/preproc/common.h"
 #include "azlib/logging/log_tokens.h"
-#include "build/azlib/logging/Logging.pb.h" /* generated */
+#include "azlib/logging/Logging.pb.h" /* generated */
 #include "azouk/xrelease.h"
 #include "azlib/util/Assert.h"
 

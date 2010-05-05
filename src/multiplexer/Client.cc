@@ -20,7 +20,7 @@
 //
 
 
-#include "build/multiplexer/Multiplexer.pb.h"
+#include "multiplexer/Multiplexer.pb.h"
 #include "Client.h"
 
 using namespace multiplexer;

@@ -38,9 +38,9 @@
 #include "multiplexer/ConnectionsManager.h"
 #include "multiplexer/io/Connection.h"
 #include "multiplexer/Config.h"
-#include "build/multiplexer/Multiplexer.pb.h" /* generated */
-#include "build/multiplexer/multiplexer.constants.h" /* generated */
-#include "build/azouk/logging/type_id_constants.h" /* generated */
+#include "multiplexer/Multiplexer.pb.h" /* generated */
+#include "multiplexer/multiplexer.constants.h" /* generated */
+#include "azouk/logging/type_id_constants.h" /* generated */
 
 namespace multiplexer {
 

@@ -25,7 +25,7 @@
 #include "mxcontrol-commands/TasksHolder.h"
 #include "azlib/logging.h"
 #include "azlib/protobuf/stream.h"
-#include "build/multiplexer/Multiplexer.pb.h" /* generated */
+#include "multiplexer/Multiplexer.pb.h" /* generated */
 #include "multiplexer/Client.h"
 
 using namespace std;

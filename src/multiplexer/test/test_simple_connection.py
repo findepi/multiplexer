@@ -22,7 +22,7 @@
 #!/usr/bin/env python
 
 import socket, struct, sys, random, zlib, time
-from build.multiplexer.Multiplexer_pb2 import *
+from multiplexer.Multiplexer_pb2 import *
 from multiplexer_constants import peers, types
 
 def randint():

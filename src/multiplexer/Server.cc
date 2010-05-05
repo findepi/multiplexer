@@ -23,7 +23,7 @@
 #include <boost/foreach.hpp>
 #include <boost/asio/ip/tcp.hpp>
 //#include "multiplexer/io/MessageHandler.h"
-#include "build/multiplexer/Multiplexer.pb.h" /* generated */
+#include "multiplexer/Multiplexer.pb.h" /* generated */
 
 #include "Server.h"
 
