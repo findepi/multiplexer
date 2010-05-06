@@ -61,7 +61,7 @@
 		    AZOUK_PP_REMOVE_BRACES code;		    \
 		}						    \
 	    }							    \
-	} BOOST_PP_CAT(name, _instance)				    \
+	} BOOST_PP_CAT(name, _instance);			    \
     }                                                               \
     //
 
