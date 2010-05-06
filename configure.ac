@@ -7,7 +7,7 @@ AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE(foreign dist-lzma std-options -Wall -Werror -Wno-portability)
 AM_SILENT_RULES([yes])
 
-AC_CONFIG_SRCDIR([azouk/mxcontrol.cc])
+AC_CONFIG_SRCDIR([src/mxcontrol.cc])
 AC_CONFIG_HEADERS([config/config.h])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -74,6 +74,6 @@ AC_TYPE_UINT64_T
 AC_CHECK_FUNCS([atexit gethostname memset setenv socket])
 
 AC_CONFIG_FILES([Makefile
-                 azouk/Makefile
+                 src/Makefile
                  lib/Makefile])
 AC_OUTPUT
