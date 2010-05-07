@@ -78,12 +78,12 @@ BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
 %.pb.h %.pb.cc: %.proto
 	$(PROTOC) $(PROTOCFLAGS) -I $(srcdir) --cpp_out=$(builddir) $<
 
-multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: multiplexer.rules tools
+multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
+      multiplexer.rules ../tools/generate_constants
 	$(AM_V_GEN)../tools/generate_constants $< $@
 
-.PHONY: tools
-tools:
-	$(MAKE) -C ../tools
+../tools/generate_constants:
+	$(MAKE) -C ../tools generate_constants
 
 # version file generation
 version = unknown
