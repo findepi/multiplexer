@@ -13,6 +13,8 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AC_DEFINE([GNULIB_NAMESPACE], [gnulib], [Use gnulib with a namespace])
 
+AC_CANONICAL_BUILD
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_AWK
@@ -26,6 +28,8 @@ AC_PROG_LIBTOOL
 AC_LIBTOOL_WIN32_DLL
 
 gl_INIT
+
+AC_LANG([C++])
 
 # look for protoc, the ProtoBuf compiler
 AC_CHECK_PROG([PROTOC], [protoc], [protoc])
@@ -70,6 +74,10 @@ AC_TYPE_UINT16_T
 AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 
+dnl check linker flags
+CXX_TRY_LINK_FLAG([-Wl,--enable-auto-import],
+		  [LDFLAGS="${LDFLAGS} -Wl,--enable-auto-import"], [])
+
 # Checks for library functions.
 AC_CHECK_FUNCS([atexit gethostname memset setenv socket])
 
@@ -79,4 +87,5 @@ AC_CONFIG_FILES([Makefile
 AC_OUTPUT
 
 dir=$(cd $(dirname $0) && pwd)
-mkdir -p tools && cd tools && echo && ${dir}/tools/configure
+echo "running ${dir}/tools/configure --host ${build} in tools"
+mkdir -p tools && cd tools && echo && ${dir}/tools/configure --host ${build}

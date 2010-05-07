@@ -32,6 +32,10 @@ AC_CHECK_HEADERS([fcntl.h stdlib.h unistd.h])
 AC_CHECK_HEADER([google/protobuf/text_format.h], [],
         [AC_MSG_ERROR([protobuf headers not found, install libprotobuf-dev])])
 
+dnl check linker flags
+CXX_TRY_LINK_FLAG([-Wl,--enable-auto-import],
+		  [LDFLAGS="${LDFLAGS} -Wl,--enable-auto-import"], [])
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
 AC_TYPE_UINT32_T
