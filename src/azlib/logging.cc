@@ -45,13 +45,6 @@
 #include "logging.h"
 
 
-#ifndef HAVE_GETHOSTNAME
-static int gethostname(char* name, size_t len)
-{
-	return gnulib::gethostname(name, len);
-}
-#endif
-
 namespace azlib {
     namespace logging {
 
@@ -91,7 +84,7 @@ namespace azlib {
 		const unsigned int hostname_len_max = 1024;
 		for (unsigned int hostname_len = 256; hostname_len < hostname_len_max + 1; hostname_len *= 2) {
 		    hostname.resize(hostname_len);
-		    if (gethostname(&hostname[0], hostname_len) == 0) {
+		    if (gnulib::gethostname(&hostname[0], hostname_len) == 0) {
 			if (hostname_len < hostname_len_max && strlen(hostname.c_str()) >= hostname_len - 1)
 			    continue;
 			impl::hostname = hostname.c_str();

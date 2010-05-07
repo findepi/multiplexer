@@ -49,8 +49,6 @@ BOOST_SYSTEM
 BOOST_DATE_TIME
 
 AC_CHECK_LIB([pthread], [sem_open])
-
-AC_CHECK_LIB([protoc], [main])
 AC_CHECK_LIB([protobuf], [main])
 
 ## a hack for now
@@ -61,6 +59,8 @@ AC_CHECK_LIB([mswsock], [main])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h stdlib.h unistd.h])
+AC_CHECK_HEADER([google/protobuf/text_format.h], [],
+        [AC_MSG_ERROR([protobuf headers not found, install libprotobuf-dev])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -77,3 +77,6 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  lib/Makefile])
 AC_OUTPUT
+
+dir=$(cd $(dirname $0) && pwd)
+mkdir -p tools && cd tools && echo && ${dir}/tools/configure

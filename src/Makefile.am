@@ -1,4 +1,4 @@
-bin_PROGRAMS = mxcontrol server generate_constants
+bin_PROGRAMS = mxcontrol server
 AM_CPPFLAGS = $(BOOST_CPPFLAGS) -I$(top_builddir)
 AM_CPPFLAGS += -I$(top_builddir)/lib -I$(top_srcdir)/lib
 
@@ -61,21 +61,41 @@ mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
                     multiplexer/io/RawMessage.cc \
                     multiplexer/io/RawMessage.h \
                     multiplexer/backend/BaseMultiplexerServer.cc \
-                    multiplexer/backend/BaseMultiplexerServer.h
+                    multiplexer/backend/BaseMultiplexerServer.h \
+                    multiplexer/multiplexer.constants.h \
+                    multiplexer.rules \
+                    azouk/logging/type_id_constants.h \
+                    logging.type_id.constants.txt
+
 
 server_SOURCES =    server.cc $(common_sources)
 
-generate_constants_SOURCES = generate_constants.cc $(common_sources) \
-                    $(multiplexer_sources)
-
 BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
-                multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h
+                multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
+                multiplexer/multiplexer.constants.h \
+                azouk/logging/type_id_constants.h
 
 %.pb.h %.pb.cc: %.proto
-	$(PROTOC) $(PROTOCFLAGS) -I $(top_srcdir)/src --cpp_out=$(builddir) $<
+	$(PROTOC) $(PROTOCFLAGS) -I $(srcdir) --cpp_out=$(builddir) $<
 
+multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: multiplexer.rules tools
+	$(AM_V_GEN)../tools/generate_constants $< $@
+
+.PHONY: tools
+tools:
+	$(MAKE) -C ../tools
 
 # version file generation
 version = unknown
 version_hash = $(shell echo -n "$(version)" | sha1sum - | cut -d' ' -f1)
 version_short_hash = $(shell echo $(version_hash) | cut --bytes=1-7)
+
+file_token = $(firstword $(shell echo $@ | sha1sum))
+azouk/logging/type_id_constants.h: logging.type_id.constants.txt
+	$(AM_V_at)mkdir -p $(dir $@)
+	$(AM_V_at)echo "#ifndef $(file_token)" > $@
+	$(AM_V_at)echo "#define $(file_token)" >> $@
+	$(AM_V_at)echo "namespace type_id_constants {" >> $@
+	$(AM_V_AWK)awk '/^[^#]/ {print "\tstatic const unsigned int", $$0 ";" }' $< >> $@
+	$(AM_V_at)echo "};" >> $@
+	$(AM_V_at)echo "#endif" >> $@
