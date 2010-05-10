@@ -1,3 +1,8 @@
+# Keep everything that is generated.
+.SECONDARY:
+# Remove works-in-progress.
+.DELETE_ON_ERROR:
+
 bin_PROGRAMS = mxcontrol server
 AM_CPPFLAGS = $(BOOST_CPPFLAGS) -I$(top_builddir)
 AM_CPPFLAGS += -I$(top_builddir)/lib -I$(top_srcdir)/lib
@@ -76,7 +81,8 @@ BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
                 azouk/logging/type_id_constants.h
 
 %.pb.h %.pb.cc: %.proto
-	$(PROTOC) $(PROTOCFLAGS) -I $(srcdir) --cpp_out=$(builddir) $<
+	$(AM_V_GEN)$(PROTOC) $(PROTOCFLAGS) -I $(srcdir) \
+             --cpp_out=$(builddir) $<
 
 multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
       multiplexer.rules ../tools/generate_constants
@@ -96,6 +102,6 @@ azouk/logging/type_id_constants.h: logging.type_id.constants.txt
 	$(AM_V_at)echo "#ifndef $(file_token)" > $@
 	$(AM_V_at)echo "#define $(file_token)" >> $@
 	$(AM_V_at)echo "namespace type_id_constants {" >> $@
-	$(AM_V_AWK)awk '/^[^#]/ {print "\tstatic const unsigned int", $$0 ";" }' $< >> $@
+	$(AM_V_GEN)awk '/^[^#]/ {print "\tstatic const unsigned int", $$0 ";" }' $< >> $@
 	$(AM_V_at)echo "};" >> $@
 	$(AM_V_at)echo "#endif" >> $@

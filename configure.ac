@@ -2,7 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.65])
-AC_INIT([azouk], [1.0.0], [Krzysztof Kulewski <kulewski@gmail.com>])
+AC_INIT([Azouk Multiplexer], [1.0.0],
+        [Piotr Findeisen <piotr.findeisen@gmail.com>],
+        [multiplexer], [http://github.com/findepi/multiplexer])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE(foreign dist-lzma std-options -Wall -Werror -Wno-portability)
 AM_SILENT_RULES([yes])
@@ -24,8 +26,9 @@ AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
-AC_PROG_LIBTOOL
-AC_LIBTOOL_WIN32_DLL
+
+LT_PREREQ([2.2.6])
+LT_INIT([win32-dll])
 
 gl_INIT
 
@@ -36,7 +39,6 @@ AC_CHECK_PROG([PROTOC], [protoc], [protoc])
 
 # used for the version file
 AC_CHECK_PROG([SHA1SUM], [sha1sum], [sha1sum])
-AC_CHECK_PROG([CUT], [cut], [cut])
 
 # boost libless headers
 BOOST_REQUIRE
