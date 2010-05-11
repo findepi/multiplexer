@@ -77,8 +77,8 @@ AC_TYPE_UINT32_T
 AC_TYPE_UINT64_T
 
 dnl check linker flags
-CXX_TRY_LINK_FLAG([-Wl,--enable-auto-import],
-		  [LDFLAGS="${LDFLAGS} -Wl,--enable-auto-import"], [])
+AX_CHECK_LINKER_FLAGS([-Wl,--enable-auto-import],
+                      [LDFLAGS="${LDFLAGS} -Wl,--enable-auto-import"], [])
 
 # Checks for library functions.
 AC_CHECK_FUNCS([atexit gethostname memset setenv socket])
