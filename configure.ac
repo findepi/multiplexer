@@ -27,16 +27,16 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
+# look for protoc, the ProtoBuf compiler
+AX_WITH_PROG([PROTOC], [protoc])
+
+# sha1sum is used for the version file
+AX_WITH_PROG([SHA1SUM], [sha1sum])
+
 LT_PREREQ([2.2.6])
 LT_INIT([win32-dll])
 
 gl_INIT
-
-# look for protoc, the ProtoBuf compiler
-AC_CHECK_PROG([PROTOC], [protoc], [protoc])
-
-# used for the version file
-AC_CHECK_PROG([SHA1SUM], [sha1sum], [sha1sum])
 
 AC_LANG([C++])
 
