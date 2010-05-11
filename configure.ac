@@ -28,10 +28,12 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
 # look for protoc, the ProtoBuf compiler
-AX_WITH_PROG([PROTOC], [protoc])
+AX_WITH_PROG_REQUIRED([PROTOC], [protoc],
+             [Google protocol buffers compiler protoc])
 
 # sha1sum is used for the version file
-AX_WITH_PROG([SHA1SUM], [sha1sum])
+AX_WITH_PROG_REQUIRED([SHA1SUM], [sha1sum],
+             [SHA1 sum generator sha1sum])
 
 LT_PREREQ([2.2.6])
 LT_INIT([win32-dll])
