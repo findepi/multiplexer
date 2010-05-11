@@ -7,7 +7,7 @@ AC_INIT([Azouk Multiplexer], [1.0.0],
         [multiplexer], [http://github.com/findepi/multiplexer])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE(foreign dist-lzma std-options -Wall -Werror -Wno-portability)
-AM_SILENT_RULES([yes])
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_CONFIG_SRCDIR([src/mxcontrol.cc])
 AC_CONFIG_HEADERS([config/config.h])
@@ -19,10 +19,10 @@ AC_CANONICAL_BUILD
 
 # Checks for programs.
 AC_PROG_CXX
-AC_PROG_AWK
 AC_PROG_CC
-gl_EARLY
 AC_PROG_CPP
+AC_PROG_AWK
+gl_EARLY
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
@@ -32,13 +32,13 @@ LT_INIT([win32-dll])
 
 gl_INIT
 
-AC_LANG([C++])
-
 # look for protoc, the ProtoBuf compiler
 AC_CHECK_PROG([PROTOC], [protoc], [protoc])
 
 # used for the version file
 AC_CHECK_PROG([SHA1SUM], [sha1sum], [sha1sum])
+
+AC_LANG([C++])
 
 # boost libless headers
 BOOST_REQUIRE
