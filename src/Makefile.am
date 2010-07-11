@@ -12,6 +12,7 @@ GENERALFLAGS = -Wall -Wnon-virtual-dtor -Winit-self \
                -DBOOST_DISABLE_THREADS
 
 AM_CXXFLAGS = -O3 $(GENERALFLAGS)
+AM_CFLAGS = -O3 $(GENERALFLAGS)
 
 boost_ldflags = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
                 $(BOOST_SIGNALS_LDFLAGS) \

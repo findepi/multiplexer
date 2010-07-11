@@ -12,10 +12,12 @@ AC_CONFIG_SRCDIR([generate_constants.cc])
 AC_CONFIG_HEADERS([config/config.h])
 AC_CONFIG_MACRO_DIR([../m4])
 
+CXXFLAGS=${CXXFLAGS-""}
+
 AC_PROG_CXX
 AC_PROG_MKDIR_P
-AC_CHECK_PROG([PROTOC], [protoc], [protoc],
-              [AC_MSG_ERROR([protoc not found, install protobuf-compiler])])
+AX_WITH_PROG_REQUIRED([PROTOC], [protoc],
+             [Google protocol buffers compiler protoc])
 
 AC_LANG([C++])
 
@@ -33,8 +35,8 @@ AC_CHECK_HEADER([google/protobuf/text_format.h], [],
         [AC_MSG_ERROR([protobuf headers not found, install libprotobuf-dev])])
 
 dnl check linker flags
-CXX_TRY_LINK_FLAG([-Wl,--enable-auto-import],
-		  [LDFLAGS="${LDFLAGS} -Wl,--enable-auto-import"], [])
+AX_CHECK_LINKER_FLAGS([-Wl,--enable-auto-import],
+                      [LDFLAGS="${LDFLAGS} -Wl,--enable-auto-import"], [])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL

@@ -17,6 +17,9 @@ AC_DEFINE([GNULIB_NAMESPACE], [gnulib], [Use gnulib with a namespace])
 
 AC_CANONICAL_BUILD
 
+# drop autoconf defaults for CXXFLAGS (-g -O2)
+CXXFLAGS=${CXXFLAGS-""}
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
@@ -34,6 +37,8 @@ AX_WITH_PROG_REQUIRED([PROTOC], [protoc],
 # sha1sum is used for the version file
 AX_WITH_PROG_REQUIRED([SHA1SUM], [sha1sum],
              [SHA1 sum generator sha1sum])
+
+AX_WITH_PROG([PYTHON_CONFIG], [python-config])
 
 LT_PREREQ([2.2.6])
 LT_INIT([win32-dll])
