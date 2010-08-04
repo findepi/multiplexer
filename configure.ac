@@ -96,5 +96,5 @@ AC_CONFIG_FILES([Makefile
 AC_OUTPUT
 
 dir=$(cd $(dirname $0) && pwd)
-echo "running ${dir}/tools/configure --host ${build} in tools"
-mkdir -p tools && cd tools && echo && ${dir}/tools/configure --host ${build}
+AS_ECHO(["running ${dir}/tools/configure --host ${build} in tools"])
+AS_MKDIR_P(tools) && cd tools && echo && ${dir}/tools/configure --host ${build}
