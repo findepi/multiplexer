@@ -3,6 +3,9 @@
 # Remove works-in-progress.
 .DELETE_ON_ERROR:
 
+include $(top_srcdir)/lib/Makefile_protoc
+include $(top_srcdir)/lib/Makefile_v_copy
+
 bin_PROGRAMS = mxcontrol server
 AM_CPPFLAGS = $(BOOST_CPPFLAGS) -I$(top_builddir)
 AM_CPPFLAGS += -I$(top_builddir)/lib -I$(top_srcdir)/lib
@@ -121,10 +124,6 @@ BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
                 azouk/logging/type_id_constants.h \
                 azouk/logging/type_id_constants.py
 
-%.pb.h %.pb.cc: %.proto
-	$(AM_V_GEN)$(PROTOC) $(PROTOCFLAGS) -I $(srcdir) \
-             --cpp_out=$(builddir) $<
-
 multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
       multiplexer.rules ../tools/generate_constants
 	$(AM_V_GEN)../tools/generate_constants $< $@
@@ -133,7 +132,7 @@ multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
 	$(MAKE) -C ../tools generate_constants
 
 azouk/logging/type_id_constants.py: logging.type_id.constants.txt
-	$(AM_V_GEN)cp $< $@
+	$(V_COPY)cp $< $@
 
 # version file generation
 version = unknown

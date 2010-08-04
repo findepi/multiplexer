@@ -1,6 +1,9 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 ACLOCAL_AMFLAGS = -I ../m4 --install
 
+include $(top_srcdir)/../lib/Makefile_protoc
+include $(top_srcdir)/../lib/Makefile_v_copy
+
 generate_constants_SOURCES = generate_constants.cc \
        multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
        azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
@@ -17,13 +20,10 @@ BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
                 multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
 		multiplexer/Multiplexer.proto
 
-%.pb.h %.pb.cc: %.proto
-	$(PROTOC) $(PROTOCFLAGS) -I $(builddir) -I $(srcdir)/../src --cpp_out=$(builddir) $<
-
 azlib/logging/Logging.proto: ../src/azlib/logging/Logging.proto
-	$(MKDIR_P) azlib/logging
-	cp $< $@
+	$(AM_V_at)$(MKDIR_P) azlib/logging
+	$(V_COPY)cp $< $@
 
 multiplexer/Multiplexer.proto: ../src/multiplexer/Multiplexer.proto
-	$(MKDIR_P) multiplexer
-	cp $< $@
+	$(AM_V_at)$(MKDIR_P) multiplexer
+	$(V_COPY)cp $< $@
