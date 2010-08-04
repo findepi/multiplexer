@@ -38,7 +38,8 @@ AX_WITH_PROG_REQUIRED([PROTOC], [protoc],
 AX_WITH_PROG_REQUIRED([SHA1SUM], [sha1sum],
              [SHA1 sum generator sha1sum])
 
-AX_WITH_PROG([PYTHON_CONFIG], [python-config])
+AM_PATH_PYTHON([2.2],,[:])
+AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != :])
 
 LT_PREREQ([2.2.6])
 LT_INIT([win32-dll])

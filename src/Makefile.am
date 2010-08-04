@@ -73,13 +73,44 @@ mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
                     azouk/logging/type_id_constants.h \
                     logging.type_id.constants.txt
 
-
 server_SOURCES =    server.cc $(common_sources)
+
+nobase_python_PYTHON = azlib/__init__.py \
+		azlib/logging/__init__.py \
+		azouk/__init__.py \
+		azouk/logging/__init__.py \
+		azouk/logging/collector.py \
+		azouk/logging/django_termcolors.py \
+		azouk/logging/streaming.py \
+		azouk/services/__init__.py \
+		azouk/services/collectors/__init__.py \
+		azouk/services/collectors/events.py \
+		azouk/util/Timer.py \
+		azouk/util/__init__.py \
+		azouk/util/decorators.py \
+		multiplexer/__init__.py \
+		multiplexer/clients.py \
+		multiplexer/mxclient.py \
+		multiplexer/protocolbuffers.py \
+		multiplexer/test/__init__.py \
+		multiplexer/test/test_mxclient.py \
+		multiplexer/test/test_simple_connection.py \
+		multiplexer/multiplexer_constants.py \
+                azouk/logging/type_id_constants.py
+
+nobase_pyexec_LTLIBRARIES = azouk/_allinone.la
+azouk__allinone_la_SOURCES = mxcontrol_SOURCES \
+		azouk/_allinonemodule.cc
+azouk__allinone_la_LDFLAGS = -avoid-version -module $(BOOST_PYTHON_LDFLAGS)
+azouk__allinone_la_LIBADD = $(LDADD) $(BOOST_PYTHON_LIB)
+azouk__allinone_la_CPPFLAGS = -I$(PYTHON_INCLUDE_DIR)
 
 BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
                 multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
                 multiplexer/multiplexer.constants.h \
-                azouk/logging/type_id_constants.h
+                multiplexer/multiplexer_constants.py \
+                azouk/logging/type_id_constants.h \
+                azouk/logging/type_id_constants.py
 
 %.pb.h %.pb.cc: %.proto
 	$(AM_V_GEN)$(PROTOC) $(PROTOCFLAGS) -I $(srcdir) \
@@ -91,6 +122,9 @@ multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
 
 ../tools/generate_constants:
 	$(MAKE) -C ../tools generate_constants
+
+azouk/logging/type_id_constants.py: logging.type_id.constants.txt
+	$(AM_V_GEN)cp $< $@
 
 # version file generation
 version = unknown
