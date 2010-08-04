@@ -22,7 +22,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 m4_define([_BOOST_SERIAL], [m4_translit([
-# serial 12
+# serial 13
 ], [#
 ], [])])
 
@@ -612,6 +612,23 @@ AC_DEFUN([BOOST_PROGRAM_OPTIONS],
                 [boost::program_options::options_description d("test");])
 ])# BOOST_PROGRAM_OPTIONS
 
+# BOOST_PYTHON([PREFERRED-RT-OPT])
+# -------------------------------
+# Look for Boost.Python.  For the documentation of PREFERRED-RT-OPT, see the
+# documentation of BOOST_FIND_LIB above.
+AC_DEFUN([BOOST_PYTHON],
+[boost_python_save_cppflags=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS $PYTHON_INCLUDES"
+boost_python_save_ldflags=$LDFLAGS
+LDFLAGS="$LDFLAGS $PYTHON_LDFLAGS"
+BOOST_FIND_LIB([python], [$1],
+                [boost/python.hpp],
+		[boost::python::type_id<int>();])
+])
+
+boost::python::objects::module_prefix();])
+CPPFLAGS=$boost_python_save_cppflags
+])# BOOST_PYTHON
 
 # BOOST_REF()
 # -----------

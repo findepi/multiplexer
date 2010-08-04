@@ -42,6 +42,20 @@ common_sources =    azlib/logging/Logging.pb.cc \
 multiplexer_sources = multiplexer/Multiplexer.pb.cc \
                     multiplexer/Multiplexer.pb.h
 
+multiplexer_other_sources = \
+                    multiplexer/BasicClient.cc \
+                    multiplexer/BasicClient.h \
+                    multiplexer/Client.cc \
+                    multiplexer/Client.h \
+                    multiplexer/Server.cc \
+                    multiplexer/Server.h \
+                    multiplexer/ConnectionsManager.cc \
+                    multiplexer/ConnectionsManager.h \
+                    multiplexer/io/RawMessage.cc \
+                    multiplexer/io/RawMessage.h \
+                    multiplexer/backend/BaseMultiplexerServer.cc \
+                    multiplexer/backend/BaseMultiplexerServer.h
+
 mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
                     mxcontrol-commands/TasksHolder.cc \
                     mxcontrol-commands/TasksHolder.h \
@@ -56,18 +70,7 @@ mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
                     mxcontrol-commands/Help.cc \
                     mxcontrol-commands/Help.h \
                     $(multiplexer_sources) \
-                    multiplexer/BasicClient.cc \
-                    multiplexer/BasicClient.h \
-                    multiplexer/Client.cc \
-                    multiplexer/Client.h \
-                    multiplexer/Server.cc \
-                    multiplexer/Server.h \
-                    multiplexer/ConnectionsManager.cc \
-                    multiplexer/ConnectionsManager.h \
-                    multiplexer/io/RawMessage.cc \
-                    multiplexer/io/RawMessage.h \
-                    multiplexer/backend/BaseMultiplexerServer.cc \
-                    multiplexer/backend/BaseMultiplexerServer.h \
+		    $(multiplexer_other_sources) \
                     multiplexer/multiplexer.constants.h \
                     multiplexer.rules \
                     azouk/logging/type_id_constants.h \
@@ -99,11 +102,17 @@ nobase_python_PYTHON = azlib/__init__.py \
                 azouk/logging/type_id_constants.py
 
 nobase_pyexec_LTLIBRARIES = azouk/_allinone.la
-azouk__allinone_la_SOURCES = mxcontrol_SOURCES \
-		azouk/_allinonemodule.cc
+azouk__allinone_la_SOURCES = \
+		azouk/_allinonemodule.cc \
+                azouk/_loggingmodule.cc \
+                multiplexer/_mxclientmodule.cc \
+		$(common_sources) \
+                $(multiplexer_other_sources) \
+                $(multiplexer_sources)
+
 azouk__allinone_la_LDFLAGS = -avoid-version -module $(BOOST_PYTHON_LDFLAGS)
-azouk__allinone_la_LIBADD = $(LDADD) $(BOOST_PYTHON_LIB)
-azouk__allinone_la_CPPFLAGS = -I$(PYTHON_INCLUDE_DIR)
+azouk__allinone_la_LIBADD = $(LDADD) $(BOOST_PYTHON_LIBS)
+azouk__allinone_la_CPPFLAGS = $(PYTHON_INCLUDES) $(AM_CPPFLAGS)
 
 BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
                 multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
