@@ -104,7 +104,8 @@ nobase_python_PYTHON = azlib/__init__.py \
 		multiplexer/test/test_simple_connection.py \
 		multiplexer/multiplexer_constants.py \
 		multiplexer/Multiplexer_pb2.py \
-                azouk/logging/type_id_constants.py
+                azouk/logging/type_id_constants.py \
+		azouk/release.py
 
 nobase_pyexec_LTLIBRARIES = azouk/_allinone.la
 azouk__allinone_la_SOURCES = \
@@ -126,7 +127,9 @@ BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
                 multiplexer/multiplexer.constants.h \
                 multiplexer/multiplexer_constants.py \
                 azouk/logging/type_id_constants.h \
-                azouk/logging/type_id_constants.py
+                azouk/logging/type_id_constants.py \
+		azouk/release.h azouk/release.py
+
 
 multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
       multiplexer.rules ../tools/generate_constants
@@ -139,11 +142,6 @@ azouk/logging/type_id_constants.py: logging.type_id.constants.txt
 	$(AM_V_at)$(MKDIR_P) $(dir $@)
 	$(V_COPY)cp $< $@
 
-# version file generation
-version = unknown
-version_hash = $(shell echo -n "$(version)" | sha1sum - | cut -d' ' -f1)
-version_short_hash = $(shell echo $(version_hash) | cut --bytes=1-7)
-
 file_token = $(firstword $(shell echo $@ | sha1sum))
 azouk/logging/type_id_constants.h: logging.type_id.constants.txt
 	$(AM_V_at)mkdir -p $(dir $@)
@@ -153,3 +151,29 @@ azouk/logging/type_id_constants.h: logging.type_id.constants.txt
 	$(AM_V_GEN)awk '/^[^#]/ {print "\tstatic const unsigned int", $$0 ";" }' $< >> $@
 	$(AM_V_at)echo "};" >> $@
 	$(AM_V_at)echo "#endif" >> $@
+
+# version file generation
+version = unknown
+version_hash = $(shell echo -n "$(version)" | $(SHA1SUM) - | $(CUT) -d' ' -f1)
+version_short_hash = $(shell echo $(version_hash) | $(CUT) --bytes=1-7)
+
+RELEASE_H_TOKEN = AZOUK_RELEASE_H
+
+azouk/release.h:
+	$(AM_V_GEN){ \
+            echo "#ifndef $(RELEASE_H_TOKEN)"; \
+            echo "#define $(RELEASE_H_TOKEN)"; \
+            echo "namespace azouk { namespace release {"; \
+            echo "      const char* const version = \"$(version)\";"; \
+            echo "      const char* const version_hash = \"$(version_hash)\";"; \
+            echo "      const char* const version_short_hash = \"$(version_short_hash)\";"; \
+            echo "} /* release */ } /* azouk */"; \
+            echo "#endif"; \
+        } > $@
+
+azouk/release.py:
+	$(AM_V_GEN){ \
+            echo "version = \"$(version)\""; \
+            echo "version_hash = \"$(version_hash)\""; \
+            echo "version_short_hash = \"$(version_short_hash)\""; \
+        } > $@

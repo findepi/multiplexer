@@ -38,6 +38,9 @@ AX_WITH_PROG_REQUIRED([PROTOC], [protoc],
 AX_WITH_PROG_REQUIRED([SHA1SUM], [sha1sum],
              [SHA1 sum generator sha1sum])
 
+# cut is used for the version file
+AX_WITH_PROG_REQUIRED([CUT], [cut], [cut])
+
 AM_PATH_PYTHON([2.2],,[:])
 AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != :])
 AZOUK_PYTHON_CONFIG
