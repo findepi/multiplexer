@@ -88,6 +88,7 @@ nobase_python_PYTHON = azlib/__init__.py \
 		azouk/logging/collector.py \
 		azouk/logging/django_termcolors.py \
 		azouk/logging/streaming.py \
+		azlib/logging/Logging_pb2.py \
 		azouk/services/__init__.py \
 		azouk/services/collectors/__init__.py \
 		azouk/services/collectors/events.py \
@@ -102,6 +103,7 @@ nobase_python_PYTHON = azlib/__init__.py \
 		multiplexer/test/test_mxclient.py \
 		multiplexer/test/test_simple_connection.py \
 		multiplexer/multiplexer_constants.py \
+		multiplexer/Multiplexer_pb2.py \
                 azouk/logging/type_id_constants.py
 
 nobase_pyexec_LTLIBRARIES = azouk/_allinone.la
@@ -118,7 +120,9 @@ azouk__allinone_la_LIBADD = $(LDADD) $(BOOST_PYTHON_LIBS)
 azouk__allinone_la_CPPFLAGS = $(PYTHON_INCLUDES) $(AM_CPPFLAGS)
 
 BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
+		azlib/logging/Logging_pb2.py \
                 multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
+		multiplexer/Multiplexer_pb2.py \
                 multiplexer/multiplexer.constants.h \
                 multiplexer/multiplexer_constants.py \
                 azouk/logging/type_id_constants.h \
@@ -132,6 +136,7 @@ multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
 	$(MAKE) -C ../tools generate_constants
 
 azouk/logging/type_id_constants.py: logging.type_id.constants.txt
+	$(AM_V_at)$(MKDIR_P) $(dir $@)
 	$(V_COPY)cp $< $@
 
 # version file generation
