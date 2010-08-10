@@ -65,11 +65,9 @@ mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
                     mxcontrol-commands/Task.cc \
                     mxcontrol-commands/Task.h \
                     mxcontrol-commands/StreamLogs.cc \
-                    mxcontrol-commands/StreamLogs.h \
                     mxcontrol-commands/StartMultiplexerServer.cc \
                     mxcontrol-commands/StartMultiplexerServer.h \
                     mxcontrol-commands/ReceiveLogs.cc \
-                    mxcontrol-commands/ReceiveLogs.h \
                     mxcontrol-commands/Help.cc \
                     mxcontrol-commands/Help.h \
                     $(multiplexer_sources) \
