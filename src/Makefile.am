@@ -37,10 +37,27 @@ common_sources =    azlib/logging/Logging.pb.cc \
                     azlib/signals.cc azlib/signals.h \
                     azlib/random.cc azlib/random.h \
                     azlib/logging.cc azlib/logging.h \
+                    azlib/logging/impl.h \
                     azlib/util/Assert.cc azlib/util/Assert.h \
                     azlib/util/Exception.cc azlib/util/Exception.h \
                     azouk/util/kwargs.cc azouk/util/kwargs.h \
-                    azouk/xrelease.cc azouk/xrelease.h
+                    azouk/xrelease.cc azouk/xrelease.h \
+                    azlib/logging/Logging.proto \
+                    azlib/logging/log_tokens.h \
+                    azlib/macros.h \
+                    azlib/preproc/common.h \
+                    azlib/preproc/create_message/detail.h \
+                    azlib/preproc/create_message.h \
+                    azlib/preproc/kwargs.h \
+                    azlib/program.h \
+                    azlib/protobuf/stream.h \
+                    azlib/repr.h azlib/spanset.h azlib/str.h \
+                    azlib/timer.h azlib/triple.h \
+                    azlib/util/fd.h azlib/util/functors.h \
+                    azlib/util/IntrusiveValue.h \
+                    azlib/util/type_functors.h azlib/util/type_utils.h \
+                    azlib/vector.h \
+                    azlib/initialization.h
 
 multiplexer_sources = multiplexer/Multiplexer.pb.cc \
                     multiplexer/Multiplexer.pb.h
@@ -56,8 +73,17 @@ multiplexer_other_sources = \
                     multiplexer/ConnectionsManager.h \
                     multiplexer/io/RawMessage.cc \
                     multiplexer/io/RawMessage.h \
+                    azlib/encoders/BaseDecoder.h \
+                    azlib/encoders/BaseEncoder.h \
+                    azlib/encoders/DecodeFromRange.h \
+                    azlib/encoders/EncodeToOutputIterator.h \
+                    azlib/encoders/EncodeToRange.h \
+                    azlib/encodings/LittleEndian.h \
                     multiplexer/backend/BaseMultiplexerServer.cc \
-                    multiplexer/backend/BaseMultiplexerServer.h
+                    multiplexer/backend/BaseMultiplexerServer.h \
+                    multiplexer/Config.h \
+                    multiplexer/configuration.h \
+                    multiplexer/io/Connection.h
 
 mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
                     mxcontrol-commands/TasksHolder.cc \
@@ -71,7 +97,7 @@ mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
                     mxcontrol-commands/Help.cc \
                     mxcontrol-commands/Help.h \
                     $(multiplexer_sources) \
-		    $(multiplexer_other_sources) \
+                    $(multiplexer_other_sources) \
                     multiplexer/multiplexer.constants.h \
                     multiplexer.rules \
                     azouk/logging/type_id_constants.h \
@@ -80,37 +106,37 @@ mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
 server_SOURCES =    server.cc $(common_sources)
 
 nobase_python_PYTHON = azlib/__init__.py \
-		azlib/logging/__init__.py \
-		azouk/__init__.py \
-		azouk/logging/__init__.py \
-		azouk/logging/collector.py \
-		azouk/logging/django_termcolors.py \
-		azouk/logging/streaming.py \
-		azlib/logging/Logging_pb2.py \
-		azouk/services/__init__.py \
-		azouk/services/collectors/__init__.py \
-		azouk/services/collectors/events.py \
-		azouk/util/Timer.py \
-		azouk/util/__init__.py \
-		azouk/util/decorators.py \
-		multiplexer/__init__.py \
-		multiplexer/clients.py \
-		multiplexer/mxclient.py \
-		multiplexer/protocolbuffers.py \
-		multiplexer/test/__init__.py \
-		multiplexer/test/test_mxclient.py \
-		multiplexer/test/test_simple_connection.py \
-		multiplexer/multiplexer_constants.py \
-		multiplexer/Multiplexer_pb2.py \
+                azlib/logging/__init__.py \
+                azouk/__init__.py \
+                azouk/logging/__init__.py \
+                azouk/logging/collector.py \
+                azouk/logging/django_termcolors.py \
+                azouk/logging/streaming.py \
+                azlib/logging/Logging_pb2.py \
+                azouk/services/__init__.py \
+                azouk/services/collectors/__init__.py \
+                azouk/services/collectors/events.py \
+                azouk/util/Timer.py \
+                azouk/util/__init__.py \
+                azouk/util/decorators.py \
+                multiplexer/__init__.py \
+                multiplexer/clients.py \
+                multiplexer/mxclient.py \
+                multiplexer/protocolbuffers.py \
+                multiplexer/test/__init__.py \
+                multiplexer/test/test_mxclient.py \
+                multiplexer/test/test_simple_connection.py \
+                multiplexer/multiplexer_constants.py \
+                multiplexer/Multiplexer_pb2.py \
                 azouk/logging/type_id_constants.py \
-		azouk/release.py
+                azouk/release.py
 
 nobase_pyexec_LTLIBRARIES = azouk/_allinone.la
 azouk__allinone_la_SOURCES = \
-		azouk/_allinonemodule.cc \
+                azouk/_allinonemodule.cc \
                 azouk/_loggingmodule.cc \
                 multiplexer/_mxclientmodule.cc \
-		$(common_sources) \
+                $(common_sources) \
                 $(multiplexer_other_sources) \
                 $(multiplexer_sources)
 
@@ -119,15 +145,17 @@ azouk__allinone_la_LIBADD = $(LDADD) $(BOOST_PYTHON_LIBS)
 azouk__allinone_la_CPPFLAGS = $(PYTHON_INCLUDES) $(AM_CPPFLAGS)
 
 BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
-		azlib/logging/Logging_pb2.py \
+                azlib/logging/Logging_pb2.py \
                 multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
-		multiplexer/Multiplexer_pb2.py \
+                multiplexer/Multiplexer_pb2.py \
                 multiplexer/multiplexer.constants.h \
                 multiplexer/multiplexer_constants.py \
                 azouk/logging/type_id_constants.h \
                 azouk/logging/type_id_constants.py \
-		azouk/release.h azouk/release.py
+                azouk/release.h azouk/release.py
 
+# this is used by generate_constants
+EXTRA_DIST = azlib/hash_set.h
 
 multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
       multiplexer.rules ../tools/generate_constants
@@ -158,6 +186,7 @@ version_short_hash = $(shell echo $(version_hash) | $(CUT) --bytes=1-7)
 RELEASE_H_TOKEN = AZOUK_RELEASE_H
 
 azouk/release.h:
+	$(MKDIR_P) "$(dir $@)"
 	$(AM_V_GEN){ \
             echo "#ifndef $(RELEASE_H_TOKEN)"; \
             echo "#define $(RELEASE_H_TOKEN)"; \
@@ -170,6 +199,7 @@ azouk/release.h:
         } > $@
 
 azouk/release.py:
+	$(MKDIR_P) "$(dir $@)"
 	$(AM_V_GEN){ \
             echo "version = \"$(version)\""; \
             echo "version_hash = \"$(version_hash)\""; \
