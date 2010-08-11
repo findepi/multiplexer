@@ -99,7 +99,6 @@ mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
                     $(multiplexer_sources) \
                     $(multiplexer_other_sources) \
                     multiplexer/multiplexer.constants.h \
-                    multiplexer.rules \
                     azouk/logging/type_id_constants.h \
                     logging.type_id.constants.txt
 
@@ -155,13 +154,15 @@ BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
                 azouk/release.h azouk/release.py
 
 # this is used by generate_constants
-EXTRA_DIST = azlib/hash_set.h
+EXTRA_DIST = azlib/hash_set.h \
+             multiplexer.rules
 
-multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: \
-      multiplexer.rules ../tools/generate_constants
-	$(AM_V_GEN)../tools/generate_constants $< $@
+generator = ../tools/generate_constants
 
-../tools/generate_constants:
+multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: $(RULES) $(generator)
+	$(AM_V_GEN)$(generator) $< $@
+
+$(generator):
 	$(MAKE) -C ../tools generate_constants
 
 azouk/logging/type_id_constants.py: logging.type_id.constants.txt

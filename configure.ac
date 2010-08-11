@@ -20,6 +20,10 @@ AC_CANONICAL_BUILD
 # drop autoconf defaults for CXXFLAGS (-g -O2)
 CXXFLAGS=${CXXFLAGS-""}
 
+AC_ARG_VAR(RULES, [path to multiplexer.rules file [multiplexer.rules]])
+AS_IF([test "x$RULES" = "x"],
+      [RULES=multiplexer.rules])
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
