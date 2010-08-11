@@ -104,6 +104,12 @@ mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
 
 server_SOURCES =    server.cc $(common_sources)
 
+BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
+                multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
+                multiplexer/multiplexer.constants.h \
+                azouk/logging/type_id_constants.h
+
+if DO_PYTHON
 nobase_python_PYTHON = azlib/__init__.py \
                 azlib/logging/__init__.py \
                 azouk/__init__.py \
@@ -143,15 +149,12 @@ azouk__allinone_la_LDFLAGS = -avoid-version -module $(BOOST_PYTHON_LDFLAGS)
 azouk__allinone_la_LIBADD = $(LDADD) $(BOOST_PYTHON_LIBS)
 azouk__allinone_la_CPPFLAGS = $(PYTHON_INCLUDES) $(AM_CPPFLAGS)
 
-BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
-                azlib/logging/Logging_pb2.py \
-                multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
+BUILT_SOURCES += azlib/logging/Logging_pb2.py \
                 multiplexer/Multiplexer_pb2.py \
-                multiplexer/multiplexer.constants.h \
                 multiplexer/multiplexer_constants.py \
-                azouk/logging/type_id_constants.h \
                 azouk/logging/type_id_constants.py \
                 azouk/release.h azouk/release.py
+endif
 
 # this is used by generate_constants
 EXTRA_DIST = azlib/hash_set.h \

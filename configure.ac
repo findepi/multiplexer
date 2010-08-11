@@ -45,10 +45,6 @@ AX_WITH_PROG_REQUIRED([SHA1SUM], [sha1sum],
 # cut is used for the version file
 AX_WITH_PROG_REQUIRED([CUT], [cut], [cut])
 
-AM_PATH_PYTHON([2.2],,[:])
-AM_CONDITIONAL([HAVE_PYTHON], [test "$PYTHON" != :])
-AZOUK_PYTHON_CONFIG
-
 LT_PREREQ([2.2.6])
 LT_INIT([win32-dll])
 
@@ -69,7 +65,16 @@ BOOST_PROGRAM_OPTIONS
 BOOST_SIGNALS
 BOOST_SYSTEM
 BOOST_DATE_TIME
-BOOST_PYTHON
+
+AC_ARG_ENABLE([python],
+	      AS_HELP_STRING([--disable-python], [Disable python parts]))
+
+AS_IF([test "x$enable_python" != "xno"], [
+  AM_PATH_PYTHON([2.2])
+  AZOUK_PYTHON_CONFIG
+  BOOST_PYTHON
+])
+AM_CONDITIONAL([DO_PYTHON], [test "x$enable_python" != "xno"])
 
 AC_CHECK_LIB([pthread], [sem_open])
 AC_CHECK_LIB([protobuf], [main])
