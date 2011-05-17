@@ -20,12 +20,14 @@ AM_CFLAGS = -O3 $(GENERALFLAGS)
 boost_ldflags = $(BOOST_PROGRAM_OPTIONS_LDFLAGS) \
                 $(BOOST_SIGNALS_LDFLAGS) \
                 $(BOOST_SYSTEM_LDFLAGS) \
-                $(BOOST_DATE_TIME_LDFLAGS)
+                $(BOOST_DATE_TIME_LDFLAGS) \
+                $(BOOST_FILESYSTEM_LDFLAGS)
 
 boost_libs = $(BOOST_PROGRAM_OPTIONS_LIBS) \
              $(BOOST_SIGNALS_LIBS) \
              $(BOOST_SYSTEM_LIBS) \
-             $(BOOST_DATE_TIME_LIBS)
+             $(BOOST_DATE_TIME_LIBS) \
+             $(BOOST_FILESYSTEM_LIBS)
 
 AM_LDFLAGS = $(boost_ldflags)
 
