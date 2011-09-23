@@ -8,3 +8,8 @@
 /autom4te.cache
 
 Makefile.in
+*.o
+/configure.lineno
+/generate_constants
+/azlib/
+/multiplexer/

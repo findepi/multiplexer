@@ -1,0 +1,9 @@
+*.o
+/mxcontrol
+/server
+/multiplexer/Multiplexer.pb.cc
+/multiplexer/Multiplexer.pb.h
+/multiplexer/multiplexer.constants.h
+/azlib/logging/Logging.pb.cc
+/azlib/logging/Logging.pb.h
+/azouk/logging/type_id_constants.h
