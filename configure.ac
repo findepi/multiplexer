@@ -3,7 +3,7 @@
 
 AC_PREREQ([2.65])
 AC_INIT([Azouk Multiplexer], [1.0.0],
-        [Piotr Findeisen <piotr.findeisen@gmail.com>],
+        [piotr.findeisen@gmail.com],
         [multiplexer], [http://github.com/findepi/multiplexer])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE(foreign dist-lzma std-options -Wall -Werror -Wno-portability)
