@@ -1,5 +1,5 @@
 set -ex
 
-gnulib-tool --update
+gnulib-tool --libtool --update
 autoreconf -iv
 autoreconf -iv tools
