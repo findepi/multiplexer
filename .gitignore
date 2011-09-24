@@ -14,6 +14,8 @@
 Makefile.in
 Makefile
 .deps/
+.libs/
+.dirstamp
 
 # for building in a subdirectory
 /build*
