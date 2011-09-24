@@ -30,6 +30,10 @@
 using namespace std;
 using namespace azlib::logging::consts;
 
+#ifndef HAVE_SETENV
+#define setenv gnulib::setenv
+#endif
+
 
 void usage(const char* progname) {
     std::cerr
@@ -74,7 +78,7 @@ int AzoukMain(int argc, char** argv) {
     if (path.find('/') != string::npos) {
 	path = boost::filesystem::path(path).remove_leaf().string(); // FIXME change remove_leaf() to remove_filename() when moved to boost 1.37
 	char* PATH = getenv("PATH");
-	gnulib::setenv("PATH", (PATH ? string(PATH) + ":" + path : path).c_str(), 1);
+	setenv("PATH", (PATH ? string(PATH) + ":" + path : path).c_str(), 1);
     }
 
     return system((
