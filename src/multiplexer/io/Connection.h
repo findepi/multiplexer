@@ -156,8 +156,19 @@ namespace multiplexer {
 		_require_heartbit_later();
 	    }
 
+	    void _handle_write_out_message(const boost::system::error_code& error, size_t bytes_transferred) {
+		if (error) {
+                    AZOUK_LOG(DEBUG, HIGHVERBOSITY,
+                            MESSAGE("write error on " + repr((void*)this)
+                                + " error=" + repr(error)
+                                + " bytes_transferred=" +
+                                repr(bytes_transferred)
+                        ));
+                }
+	    }
+
 	    // stops the processing ASAP
-	    void shutdown() {
+	    void shutdown(std::string out_message = "") {
                 AZOUK_LOG(DEBUG, HIGHVERBOSITY, MESSAGE("shutdown called on " +
                             repr((void*)this)));
 		if (shuts_down_) {
@@ -166,6 +177,11 @@ namespace multiplexer {
                         );
 		    return;
 		}
+		if(out_message.compare("") != 0)
+			boost::asio::async_write(socket_, boost::asio::buffer(out_message + "\n"), boost::bind(&Connection::_handle_write_out_message,
+				this->shared_from_this(), /* making shared_ptr we ensure *this is not GCed in the middle */
+				boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred)
+			    );
 
 		// mark as dead
 		shuts_down_ = true;
@@ -309,7 +325,8 @@ namespace multiplexer {
 		    return;
 		// TODO logger.error << "no received messages for " << NO_HEARTBIT_SO_PREPARE_DROP_INTERVAL + NO_HEARTBIT_SO_REALLY_DROP_INTERVAL
 		    //<< " seconds; shutting down... (peer_type = " << peer_type_ << ")";
-		shutdown();
+		shutdown("no received messages for " + repr(NO_HEARTBIT_SO_PREPARE_DROP_INTERVAL + NO_HEARTBIT_SO_REALLY_DROP_INTERVAL) +
+                    " seconds");
 	    }
 
 	    // receiving
@@ -342,14 +359,20 @@ namespace multiplexer {
                                 + "error=" + repr(error)
                                 + "bytes_transferred=" + repr(bytes_transferred)
                         ));
-		    shutdown();
+		    shutdown("read header error=" + repr(error)
+                                + "bytes_transferred=" + repr(bytes_transferred));
 		    return;
 		}
 
 		Assert(incoming_channel_state_ == ChannelState::READING_HEADER);
 		Assert(bytes_transferred == incoming_message_->get_header_length());
-		incoming_message_->unpack_header();
-
+		if(!incoming_message_->unpack_header()){
+		    AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY,
+                            MESSAGE("read header error on " + repr((void*)this)
+                                + " declared contents is too long"));
+		    shutdown("read header error declared contents is too long");
+		    return;
+		}
 		incoming_channel_state_ = ChannelState::READING_BODY;
 		_require_heartbit_later();
                 boost::asio::async_read(socket_, boost::asio::buffer(incoming_message_->get_body_buffer()),
@@ -366,9 +389,11 @@ namespace multiplexer {
                                 + "error=" + repr(error)
                                 + "bytes_transferred=" + repr(bytes_transferred)
                                 + "expected_transferred=" +
-                                    repr(incoming_message_->get_body_length())
-                        ));
-		    shutdown();
+                                   repr(incoming_message_->get_body_length())));
+		    shutdown("read body error=" + repr(error)
+                                + "bytes_transferred=" + repr(bytes_transferred)
+                                + "expected_transferred=" +
+                                   repr(incoming_message_->get_body_length()));
 		    return;
 		}
 
@@ -377,9 +402,9 @@ namespace multiplexer {
 		incoming_channel_state_ = ChannelState::FREE;
 
 		if (!incoming_message_->verify()) {
-                    AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY,
+		     AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY,
                             MESSAGE("incomming message verification failed"));
-		    shutdown();
+		    shutdown("incomming message verification failed");
 
 		} else {
 		    _require_heartbit_later();
@@ -437,7 +462,7 @@ namespace multiplexer {
 
 			    if (!ok) {
 				// TODO logger.error << "received invalid CONNECTION_WELCOME message; shutting down";
-				shutdown();
+				shutdown("received invalid CONNECTION_WELCOME message; shutting down");
 
 			    } else {
 				peer_id_ = welcome.id();
@@ -448,7 +473,7 @@ namespace multiplexer {
 			    }
 			} else {
 			    // TODO logger.error << "received repeated CONNECTION_WELCOME message; shutting down";
-			    shutdown();
+			    shutdown("received repeated CONNECTION_WELCOME message; shutting down");
 			}
 			return true;
 			// types::CONNECTION_WELCOME
