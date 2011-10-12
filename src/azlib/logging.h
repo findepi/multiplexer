@@ -162,7 +162,7 @@ namespace azlib {
 	    ((CHATTERBOX, 4)) \
 	    /**/
 #define AZOUK_LOGGING_DEFAULT_VERBOSITY() \
-            (::azlib::logging::consts::HIGHVERBOSITY)
+            (::azlib::logging::consts::LOWVERBOSITY)
 
 	    const static unsigned int MAX_VERBOSITY =
                 __AZOUK_LOGGING_MAX_VERBOSITY();

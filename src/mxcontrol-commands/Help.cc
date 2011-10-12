@@ -37,6 +37,7 @@ namespace mxcontrol {
 
 	    std::cerr
 		<< "Usage: " << _program_name() << " <general-options> <command> <command-options>\n"
+		<< "Sample usage: mxcontrol run_multiplexer 127.0.0.1:31889 --rules ../git_openbci/multiplexer.rules\n"
 		<< "Commands:\n"
 		;
 	    BOOST_FOREACH(const TasksHolder::TasksMap::value_type& entry, tasks_holder().tasks()) {
