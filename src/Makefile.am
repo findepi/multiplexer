@@ -35,74 +35,81 @@ LDADD = $(top_builddir)/lib/libgnu.la $(boost_libs) \
         $(GETHOSTNAME_LIB) $(LIBSOCKET) # gethostname replacement from gnulib
 
 common_sources =    azlib/logging/Logging.pb.cc \
-                    azlib/logging/Logging.pb.h \
-                    azlib/signals.cc azlib/signals.h \
-                    azlib/random.cc azlib/random.h \
-                    azlib/logging.cc azlib/logging.h \
-                    azlib/logging/impl.h \
-                    azlib/util/Assert.cc azlib/util/Assert.h \
-                    azlib/util/Exception.cc azlib/util/Exception.h \
-                    azouk/util/kwargs.cc azouk/util/kwargs.h \
-                    azouk/xrelease.cc azouk/xrelease.h \
-                    azlib/logging/Logging.proto \
-                    azlib/logging/log_tokens.h \
-                    azlib/macros.h \
-                    azlib/preproc/common.h \
-                    azlib/preproc/create_message/detail.h \
-                    azlib/preproc/create_message.h \
-                    azlib/preproc/kwargs.h \
-                    azlib/program.h \
-                    azlib/protobuf/stream.h \
-                    azlib/repr.h azlib/spanset.h azlib/str.h \
-                    azlib/timer.h azlib/triple.h \
-                    azlib/util/fd.h azlib/util/functors.h \
-                    azlib/util/IntrusiveValue.h \
-                    azlib/util/type_functors.h azlib/util/type_utils.h \
-                    azlib/vector.h \
-                    azlib/initialization.h
+		    azlib/signals.cc \
+		    azlib/random.cc  \
+		    azlib/logging.cc \
+		    azouk/xrelease.h \
+		    azlib/util/Assert.cc \
+		    azlib/util/Exception.cc \
+		    azouk/util/kwargs.cc \
+		    azouk/xrelease.cc \
+		    azlib/logging/Logging.proto
 
-multiplexer_sources = multiplexer/Multiplexer.pb.cc \
-                    multiplexer/Multiplexer.pb.h
+multiplexer_sources = multiplexer/Multiplexer.pb.cc
+
+nobase_include_HEADERS = \
+		    multiplexer/Multiplexer.pb.h \
+		    multiplexer/multiplexer.constants.h \
+		    multiplexer/BasicClient.h \
+		    multiplexer/Client.h \
+		    multiplexer/Server.h \
+		    multiplexer/ConnectionsManager.h \
+		    multiplexer/io/RawMessage.h \
+		    multiplexer/backend/BaseMultiplexerServer.h \
+		    multiplexer/Config.h \
+		    multiplexer/configuration.h \
+		    multiplexer/io/Connection.h \
+		    azlib/encoders/BaseDecoder.h \
+		    azlib/encoders/BaseEncoder.h \
+		    azlib/encoders/DecodeFromRange.h \
+		    azlib/encoders/EncodeToOutputIterator.h \
+		    azlib/encoders/EncodeToRange.h \
+		    azlib/encodings/LittleEndian.h \
+		    azlib/util/Exception.h \
+		    azouk/util/kwargs.h \
+		    azlib/logging/Logging.pb.h \
+		    azlib/logging.h azlib/random.h  azlib/signals.h \
+		    azlib/logging/impl.h \
+		    azlib/util/Assert.h \
+		    azlib/logging/log_tokens.h \
+		    azlib/macros.h \
+		    azlib/preproc/common.h \
+		    azlib/preproc/create_message/detail.h \
+		    azlib/preproc/create_message.h \
+		    azlib/preproc/kwargs.h \
+		    azlib/program.h \
+		    azlib/protobuf/stream.h \
+		    azlib/repr.h azlib/spanset.h azlib/str.h \
+		    azlib/timer.h azlib/triple.h \
+		    azlib/util/fd.h azlib/util/functors.h \
+		    azlib/util/IntrusiveValue.h \
+		    azlib/util/type_functors.h azlib/util/type_utils.h \
+		    azlib/vector.h \
+		    azlib/initialization.h
 
 multiplexer_other_sources = \
-                    multiplexer/BasicClient.cc \
-                    multiplexer/BasicClient.h \
-                    multiplexer/Client.cc \
-                    multiplexer/Client.h \
-                    multiplexer/Server.cc \
-                    multiplexer/Server.h \
-                    multiplexer/ConnectionsManager.cc \
-                    multiplexer/ConnectionsManager.h \
-                    multiplexer/io/RawMessage.cc \
-                    multiplexer/io/RawMessage.h \
-                    azlib/encoders/BaseDecoder.h \
-                    azlib/encoders/BaseEncoder.h \
-                    azlib/encoders/DecodeFromRange.h \
-                    azlib/encoders/EncodeToOutputIterator.h \
-                    azlib/encoders/EncodeToRange.h \
-                    azlib/encodings/LittleEndian.h \
-                    multiplexer/backend/BaseMultiplexerServer.cc \
-                    multiplexer/backend/BaseMultiplexerServer.h \
-                    multiplexer/Config.h \
-                    multiplexer/configuration.h \
-                    multiplexer/io/Connection.h
+		    multiplexer/BasicClient.cc \
+		    multiplexer/Client.cc \
+		    multiplexer/Server.cc \
+		    multiplexer/ConnectionsManager.cc \
+		    multiplexer/io/RawMessage.cc \
+		    multiplexer/backend/BaseMultiplexerServer.cc
 
 mxcontrol_SOURCES = mxcontrol.cc $(common_sources) \
-                    mxcontrol-commands/TasksHolder.cc \
-                    mxcontrol-commands/TasksHolder.h \
-                    mxcontrol-commands/Task.cc \
-                    mxcontrol-commands/Task.h \
-                    mxcontrol-commands/StreamLogs.cc \
-                    mxcontrol-commands/StartMultiplexerServer.cc \
-                    mxcontrol-commands/StartMultiplexerServer.h \
-                    mxcontrol-commands/ReceiveLogs.cc \
-                    mxcontrol-commands/Help.cc \
-                    mxcontrol-commands/Help.h \
-                    $(multiplexer_sources) \
-                    $(multiplexer_other_sources) \
-                    multiplexer/multiplexer.constants.h \
-                    azouk/logging/type_id_constants.h \
-                    logging.type_id.constants.txt
+		    mxcontrol-commands/TasksHolder.cc \
+		    mxcontrol-commands/TasksHolder.h \
+		    mxcontrol-commands/Task.cc \
+		    mxcontrol-commands/Task.h \
+		    mxcontrol-commands/StreamLogs.cc \
+		    mxcontrol-commands/StartMultiplexerServer.cc \
+		    mxcontrol-commands/StartMultiplexerServer.h \
+		    mxcontrol-commands/ReceiveLogs.cc \
+		    mxcontrol-commands/Help.cc \
+		    mxcontrol-commands/Help.h \
+		    $(multiplexer_sources) \
+		    $(multiplexer_other_sources) \
+		    azouk/logging/type_id_constants.h \
+		    logging.type_id.constants.txt
 
 server_SOURCES =    server.cc $(common_sources)
 
