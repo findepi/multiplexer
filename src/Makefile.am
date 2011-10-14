@@ -62,7 +62,6 @@ nobase_include_HEADERS = \
 		    azlib/encoders/BaseDecoder.h \
 		    azlib/encoders/BaseEncoder.h \
 		    azlib/encoders/DecodeFromRange.h \
-		    azlib/encoders/EncodeToOutputIterator.h \
 		    azlib/encoders/EncodeToRange.h \
 		    azlib/encodings/LittleEndian.h \
 		    azlib/util/Exception.h \
