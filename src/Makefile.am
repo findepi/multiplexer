@@ -164,7 +164,10 @@ EXTRA_DIST = azlib/hash_set.h \
 
 generator = ../tools/generate_constants
 
-multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: $(RULES) $(generator)
+_rules_prefix = $(if $(subst $(RULES),,$(abspath $(RULES))),../,)
+rules = $(_rules_prefix)$(RULES)
+
+multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: $(rules) $(generator)
 	$(AM_V_GEN)$(generator) $< $@
 
 $(generator):
