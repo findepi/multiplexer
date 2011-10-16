@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 #
 # Azouk Libraries -- Libraries and goodies created for www.azouk.com.
 # Copyright (C) 2008-2009 Azouk Network Ltd.
@@ -18,8 +20,6 @@
 # Author:
 #      Piotr Findeisen <piotr.findeisen at gmail.com>
 #
-
-#!/usr/bin/env python
 
 import socket, struct, sys, random, zlib, time
 from multiplexer.Multiplexer_pb2 import *
