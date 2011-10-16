@@ -21,7 +21,7 @@
 #      Piotr Findeisen <piotr.findeisen at gmail.com>
 #
 
-import socket, struct, sys, random, zlib, time
+import socket, struct, sys, random, zlib
 from multiplexer.Multiplexer_pb2 import *
 from multiplexer_constants import peers, types
 

@@ -25,8 +25,7 @@ from multiplexer.protocolbuffers import *
 from multiplexer.multiplexer_constants import peers, types
 import multiplexer.mxclient as mxclient
 from multiplexer.mxclient import *
-import sys, os, struct, socket, time
-from time import sleep
+import sys, os, time
 
 MULTIPLEXER_HOSTS = [ "localhost", ]
 PORT = 1980
