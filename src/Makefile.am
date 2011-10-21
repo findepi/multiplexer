@@ -45,8 +45,6 @@ common_sources =    azlib/signals.cc \
 		    azouk/util/kwargs.cc \
 		    azlib/logging/Logging.proto
 
-multiplexer_sources = multiplexer/Multiplexer.pb.cc
-
 nobase_include_HEADERS = \
 		    multiplexer/Multiplexer.pb.h \
 		    multiplexer/multiplexer.constants.h \
@@ -87,7 +85,8 @@ nobase_include_HEADERS = \
 		    azouk/util/kwargs.h \
 		    azouk/xrelease.h
 
-multiplexer_other_sources = \
+multiplexer_sources = \
+                    multiplexer/Multiplexer.pb.cc \
 		    multiplexer/BasicClient.cc \
 		    multiplexer/Client.cc \
 		    multiplexer/Server.cc \
@@ -107,7 +106,6 @@ mxcontrol_SOURCES = mxcontrol.cc \
 		    mxcontrol-commands/Help.cc \
 		    mxcontrol-commands/Help.h \
 		    $(multiplexer_sources) \
-		    $(multiplexer_other_sources) \
 		    $(common_sources) \
 		    azouk/logging/type_id_constants.h \
 		    logging.type_id.constants.txt
@@ -152,7 +150,6 @@ azouk__allinone_la_SOURCES = \
                 azouk/_loggingmodule.cc \
                 multiplexer/_mxclientmodule.cc \
                 $(common_sources) \
-                $(multiplexer_other_sources) \
                 $(multiplexer_sources)
 
 azouk__allinone_la_LDFLAGS = -avoid-version -module $(BOOST_PYTHON_LDFLAGS)
