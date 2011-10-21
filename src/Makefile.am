@@ -65,7 +65,6 @@ nobase_include_HEADERS = \
 		    azlib/encoders/EncodeToRange.h \
 		    azlib/encodings/LittleEndian.h \
 		    azlib/util/Exception.h \
-		    azouk/util/kwargs.h \
 		    azlib/logging/Logging.pb.h \
 		    azlib/logging.h azlib/random.h  azlib/signals.h \
 		    azlib/logging/impl.h \
@@ -84,7 +83,9 @@ nobase_include_HEADERS = \
 		    azlib/util/IntrusiveValue.h \
 		    azlib/util/type_functors.h azlib/util/type_utils.h \
 		    azlib/vector.h \
-		    azlib/initialization.h
+		    azlib/initialization.h \
+		    azouk/util/kwargs.h \
+		    azouk/xrelease.h
 
 multiplexer_other_sources = \
 		    multiplexer/BasicClient.cc \
