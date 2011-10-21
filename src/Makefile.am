@@ -7,6 +7,8 @@ include $(top_srcdir)/lib/Makefile_protoc
 include $(top_srcdir)/lib/Makefile_v_copy
 
 bin_PROGRAMS = mxcontrol server
+lib_LTLIBRARIES = libmultiplexer.la
+
 AM_CPPFLAGS = $(BOOST_CPPFLAGS) -I$(top_builddir)
 AM_CPPFLAGS += -I$(top_builddir)/lib -I$(top_srcdir)/lib
 
@@ -32,6 +34,7 @@ boost_libs = $(BOOST_PROGRAM_OPTIONS_LIBS) \
 AM_LDFLAGS = $(boost_ldflags)
 
 LDADD = $(top_builddir)/lib/libgnu.la $(boost_libs) \
+	libmultiplexer.la \
         $(GETHOSTNAME_LIB) $(LIBSOCKET) # gethostname replacement from gnulib
 
 common_sources =    azlib/signals.cc \
@@ -105,12 +108,15 @@ mxcontrol_SOURCES = mxcontrol.cc \
 		    mxcontrol-commands/ReceiveLogs.cc \
 		    mxcontrol-commands/Help.cc \
 		    mxcontrol-commands/Help.h \
-		    $(multiplexer_sources) \
-		    $(common_sources) \
 		    azouk/logging/type_id_constants.h \
 		    logging.type_id.constants.txt
 
-server_SOURCES =    server.cc $(common_sources)
+server_SOURCES =    server.cc
+
+libmultiplexer_la_SOURCES = \
+		    $(common_sources) \
+                    $(multiplexer_sources)
+
 
 BUILT_SOURCES = azlib/logging/Logging.pb.cc azlib/logging/Logging.pb.h \
                 multiplexer/Multiplexer.pb.cc multiplexer/Multiplexer.pb.h \
@@ -148,9 +154,7 @@ nobase_pyexec_LTLIBRARIES = azouk/_allinone.la
 azouk__allinone_la_SOURCES = \
                 azouk/_allinonemodule.cc \
                 azouk/_loggingmodule.cc \
-                multiplexer/_mxclientmodule.cc \
-                $(common_sources) \
-                $(multiplexer_sources)
+                multiplexer/_mxclientmodule.cc
 
 azouk__allinone_la_LDFLAGS = -avoid-version -module $(BOOST_PYTHON_LDFLAGS)
 azouk__allinone_la_LIBADD = $(LDADD) $(BOOST_PYTHON_LIBS)

@@ -47,6 +47,8 @@ AX_WITH_PROG_REQUIRED([CUT], [cut], [cut])
 
 LT_PREREQ([2.2.6])
 LT_INIT([win32-dll])
+AC_PROG_LIBTOOL
+AM_PROG_LIBTOOL
 
 gl_INIT
 
