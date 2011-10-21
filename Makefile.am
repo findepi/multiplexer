@@ -12,6 +12,11 @@ EXTRA_DIST = bootstrap.sh \
         tools/config/missing \
         tools/config/install-sh
 
+# http://www.gnu.org/software/libtool/manual/libtool.html#LT_INIT
+LIBTOOL_DEPS = @LIBTOOL_DEPS@
+libtool: $(LIBTOOL_DEPS)
+	$(SHELL) ./config.status libtool
+
 distclean-local:
 	$(MAKE) -C tools distclean
 
