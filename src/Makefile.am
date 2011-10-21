@@ -177,6 +177,7 @@ _rules_prefix = $(if $(subst $(RULES),,$(abspath $(RULES))),../,)
 rules = $(_rules_prefix)$(RULES)
 
 multiplexer/multiplexer.constants.h multiplexer/multiplexer_constants.py: $(rules) $(generator)
+	$(AM_V_at)$(MKDIR_P) $(dir $@)
 	$(AM_V_GEN)$(generator) $< $@
 
 $(generator):
