@@ -6,7 +6,8 @@
 include $(top_srcdir)/lib/Makefile_protoc
 include $(top_srcdir)/lib/Makefile_v_copy
 
-bin_PROGRAMS = mxcontrol server
+bin_PROGRAMS = mxcontrol
+noinst_PROGRAMS = server
 lib_LTLIBRARIES = libmultiplexer.la
 
 AM_CPPFLAGS = $(BOOST_CPPFLAGS) -I$(top_builddir)
