@@ -29,6 +29,7 @@
 #include "azlib/util/Assert.h"
 #include "azlib/program.h" /* main() */
 #include "mxcontrol-commands/TasksHolder.h"
+#include "mxcontrol-commands/Help.h"
 
 using namespace std;
 using namespace mxcontrol;
@@ -78,10 +79,11 @@ int AzoukMain(int argc, char** argv) {
 	unrecognized.push_front("version");
     }
 
-    if (!unrecognized.size()) {
-	unrecognized.push_back("help");
-    } else if (show_help) {
+    if (show_help) {
 	unrecognized.push_front("help");
+    } else if (!unrecognized.size()) {
+	unrecognized.push_back("help");
+	show_help_forced = true;
     }
 
     if (!tasks_holder().is_command(unrecognized[0])) {
