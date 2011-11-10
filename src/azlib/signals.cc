@@ -136,11 +136,6 @@ namespace azlib {
 #undef AZOUK_SIGNALS_create_signal
 		    signals::exit_signal = new boost::signal<void(int)>();
 
-		    // when exit_signal is called...
-		    exit_signal->connect(std::numeric_limits<int>::min(),
-			    std::cerr << L::constant(
-                                "azlib::signals::exit_signal called: "
-                                "exiting with ") << L::_1 << "\n");
 		    exit_signal->connect(std::numeric_limits<int>::max(), &exit,
                             S::at_back);
 
