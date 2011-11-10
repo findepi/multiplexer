@@ -14,22 +14,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Author:
-//      Piotr Findeisen <piotr.findeisen at gmail.com>
-//
 
-#ifndef AZOUK_XRELEASE_H
-#define AZOUK_XRELEASE_H
+#ifndef MXCONTROL_VERSION_H
+#define MXCONTROL_VERSION_H
 
-namespace azouk {
-    namespace release {
-        extern const char* const version;
-        extern const char* const version_hash;
-        extern const char* const version_short_hash;
-    }
-}
+#include "mxcontrol-commands/Task.h"
 
-extern const char* program_name;
+namespace mxcontrol {
+
+    class Version : public Task {
+    public:
+	virtual int run();
+	virtual std::string short_description() const { return "print version string"; }
+    };
+};
 
 #endif

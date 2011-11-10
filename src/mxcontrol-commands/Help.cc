@@ -36,7 +36,7 @@ namespace mxcontrol {
 		longest_name = std::max(entry.first.size(), longest_name);
 
 	    std::cerr
-		<< "Usage: " << _program_name() << " <general-options> <command> <command-options>\n"
+		<< "Usage: " << program_name << " <general-options> <command> <command-options>\n"
 		<< "Sample usage: mxcontrol run_multiplexer 127.0.0.1:31889 --rules ../git_openbci/multiplexer.rules\n"
 		<< "Commands:\n"
 		;
@@ -49,7 +49,7 @@ namespace mxcontrol {
 		;
 	} else if (!tasks_holder().is_command(subcommand_)) {
 	    std::cerr
-		<< _program_name() << ": unknown subcommand: " << subcommand_ << "\n"
+		<< program_name << ": unknown subcommand: " << subcommand_ << "\n"
 		;
 	    return 1;
 	} else {
@@ -57,7 +57,7 @@ namespace mxcontrol {
 	    const TasksHolder::TasksMap::value_type& entry = *tasks_holder().tasks().find(subcommand_);
 	    boost::shared_ptr<Task> t = entry.second->task();
 	    std::cerr
-		<< "Usage: " << _program_name() << " <general-options> " << entry.first << " " << t->short_synopsis(entry.first) << "\n"
+		<< "Usage: " << program_name << " <general-options> " << entry.first << " " << t->short_synopsis(entry.first) << "\n"
 		<< tasks_holder().general_options
 		<< "\n"
 		;

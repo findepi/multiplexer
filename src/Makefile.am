@@ -108,6 +108,8 @@ mxcontrol_SOURCES = mxcontrol.cc \
 		    mxcontrol-commands/ReceiveLogs.cc \
 		    mxcontrol-commands/Help.cc \
 		    mxcontrol-commands/Help.h \
+		    mxcontrol-commands/Version.cc \
+		    mxcontrol-commands/Version.h \
 		    azouk/logging/type_id_constants.h \
 		    logging.type_id.constants.txt
 

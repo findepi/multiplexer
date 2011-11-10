@@ -19,17 +19,20 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-#ifndef AZOUK_XRELEASE_H
-#define AZOUK_XRELEASE_H
+#include "config.h"
+#include <boost/foreach.hpp>
+#include <iomanip>
+#include <iostream>
+#include "mxcontrol-commands/TasksHolder.h"
 
-namespace azouk {
-    namespace release {
-        extern const char* const version;
-        extern const char* const version_hash;
-        extern const char* const version_short_hash;
+#include "Version.h"
+
+namespace mxcontrol {
+    int Version::run() {
+	std::cout
+	    << program_name << " " << azouk::release::version << "\n";
+	return 0;
     }
-}
+};
 
-extern const char* program_name;
-
-#endif
+REGISTER_MXCONTROL_SUBCOMMAND(version, mxcontrol::Version);

@@ -47,9 +47,6 @@ namespace mxcontrol {
 	}
 
     private:
-	inline std::string _program_name() const { return tasks_holder().original_argc() ? tasks_holder().original_argv()[0] : "program"; }
-
-    private:
 	std::string subcommand_;
     };
 };
