@@ -10,7 +10,10 @@ EXTRA_DIST = bootstrap.sh \
         tools/config/config.h.in \
         tools/config/depcomp \
         tools/config/missing \
-        tools/config/install-sh
+        tools/config/install-sh \
+        multiplexer.rules
+
+DISTCLEANFILES = confdefs.h
 
 # http://www.gnu.org/software/libtool/manual/libtool.html#LT_INIT
 LIBTOOL_DEPS = @LIBTOOL_DEPS@

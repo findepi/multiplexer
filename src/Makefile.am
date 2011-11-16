@@ -171,8 +171,7 @@ BUILT_SOURCES += azlib/logging/Logging_pb2.py \
 endif
 
 # this is used by generate_constants
-EXTRA_DIST = azlib/hash_set.h \
-             multiplexer.rules
+EXTRA_DIST = azlib/hash_set.h
 
 generator = ../tools/generate_constants
 
@@ -227,3 +226,5 @@ azouk/release.py:
             echo "version_hash = \"$(version_hash)\""; \
             echo "version_short_hash = \"$(version_short_hash)\""; \
         } > $@
+
+CLEANFILES = azouk/release.h azouk/release.py
