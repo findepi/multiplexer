@@ -1,0 +1,15 @@
+/config/
+/config.log
+/config.status
+/configure
+/configure.scan
+/autoscan.log
+/aclocal.m4
+/autom4te.cache
+
+Makefile.in
+*.o
+/configure.lineno
+/generate_constants
+/azlib/
+/multiplexer/

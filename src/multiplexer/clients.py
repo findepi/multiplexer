@@ -186,13 +186,14 @@ class BaseMultiplexerServer(MultiplexerPeer):
     _exceptions_policies = []
 
     @log_call
-    def __init__(self, addresses = MULTIPLEXER_ADDRESSES, type = None):
+    def __init__(self, addresses = MULTIPLEXER_ADDRESSES, type = None,
+            password = MULTIPLEXER_PASSWORD):
         """
             Constructor.
             See docstring for MultiplexerPeer.__init__ for meaning of
             parameters.
         """
-        super(BaseMultiplexerServer, self).__init__(addresses, type)
+        super(BaseMultiplexerServer, self).__init__(addresses, type, password)
         self.working = True
         self.last_mxmsg = None
         self._start_time = time.time()
@@ -226,7 +227,7 @@ class BaseMultiplexerServer(MultiplexerPeer):
                 self.no_response()
 
         else:
-            log(ERROR, LOWVERBOSITY, text="received unknown meta-packet",
+            log(LOG_ERROR, LOWVERBOSITY, text="received unknown meta-packet",
                     data=PickleData(mxmsg.type))
 
     @log_call
@@ -355,7 +356,8 @@ class MultiplexerServer(BaseMultiplexerServer):
     """
 
     @log_call
-    def __init__(self, addresses=MULTIPLEXER_ADDRESSES, type=None):
+    def __init__(self, addresses=MULTIPLEXER_ADDRESSES, type=None,
+            password=MULTIPLEXER_PASSWORD):
         """
             Initialize the MultiplexerServer
             See docstring for MultiplexerPeer.__init__ for meaning of
@@ -366,7 +368,7 @@ class MultiplexerServer(BaseMultiplexerServer):
                   constant
         """
         assert isinstance(type, (int, long))
-        super(MultiplexerServer, self).__init__(addresses, type)
+        super(MultiplexerServer, self).__init__(addresses, type, password)
 
     @log_call
     def send_pickle(self, data):

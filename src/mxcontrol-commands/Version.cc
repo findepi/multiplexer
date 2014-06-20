@@ -19,4 +19,20 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-#include "build/multiplexer/multiplexer.constants.h"
+#include "config.h"
+#include <boost/foreach.hpp>
+#include <iomanip>
+#include <iostream>
+#include "mxcontrol-commands/TasksHolder.h"
+
+#include "Version.h"
+
+namespace mxcontrol {
+    int Version::run() {
+	std::cout
+	    << program_name << " " << azouk::release::version << "\n";
+	return 0;
+    }
+};
+
+REGISTER_MXCONTROL_SUBCOMMAND(version, mxcontrol::Version);

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 #
 # Azouk Libraries -- Libraries and goodies created for www.azouk.com.
 # Copyright (C) 2008-2009 Azouk Network Ltd.
@@ -19,14 +21,11 @@
 #      Piotr Findeisen <piotr.findeisen at gmail.com>
 #
 
-#!/usr/bin/env python
-
 from multiplexer.protocolbuffers import *
 from multiplexer.multiplexer_constants import peers, types
 import multiplexer.mxclient as mxclient
 from multiplexer.mxclient import *
-import sys, os, struct, socket, time
-from time import sleep
+import sys, os, time
 
 MULTIPLEXER_HOSTS = [ "localhost", ]
 PORT = 1980

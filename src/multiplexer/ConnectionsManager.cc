@@ -20,8 +20,8 @@
 //
 
 
-#include "build/multiplexer/multiplexer.constants.h" /* generated */
-
+#include "config.h"
+#include "multiplexer/multiplexer.constants.h" /* generated */
 #include "ConnectionsManager.h"
 
 namespace multiplexer {

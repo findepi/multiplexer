@@ -19,6 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
+#include "config.h"
 #include <signal.h>
 #include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/cat.hpp>
@@ -81,7 +82,7 @@ namespace azlib {
 	\
 	/* create a logging function that prints a signal was called */ \
 	static void BOOST_PP_CAT(print_that_called_, SIG)() { \
-	    AZOUK_LOG(INFO, LOWVERBOSITY, CTX("signals") TEXT("got " \
+	    AZOUK_LOG(INFO, LOWVERBOSITY, CTX("signals") MESSAGE("got " \
                         BOOST_PP_STRINGIZE(SIG)  " signal")); \
 	}; \
 	/* bind the above logging function to SIG */ \
@@ -135,11 +136,6 @@ namespace azlib {
 #undef AZOUK_SIGNALS_create_signal
 		    signals::exit_signal = new boost::signal<void(int)>();
 
-		    // when exit_signal is called...
-		    exit_signal->connect(std::numeric_limits<int>::min(),
-			    std::cerr << L::constant(
-                                "azlib::signals::exit_signal called: "
-                                "exiting with ") << L::_1 << "\n");
 		    exit_signal->connect(std::numeric_limits<int>::max(), &exit,
                             S::at_back);
 

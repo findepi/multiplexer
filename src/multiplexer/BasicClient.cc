@@ -19,6 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
+#include "config.h"
 #include <boost/foreach.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include "multiplexer/multiplexer.constants.h"
@@ -56,7 +57,7 @@ void BasicClient::handle_message(Connection::pointer conn,
 
     if (incoming_queue_full()) {
         AZOUK_LOG(WARNING, HIGHVERBOSITY, CTX("BasicClient.handle_message")
-                TEXT("incoming_queue_full, dropping #" + repr(mxmsg->id()))
+                MESSAGE("incoming_queue_full, dropping #" + repr(mxmsg->id()))
             );
 	return; // drop
     }
@@ -87,8 +88,8 @@ void BasicClient::shutdown() {
 }
 
 void BasicClient::connection_destroyed(Connection* conn) {
-    AZOUK_LOG(ERROR, LOWVERBOSITY, CTX("BasicClient")
-            TEXT("connection_destroyed(" + repr(conn) + ")")
+    AZOUK_LOG(LOG_ERROR, LOWVERBOSITY, CTX("BasicClient")
+            MESSAGE("connection_destroyed(" + repr(conn) + ")")
         );
     Connection::pointer c;
     ConnectionByEndpoint::iterator conni = connection_by_endpoint_.find(
@@ -102,7 +103,7 @@ void BasicClient::connection_destroyed(Connection* conn) {
     if (!shuts_down_) {
 	// auto reconnect after AUTO_RECONNECT_TIME seconds
         AZOUK_LOG(DEBUG, LOWVERBOSITY, CTX("BasicClient")
-                TEXT("scheduling reconnecting after " +
+                MESSAGE("scheduling reconnecting after " +
                     repr(AUTO_RECONNECT_TIME) + " seconds to " +
                     repr(conn->managers_private_data().expected_endpoint))
             );
@@ -123,8 +124,8 @@ void BasicClient::reconnect_after_timeout(TimerPointer, Endpoint peer_endpoint,
                 connection_by_endpoint_.end())
 	    async_connect(peer_endpoint);
     } else {
-        AZOUK_LOG(ERROR, HIGHVERBOSITY, CTX("BasicClient")
-                TEXT("auto reconnect to " + repr(peer_endpoint) + "cancelled "
+        AZOUK_LOG(LOG_ERROR, HIGHVERBOSITY, CTX("BasicClient")
+                MESSAGE("auto reconnect to " + repr(peer_endpoint) + "cancelled "
                     "by error" + repr(error))
             );
     }
@@ -145,8 +146,8 @@ ConnectionWrapper BasicClient::async_connect(
     for (ConnectionByEndpoint::iterator next = connection_by_endpoint_.begin(),
             i; next != connection_by_endpoint_.end() && (i = next++, true); ) {
 	if (!i->second.lock()) {
-            AZOUK_LOG(ERROR, LOWVERBOSITY, CTX("BasicClient.connect")
-                    TEXT("there should be no dangling weak references in "
+            AZOUK_LOG(LOG_ERROR, LOWVERBOSITY, CTX("BasicClient.connect")
+                    MESSAGE("there should be no dangling weak references in "
                         "connection_by_endpoint_")
                 );
 	    connection_by_endpoint_.erase(i);
@@ -177,7 +178,7 @@ bool BasicClient::wait_for_connection(ConnectionWrapper connwrap, float timeout)
 	std::auto_ptr<SimpleTimer> timer = create_timer(timeout);
 	Assert(timeout == 0 || !timer->expired());
 	AZOUK_LOG(DEBUG, CHATTERBOX, CTX("basicClient")
-                TEXT("waiting for connection " + repr(conn.get()) + "on IO=" +
+                MESSAGE("waiting for connection " + repr(conn.get()) + "on IO=" +
                     repr(&io_service_))
             );
         while (!conn->shuts_down() && !conn->registered() && !timer->expired())

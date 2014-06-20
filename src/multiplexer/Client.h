@@ -109,7 +109,7 @@ namespace multiplexer {
         ConnectionWrapper connect(const std::string& host, boost::uint16_t port,
                 float timeout=DEFAULT_TIMEOUT) {
             AZOUK_LOG(INFO, MEDIUMVERBOSITY, CTX("multiplexer.client")
-                    TEXT("connecting to " + host + ":" + repr(port)));
+                    MESSAGE("connecting to " + host + ":" + repr(port)));
             return connect(boost::asio::ip::tcp::endpoint(
                         boost::asio::ip::address::from_string(host), port),
                     timeout);
@@ -387,7 +387,7 @@ namespace multiplexer {
                     return result;
                 if (ignore_id != mxmsg.references()) {
                     AZOUK_LOG(WARNING, HIGHVERBOSITY,
-                            TEXT("message (id=" + repr(mxmsg.id()) + ", type=" +
+                            MESSAGE("message (id=" + repr(mxmsg.id()) + ", type=" +
                                 repr(mxmsg.type()) + ", from=" +
                                 repr(mxmsg.from()) + ", references=" +
                                 repr(mxmsg.references()) + ") while waiting "

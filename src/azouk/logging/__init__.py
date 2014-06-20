@@ -185,7 +185,7 @@ def log_call(f, level=DEBUG, verbosity=CHATTERBOX):
     return wrapper
 
 
-def log_exception(level=ERROR, verbosity=LOWVERBOSITY,
+def log_exception(level=LOG_ERROR, verbosity=LOWVERBOSITY,
         text="Unhandled exception occurred", **kwargs):
     traceback.print_stack()
     traceback.print_exc()

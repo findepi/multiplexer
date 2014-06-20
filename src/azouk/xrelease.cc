@@ -20,4 +20,4 @@
 //
 
 #include "xrelease.h"
-#include "build/azouk/release.h" /* generated */
+#include "azouk/release.h" /* generated */

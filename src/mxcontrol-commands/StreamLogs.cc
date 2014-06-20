@@ -19,13 +19,13 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-
+#include "config.h"
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include "mxcontrol-commands/Task.h"
 #include "mxcontrol-commands/TasksHolder.h"
 #include "azlib/logging.h"
 #include "azlib/protobuf/stream.h"
-#include "build/multiplexer/Multiplexer.pb.h" /* generated */
+#include "multiplexer/Multiplexer.pb.h" /* generated */
 #include "multiplexer/Client.h"
 
 using namespace std;
@@ -70,7 +70,7 @@ namespace mxcontrol {
 	mxmsg.set_logging_method(LoggingMethod::CONSOLE);
 	logs.SerializeToString(mxmsg.mutable_message());
 	AZOUK_LOG(DEBUG, HIGHVERBOSITY,
-		TEXT("scheduling LOGS_STREAM with " + repr(logs.log_size()) +
+		MESSAGE("scheduling LOGS_STREAM with " + repr(logs.log_size()) +
 		    " LogEntries (encoded on " + repr(mxmsg.message().size()) + " b)")
 	    );
 	client.schedule_all(mxmsg);

@@ -30,4 +30,6 @@ namespace azouk {
     }
 }
 
+extern const char* program_name;
+
 #endif

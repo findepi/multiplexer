@@ -32,7 +32,7 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/text_format.h>
 
-#include "build/multiplexer/Multiplexer.pb.h" /* generated */
+#include "multiplexer/Multiplexer.pb.h" /* generated */
 #include "azlib/util/Exception.h"
 #include "azlib/util/Assert.h"
 
@@ -97,7 +97,7 @@ type {\
 #ifndef IS_GENERATE_CONSTANTS
 		using namespace azlib::logging::consts;
 		AZOUK_LOG(DEBUG, MEDIUMVERBOSITY, CTX("config")
-                        TEXT("reading configuration file"));
+                        MESSAGE("reading configuration file"));
 #endif
 
 		ifstream in(file.c_str(), ifstream::in | ifstream::binary);

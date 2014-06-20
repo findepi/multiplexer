@@ -1,0 +1,16 @@
+V_PROTOC = $(V_PROTOC_$(V))
+V_PROTOC_ = $(V_PROTOC_$(AM_DEFAULT_VERBOSITY))
+V_PROTOC_0 = @echo ' PROTOC ' $@;
+
+# note: $(abspath $(srcdir)/../src) is used so the same rule can be
+# used from within .../src and .../tools.
+
+%.pb.h %.pb.cc: %.proto
+	$(AM_V_at)$(MKDIR_P) $(dir $@)
+	$(V_PROTOC)$(PROTOC) $(PROTOCFLAGS) -I$(abspath .) -I$(abspath $(srcdir)/../src) \
+             --cpp_out=$(builddir) $(abspath $<)
+
+%_pb2.py: %.proto
+	$(AM_V_at)$(MKDIR_P) $(dir $@)
+	$(V_PROTOC)$(PROTOC) $(PROTOCFLAGS) -I$(abspath .) -I$(abspath $(srcdir)/../src) \
+             --python_out=$(builddir) $(abspath $<)

@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #
 # Azouk Libraries -- Libraries and goodies created for www.azouk.com.
 # Copyright (C) 2008-2009 Azouk Network Ltd.
@@ -19,13 +21,11 @@
 #      Piotr Findeisen <piotr.findeisen at gmail.com>
 #
 
-#!/bin/bash
-
 for i in `find build -name 'test_*' | grep -vE '~$'`; do
     echo
-    echo "---------------------------------------------------------------------------------------------------------------------"
+    echo "------------------------------------------------------------"
     echo "Running $i"
-    echo "---------------------------------------------------------------------------------------------------------------------"
+    echo "------------------------------------------------------------"
     "$i"
     declare -i ext=$?
     if [ $ext -ne 0 ]; then

@@ -19,7 +19,7 @@
 //      Piotr Findeisen <piotr.findeisen at gmail.com>
 //
 
-
+#include "config.h"
 #include <deque>
 #include <vector>
 #include <map>
@@ -29,9 +29,12 @@
 #include "azlib/util/Assert.h"
 #include "azlib/program.h" /* main() */
 #include "mxcontrol-commands/TasksHolder.h"
+#include "mxcontrol-commands/Help.h"
 
 using namespace std;
 using namespace mxcontrol;
+
+const char* program_name = "mxcontrol";
 
 int AzoukMain(int argc, char** argv) {
 
@@ -45,8 +48,10 @@ int AzoukMain(int argc, char** argv) {
 
     // build program options
     bool show_help;
+    bool show_version;
     tasks_holder().general_options.add_options()
 	("help", po::bool_switch(&show_help), "produce help message")
+	("version", po::bool_switch(&show_version), "print version string")
 	("logging-fd", po::value<boost::uint16_t>(), "descriptor, to which binary logging stream is sent")
 	("logging-file", po::value<std::string>(), "binary logging stream file (if --logging-fd not set)")
 	;
@@ -70,13 +75,15 @@ int AzoukMain(int argc, char** argv) {
     std::vector<std::string>().swap(unrecognized_); // free all memory
 
     // see what're the results of parsing
-    if (!unrecognized.size()) {
-	unrecognized.push_back("help");
-	show_help = false;
+    if (show_version) {
+	unrecognized.push_front("version");
     }
-    if (show_help/* && unrecognized[0] != "help"*/) {
+
+    if (show_help) {
 	unrecognized.push_front("help");
-	show_help = false;
+    } else if (!unrecognized.size()) {
+	unrecognized.push_back("help");
+	show_help_forced = true;
     }
 
     if (!tasks_holder().is_command(unrecognized[0])) {

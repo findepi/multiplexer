@@ -33,7 +33,7 @@
 #include "azlib/util/Exception.h"
 #include "azouk/util/kwargs.h"
 #include "multiplexer/Client.h"
-#include "build/multiplexer/Multiplexer.pb.h" /* generated */
+#include "multiplexer/Multiplexer.pb.h" /* generated */
 
 namespace multiplexer {
     namespace backend {

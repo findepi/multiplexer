@@ -37,7 +37,7 @@
 
 #include "azlib/preproc/common.h"
 #include "azlib/logging/log_tokens.h"
-#include "build/azlib/logging/Logging.pb.h" /* generated */
+#include "azlib/logging/Logging.pb.h" /* generated */
 #include "azouk/xrelease.h"
 #include "azlib/util/Assert.h"
 
@@ -157,7 +157,7 @@
                     __azouk_log_call_context, \
                     __azouk_log_call_level, \
                     __azouk_log_call_verbosity, \
-                    TEXT(std::string("ENTER ") + __PRETTY_FUNCTION__) \
+                    MESSAGE(std::string("ENTER ") + __PRETTY_FUNCTION__) \
                     CONTEXT(__azouk_log_call_context) \
                     tokens \
                 ); \
@@ -178,7 +178,7 @@
                         __azouk_log_call_context, \
                         __azouk_log_call_level, \
                         __azouk_log_call_verbosity, \
-                        TEXT(std::string("LEAVE ") + __PRETTY_FUNCTION__) \
+                        MESSAGE(std::string("LEAVE ") + __PRETTY_FUNCTION__) \
                         CONTEXT(__azouk_log_call_context) \
                     ); \
             } \
@@ -391,6 +391,8 @@ namespace azlib {
 		    ;
 	    }
 
+            void set_process_name(const std::string name);
+	    void init_process_context_all_defaults();
 
 	}; // namespace impl
 
@@ -402,6 +404,13 @@ namespace azlib {
 	    impl::process_context_ = s;
 	}
 
+	static inline void init_process_context_all_defaults(){
+		impl::init_process_context_all_defaults();
+	}
+
+	static inline void set_process_name(const std::string name){
+		impl::set_process_name(name);
+	}
 
     }; // namespace logging
 }; // namespace azlib

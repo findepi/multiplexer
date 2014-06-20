@@ -14,33 +14,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//
-// Author:
-//      Piotr Findeisen <piotr.findeisen at gmail.com>
-//
 
-#ifndef MX_ENCODERS_ENCODETOOUTPUTITERATOR_H
-#define MX_ENCODERS_ENCODETOOUTPUTITERATOR_H
+#ifndef MXCONTROL_VERSION_H
+#define MXCONTROL_VERSION_H
 
-#include "encoders/BaseEncoder.h"
+#include "mxcontrol-commands/Task.h"
 
-namespace azlib {
-    namespace encoders {
+namespace mxcontrol {
 
-	template <typename OutputIterator, template <typename> class Encoding>
-	struct EncodeToOutputIterator : public BaseEncoder<EncodeToOutputIterator<OutputIterator, Encoding>, Encoding> {
-
-	    EncodeToOutputIterator(OutputIterator it) : it_(it)
-	    {}
-
-	    void write_byte(unsigned char byte) {
-		*(it_)++ = byte;
-	    }
-
-	private:
-	    OutputIterator it_;
-	};
-
+    class Version : public Task {
+    public:
+	virtual int run();
+	virtual std::string short_description() const { return "print version string"; }
     };
 };
 

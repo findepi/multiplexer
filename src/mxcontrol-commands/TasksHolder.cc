@@ -1,4 +1,4 @@
-
+#include "config.h"
 #include <iostream>
 #include "azlib/logging.h"
 #include "TasksHolder.h"

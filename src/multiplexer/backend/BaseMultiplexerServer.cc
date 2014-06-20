@@ -149,14 +149,14 @@ namespace multiplexer {
 		    __handle_internal_message();
 		    if (!_has_sent_response) {
 			AZOUK_LOG(WARNING, LOWVERBOSITY,
-				TEXT("__handle_internal_message() finished w/o exception and w/o any response")
+				MESSAGE("__handle_internal_message() finished w/o exception and w/o any response")
 				);
 		    }
 		} else {
 		    handle_message(*last_mxmsg);
 		    if (!_has_sent_response) {
 			AZOUK_LOG(WARNING, LOWVERBOSITY,
-				TEXT("handle_message() finished w/o exception and w/o any response")
+				MESSAGE("handle_message() finished w/o exception and w/o any response")
 				);
 		    }
 		}
@@ -164,7 +164,7 @@ namespace multiplexer {
 		std::cerr << "Exception " << e.what() << " caught\n";
 		if (!_has_sent_response) {
 		    AZOUK_LOG(DEBUG, MEDIUMVERBOSITY,
-			    TEXT(std::string("sending BACKEND_ERROR notification for Exception ") + e.what())
+			    MESSAGE(std::string("sending BACKEND_ERROR notification for Exception ") + e.what())
 			);
 		    //report_error(e.what()); // TODO
 		}
@@ -200,8 +200,8 @@ namespace multiplexer {
 		    break;
 
 		default:
-		    AZOUK_LOG(ERROR, LOWVERBOSITY,
-			    TEXT("received unknown meta-packet type=" + repr(mxmsg.type()))
+		    AZOUK_LOG(LOG_ERROR, LOWVERBOSITY,
+			    MESSAGE("received unknown meta-packet type=" + repr(mxmsg.type()))
 			);
 	    } // switch
 	}

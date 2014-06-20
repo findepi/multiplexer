@@ -47,7 +47,7 @@
 #  *
 #  *	    FLOW(flow)				add workflow information
 #  *
-#  *	    TEXT(text)				add human readable textual
+#  *	    MESSAGE(text)				add human readable textual
 #  *                                            information
 #  *
 #  *	    DATA(type_id, type, setters)	add data_type(type_id) information and generate inner data msg using setters
@@ -65,7 +65,7 @@
 #  *	    AZOUK_LOG(DEBUG, VERBOSE, CONTEXT("tarantula.multiplexer"));
 #  *
 #  *	    AZOUK_LOG(DEBUG, VERBOSE, CTX("multiplexer") FLOW(mxmsg.workflow())
-#  *		    TEXT("received a message with id " +
+#  *		    MESSAGE("received a message with id " +
 #  *                        boost::lexical_cast<std::string>(mxmsg.id))
 #  *		);
 #  *
@@ -135,7 +135,7 @@ namespace azlib {
 	    ((INFO, 2)) \
 	    ((OK, 3)) \
 	    ((WARNING, 4)) \
-	    ((ERROR, 5)) \
+	    ((LOG_ERROR, 5)) \
 	    ((CRITICAL, 6)) \
 	    /**/
 
@@ -162,7 +162,7 @@ namespace azlib {
 	    ((CHATTERBOX, 4)) \
 	    /**/
 #define AZOUK_LOGGING_DEFAULT_VERBOSITY() \
-            (::azlib::logging::consts::HIGHVERBOSITY)
+            (::azlib::logging::consts::LOWVERBOSITY)
 
 	    const static unsigned int MAX_VERBOSITY =
                 __AZOUK_LOGGING_MAX_VERBOSITY();
@@ -223,6 +223,19 @@ namespace azlib {
 	void set_logging_file(const std::string& file);
 
 	boost::uint64_t create_log_id();
+
+	/*
+	 * set_process_name(name)
+	 *	    Set the name of the process. Removes directory part.
+	 */
+	static inline void set_process_name(const std::string name);
+
+	/*
+	 * init_process_context_all_defaults()
+	 *	    Do something. Call from main().
+	 */
+	static inline void init_process_context_all_defaults();
+
 
 	static inline const std::string& process_context();
 	static inline void set_process_context(const std::string& s);

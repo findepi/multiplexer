@@ -47,11 +47,12 @@ namespace mxcontrol {
 	}
 
     private:
-	inline std::string _program_name() const { return tasks_holder().original_argc() ? tasks_holder().original_argv()[0] : "program"; }
-
-    private:
 	std::string subcommand_;
     };
+
+    extern bool show_help_forced; // If help was requested, it should go out on stdout.
+				  // If it printed because of an error, it should go to stderr.
+				  // show_help_forced means the second.
 };
 
 #endif
